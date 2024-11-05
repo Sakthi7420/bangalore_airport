@@ -1,7 +1,7 @@
 {
-  "name": "@gwcdata/~~name~~",
+  "name": "@gwcdata/learning-management-system-backend",
   "version": "1.0.0",
-  "description": "~~description~~",
+  "description": "LMS Project",
   "main": "dist/index.js",
   "scripts": {
     "start": "nodemon -e js,yaml -r @babel/register -r ./env/config.js ./dist/index.js",
@@ -26,14 +26,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GWC-Data/~~name~~.git"
+    "url": "git+https://github.com/GWC-Data/learning-management-system-backend.git"
   },
   "author": "GWC Data AI",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/GWC-Data/~~name~~/issues"
+    "url": "https://github.com/GWC-Data/learning-management-system-backend/issues"
   },
-  "homepage": "https://github.com/GWC-Data/~~name~~/#readme",
+  "homepage": "https://github.com/GWC-Data/learning-management-system-backend/#readme",
   "dependencies": {
     "@babel/runtime": "^7.25.7",
     "@gwcdata/node-server-engine": "^1.0.6",
