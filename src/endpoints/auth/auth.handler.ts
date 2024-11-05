@@ -3,7 +3,7 @@ import {
   EndpointRequestType,
   EndpointHandler,
   generateJwtToken
-} from 'node-server-engine';
+} from '@gwcdata/node-server-engine';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import { User } from 'db';
@@ -37,7 +37,7 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
   try {
     const user = await User.findOne({
       where: { email },
-      attributes: ['id', 'name', 'email', 'roleId', 'password'],
+      attributes: ['id', 'name', 'email', 'role', 'password'],
       raw: true
     });
     if (!user) {
