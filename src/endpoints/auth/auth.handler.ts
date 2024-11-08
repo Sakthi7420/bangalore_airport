@@ -60,7 +60,6 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
       .status(200)
       .json({ accessToken, tokenExpiry, user: userWithoutPassword });
 
-    res.status(200).json({ accessToken, tokenExpiry, user });
   } catch (error) {
     res.status(500).json({ message: 'Login error', error });
   }
