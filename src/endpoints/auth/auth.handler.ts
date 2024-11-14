@@ -40,6 +40,7 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
       attributes: ['id', 'name', 'email', 'role', 'password'],
       raw: true
     });
+    console.log("access token", user);
     if (!user) {
       res.status(401).json({ message: 'Invalid credentials' });
       return;

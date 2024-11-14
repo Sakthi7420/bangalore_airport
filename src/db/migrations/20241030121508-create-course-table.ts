@@ -6,42 +6,42 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
     },
     courseName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     courseCategoryId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'CourseCategories', // Referencing the 'CourseCategories' table
-        key: 'id' // The referenced column
+        model: 'CourseCategory', // Referencing the 'CourseCategories' table
+        key: 'id', // The referenced column
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      onDelete: 'CASCADE',
     },
     courseInstructorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users', // Referencing the 'Users' table (instructor)
-        key: 'id' // The referenced column
+        model: 'User', // Referencing the 'Users' table (instructor)
+        key: 'id', // The referenced column
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      onDelete: 'CASCADE',
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: literal('CURRENT_TIMESTAMP')
+      defaultValue: literal('CURRENT_TIMESTAMP'), // OR Sequelize.fn('NOW')
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-    }
+      defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), // OR Sequelize.fn('NOW')
+    },
   });
 }
 
