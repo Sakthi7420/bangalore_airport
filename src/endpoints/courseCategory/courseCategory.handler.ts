@@ -11,8 +11,13 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
 ): Promise<void> => {
-    const { courseCategory, description, courseCategoryImg } = req.body;
-    console.log(req.body);
+    const { courseCategory, description, courseCategoryImg, } = req.body;
+    // console.log(req.body);
+
+    if(req.user?.role !== 'admin') {
+        res.status(403).json({ message: 'You dont have Permission' });
+        return;
+    }
     
     try {
         const newCategory = await CourseCategory.create({
@@ -20,7 +25,6 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
             description,
             courseCategoryImg
         });
-
         res
         .status(200)
         .json({ message: 'Course category created successfully', data: newCategory});
@@ -62,8 +66,15 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
 ): Promise<void> => {
     const { id } = req.params;
     const { courseCategory, description, courseCategoryImg } = req.body;
+
     try {
+
         const category = await CourseCategory.findByPk(id);
+
+        if (req.user?.role !== 'admin') {
+            res.status(403).json({ message: 'You do not have permission' });
+            return;
+        }
 
         if (!category) {
             res.status(404).json({ message: 'Category not found' });
@@ -74,11 +85,17 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
         category.description = description || category.description;
         category.courseCategoryImg = courseCategoryImg || category.courseCategoryImg;
 
+
         await category.save();
 
-        res.status(200).json({ message: 'Category updated successfully', category });
+ 
+        res.status(200).json({
+            message: 'Category updated successfully',
+            category
+        });
         return;
     } catch (error) {
+        console.error(error); // Log the error for debugging
         res.status(500).json({ message: 'Error updating category', error });
         return;
     }
@@ -93,6 +110,11 @@ export const deleteCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     const { id } = req.params;
     try {
         const category = await CourseCategory.findByPk(id);
+
+        if(req.user?.role !== 'admin') {
+            res.status(403).json({ message: 'You dont have Permission' });
+            return;
+        }
 
         if (!category) {
             res.status(404).json({ message: 'Category not found' });

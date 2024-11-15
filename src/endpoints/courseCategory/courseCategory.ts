@@ -11,8 +11,7 @@ export const courseCategoryEndpoint = new Endpoint({
     path: '/auth/createcourse-category',
     method: EndpointMethod.POST,
     handler: courseCategoryHandler,
-    authType: EndpointAuthType.ADMIN,
-    authParams: { permission: 'admin:create' },
+    authType: EndpointAuthType.JWT,
     validator: courseCategoryValidator
 });
 
@@ -28,8 +27,7 @@ export const updateCategoryEndpoint = new Endpoint({
     path: '/auth/updatecategory/:id',
     method: EndpointMethod.PUT,
     handler: updateCategoryHandler,
-    authType: EndpointAuthType.ADMIN,
-    authParams: { permission: 'admin:update' },
+    authType: EndpointAuthType.JWT,
     validator: courseCategoryValidator
 });
 
@@ -37,7 +35,6 @@ export const deleteCategoryHandlerEndpoint = new Endpoint({
     path: '/auth/deletecategory/:id',
     method: EndpointMethod.DELETE,
     handler: deleteCategoryHandler,
-    authType: EndpointAuthType.ADMIN,
-    authParams: { permission: 'admin:delete' },
+    authType: EndpointAuthType.JWT,
     validator: {}
 })

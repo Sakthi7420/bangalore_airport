@@ -18,6 +18,10 @@
                 type: string
                 format: email
                 example: 'ram.mahendran@example.com'
+              phoneNumber:
+                type: string
+                format: phoneNumber
+                example: '9876456780'
               password:
                 type: string
                 minLength: 6
@@ -29,6 +33,7 @@
             required:
               - name
               - email
+              - phoneNumber
               - password
               - role
     responses:

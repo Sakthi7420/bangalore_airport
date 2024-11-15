@@ -18,6 +18,11 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType> = async (
   try {
     // Check if the course category exists
     const category = await CourseCategory.findByPk(courseCategoryId);
+
+    if(req.user?.role !== 'admin') {
+      res.status(403).json({ message: 'You dont have Permission' });
+      return;
+  }
     if (!category) {
       res.status(404).json({ message: 'Course category not found' });
       return;
@@ -83,6 +88,11 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType> = async (
   try {
     const course = await Course.findByPk(id);
 
+    if(req.user?.role !== 'admin') {
+      res.status(403).json({ message: 'You dont have Permission' });
+      return;
+  }
+
     if (!course) {
       res.status(404).json({ message: 'Course not found' });
       return;
@@ -125,6 +135,11 @@ export const deleteCourseHandler: EndpointHandler<EndpointAuthType> = async (
   const { id } = req.params;
   try {
     const course = await Course.findByPk(id);
+
+    if(req.user?.role !== 'admin') {
+      res.status(403).json({ message: 'You dont have Permission' });
+      return;
+  }
 
     if (!course) {
       res.status(404).json({ message: 'Course not found' });

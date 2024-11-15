@@ -12,15 +12,17 @@ export const registerHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
 ) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, phoneNumber, password, role } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
       email,
+      phoneNumber,
       password: hashedPassword,
       role
     });
+    
     res
       .status(201)
       .json({ message: 'User created successfully', userId: user.id });
@@ -37,10 +39,11 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
   try {
     const user = await User.findOne({
       where: { email },
-      attributes: ['id', 'name', 'email', 'role', 'password'],
+      attributes: ['id', 'name', 'email', 'phoneNumber', 'role', 'password'],
       raw: true
     });
-    console.log("access token", user);
+   
+    
     if (!user) {
       res.status(401).json({ message: 'Invalid credentials' });
       return;
@@ -54,6 +57,7 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
 
     const tokenExpiry = Math.floor(Date.now() / 1000) + 60 * 60;
     const accessToken = generateJwtToken(user);
+
 
     const { password: _, ...userWithoutPassword } = user;
 

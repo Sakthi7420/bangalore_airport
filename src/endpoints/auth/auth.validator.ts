@@ -1,5 +1,6 @@
 import { Schema } from 'express-validator';
 import { User } from 'db';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 
 export const registerValidator: Schema = {
   name: {
@@ -30,15 +31,26 @@ export const registerValidator: Schema = {
       }
     }
   },
+  phoneNumber: {
+    in: 'body',
+    exists: {
+      errorMessage: 'PhoneNumber is required'
+    },
+  },
+
   password: {
     in: 'body',
     exists: {
       errorMessage: 'Password is required'
     },
     isLength: {
-      errorMessage: 'Password must be at least 6 characters long',
-      options: { min: 6 }
-    }
+      errorMessage: 'Password must be at least 8 characters long',
+      options: { min: 8 }
+    },
+    matches: {
+      options: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
+      errorMessage: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+    },
   },
 };
 
