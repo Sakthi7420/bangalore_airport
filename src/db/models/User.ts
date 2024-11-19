@@ -72,6 +72,12 @@ export class User extends Model {
   @Column({ type: DataType.STRING, allowNull: true }) 
   phoneNumber?: string;
 
+  @Column({ type: DataType.STRING, allowNull: true })
+  address?: string;
+
+  @Column({ type: DataType.BLOB, allowNull: true })
+  profilePic!: Buffer;
+
   @Column({ type: DataType.ENUM('trainee', 'trainer', 'admin', 'sales', 'finance'),
   allowNull: false,
   defaultValue: 'trainee',

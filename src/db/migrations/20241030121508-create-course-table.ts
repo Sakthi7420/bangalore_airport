@@ -12,6 +12,10 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    courseDesc: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     courseCategoryId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -27,7 +31,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       allowNull: false,
       references: {
         model: 'User', // Referencing the 'Users' table (instructor)
-        key: 'id', // The referenced column
+        key: 'id', 
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',

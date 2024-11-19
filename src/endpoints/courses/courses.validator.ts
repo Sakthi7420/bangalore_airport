@@ -11,6 +11,15 @@ export const courseValidator: Schema = {
             options: { min: 5 }
         }
     },
+    courseDesc: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Course Description is Required'
+        },
+        isLength: {
+            errorMessage: 'Course Description must be at least 20 characters long',
+        }
+    },
     courseCategoryId: {
         in: 'body',
         exists: {

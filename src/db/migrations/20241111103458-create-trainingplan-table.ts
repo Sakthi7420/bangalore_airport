@@ -2,13 +2,13 @@ import { QueryInterface, DataTypes, literal } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
 
-    await queryInterface.createTable('TrainingPlan', {
+    await queryInterface.createTable('TrainingPlans', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        name: {
+        trainingName: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -30,9 +30,19 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
         },
+        trainerId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Users', // Ensure the correct table name for the trainer
+                key: 'id'
+            },
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+        },
         startDate: {
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: false
         },
         endDate: {
             type: DataTypes.DATE,

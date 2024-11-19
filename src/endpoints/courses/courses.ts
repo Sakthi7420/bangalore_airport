@@ -2,7 +2,8 @@ import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server
 import { courseValidator } from "./courses.validator";
 import { 
     createCourseHandler, 
-    getCourseByIdHandler, 
+    getCourseByIdHandler,
+    getCourseHandler, 
     updateCourseHandler, 
     deleteCourseHandler 
 } from './courses.handler';
@@ -16,7 +17,15 @@ export const createCourseEndpoint = new Endpoint({
     validator: courseValidator
 });
 
-export const getCourseEndPoint = new Endpoint({
+export const getAllCourseEndPoint = new Endpoint({
+    path: '/auth/getallcourse',
+    method: EndpointMethod.GET,
+    handler: getCourseHandler,
+    authType: EndpointAuthType.NONE,
+    validator: {}
+});
+
+export const getCourseByIdEndPoint = new Endpoint({
     path: '/auth/getcourse/:id',
     method: EndpointMethod.GET,
     handler: getCourseByIdHandler,

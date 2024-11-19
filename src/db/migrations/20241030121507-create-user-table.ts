@@ -121,6 +121,10 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     role: {
       type: DataTypes.ENUM('trainee', 'trainer', 'admin', 'sales', 'finance'),
       allowNull: false,

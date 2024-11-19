@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, AllowNull } from 'sequelize-typescript';
 import { User } from './User';
 import { CourseCategory } from './CourseCategory';
 
@@ -27,6 +27,9 @@ import { CourseCategory } from './CourseCategory';
 export class Course extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
   courseName!: string;
+
+  @Column({ type: DataType.STRING, allowNull: false})
+  courseDesc!: string;
 
   @ForeignKey(() => CourseCategory)
   @Column({ type: DataType.INTEGER, allowNull: false })

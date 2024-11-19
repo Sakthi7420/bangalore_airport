@@ -6,6 +6,29 @@ import {
 import { CourseCategory } from 'db';
 import { Response } from 'express';
 
+//Get Categories
+export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
+    req: EndpointRequestType[EndpointAuthType],
+    res: Response
+): Promise<void> => {
+    try {
+        // Fetch all categories
+        const categories = await CourseCategory.findAll();
+
+        if (categories.length === 0) {
+            res.status(404).json({ message: 'No categories found' });
+            return;
+        }
+
+        res.status(200).json({ categories });
+        return;
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching categories', data: error });
+        return;
+    }
+};
+
+
 //create category
 export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
@@ -15,7 +38,7 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     // console.log(req.body);
 
     if(req.user?.role !== 'admin') {
-        res.status(403).json({ message: 'You dont have Permission' });
+        res.status(403).json({ message: 'You don\'t have Permission' });
         return;
     }
     
@@ -26,7 +49,7 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
             courseCategoryImg
         });
         res
-        .status(200)
+        .status(201)
         .json({ message: 'Course category created successfully', data: newCategory});
         return;
     }
@@ -66,13 +89,14 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
 ): Promise<void> => {
     const { id } = req.params;
     const { courseCategory, description, courseCategoryImg } = req.body;
+    console.log('data', req.body);
 
     try {
 
         const category = await CourseCategory.findByPk(id);
 
         if (req.user?.role !== 'admin') {
-            res.status(403).json({ message: 'You do not have permission' });
+            res.status(403).json({ message: 'You don\'t have permission' });
             return;
         }
 
@@ -81,17 +105,16 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
             return;
         }
 
-        category.courseCategory = courseCategory || category.courseCategory;
-        category.description = description || category.description;
-        category.courseCategoryImg = courseCategoryImg || category.courseCategoryImg;
-
+        category.set({courseCategory : courseCategory,
+            description : description,
+            courseCategoryImg : courseCategoryImg})
 
         await category.save();
 
- 
         res.status(200).json({
             message: 'Category updated successfully',
-            category
+            category,
+            reqbody : req.body
         });
         return;
     } catch (error) {
@@ -100,6 +123,7 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
         return;
     }
 };
+
 
 
 //Delete a category
@@ -112,7 +136,7 @@ export const deleteCategoryHandler: EndpointHandler<EndpointAuthType> = async (
         const category = await CourseCategory.findByPk(id);
 
         if(req.user?.role !== 'admin') {
-            res.status(403).json({ message: 'You dont have Permission' });
+            res.status(403).json({ message: 'You don\'t have Permission' });
             return;
         }
 
