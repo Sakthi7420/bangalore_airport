@@ -27,7 +27,7 @@ export class CourseDetail extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseId!: number;
 
-  @Column({ type: DataType.TEXT })
+  @Column({ type: DataType.TEXT, allowNull: false })
   courseLectures!: string;
 
   @Column({ type: DataType.TEXT })

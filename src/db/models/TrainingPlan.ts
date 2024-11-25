@@ -13,7 +13,8 @@ export class TrainingPlan extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   trainerId!: number;
 
-  @Column({ type: DataType.ENUM('active', 'inactive'), defaultValue: 'active' })
+  @Column({ type: DataType.ENUM('active', 'inactive'),
+  defaultValue: 'active' })
   status!: 'active' | 'inactive';
 
   @ForeignKey(() => User)

@@ -21,6 +21,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
         },
         courseLectures: {
             type: DataTypes.TEXT,
+            allowNull: false
         },
         courseQandA: {
             type: DataTypes.TEXT,

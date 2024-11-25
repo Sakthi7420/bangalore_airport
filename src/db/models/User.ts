@@ -61,36 +61,46 @@ import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path t
 @Table
 export class User extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
-  name!: string;
+  firstName!: string;
+
+  @Column({ type: DataType.STRING, allowNull: false })
+  lastName!: string;
 
   @Column({ type: DataType.STRING, allowNull: false, unique: true })
   email!: string;
-
-  @Column({ type: DataType.STRING, allowNull: false})
-  password!: string;
+  
+  @Column({ type: DataType.DATE, allowNull: true })
+  dateOfBirth?: Date;
 
   @Column({ type: DataType.STRING, allowNull: true }) 
   phoneNumber?: string;
 
+  @Column({ type: DataType.STRING, allowNull: false})
+  password!: string;
+
   @Column({ type: DataType.STRING, allowNull: true })
   address?: string;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  qualification?: string;
 
   @Column({ type: DataType.BLOB, allowNull: true })
   profilePic!: Buffer;
 
-  @Column({ type: DataType.ENUM('trainee', 'trainer', 'admin', 'sales', 'finance'),
+  @Column({ type: DataType.DATE, allowNull: true })
+  dateOfJoining?: Date; 
+
+  @Column({ type: DataType.ENUM('trainee', 'trainer', 'admin', 'sales'),
   allowNull: false,
   defaultValue: 'trainee',
   })
-  role!: 'trainee' | 'trainer' | 'admin' | 'sales' | 'finance';
+  role!: 'trainee' | 'trainer' | 'admin' | 'sales';
 
-  // If department is intended to be a foreign key, define it like this:
-  // @ForeignKey(() => Department) 
-  // @Column({ type: DataType.INTEGER, allowNull: true })
-  // departmentId?: number; // Assuming there is a 'Department' model
+  @Column({ type: DataType.ENUM('active', 'suspended', 'inactive'), allowNull: false, defaultValue: 'active' })
+  accountStatus!: 'active' | 'suspended' | 'inactive';
 
-  @Column({ type: DataType.STRING, allowNull: true })
-  learningPath!: string;  // New field to track the learning path
+  @Column({ type: DataType.DATE, allowNull: true })
+  lastLogin?: Date;
 
   @HasMany(() => EnrolledCourse)
   enrolledCourses!: EnrolledCourse[];

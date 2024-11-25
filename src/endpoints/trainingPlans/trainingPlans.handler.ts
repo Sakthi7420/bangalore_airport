@@ -38,7 +38,7 @@ export const createTrainingPlanHandler: EndpointHandler<EndpointAuthType> = asyn
         trainingName,
         description,
         trainerId,
-        status = 'active',
+        status,
         assignedTo,
         startDate,
         endDate
@@ -125,7 +125,7 @@ export const getTraininPlanByIdHandler: EndpointHandler<EndpointAuthType> = asyn
             trainingName,
             description,
             trainerId,
-            status = 'active',
+            status,
             assignedTo,
             startDate,
             endDate

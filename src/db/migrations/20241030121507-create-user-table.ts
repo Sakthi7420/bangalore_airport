@@ -100,7 +100,11 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       autoIncrement: true,
       primaryKey: true,
     },
-    name: {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -109,34 +113,47 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       allowNull: false,
       unique: true,
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    profilePic: {
-      type: DataTypes.BLOB, // Using BLOB for profile pictures
-      allowNull: true,
+    dateOfBirth: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     address: {
       type: DataTypes.STRING,
+      allowNull: true
+    },
+    qualification: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    profilePic: {
+      type: DataTypes.BLOB, // Using BLOB for profile pictures
       allowNull: true,
     },
+    dateOfJoining: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
+    },
     role: {
-      type: DataTypes.ENUM('trainee', 'trainer', 'admin', 'sales', 'finance'),
+      type: DataTypes.ENUM('trainee', 'trainer', 'admin', 'sales'),
       allowNull: false,
       defaultValue: 'trainee', // Default role set to 'trainee'
     },
-    learningPath: {
-      type: DataTypes.STRING,
-      allowNull: true,
+    accountStatus: {
+      type: DataTypes.ENUM('active', 'inactive', 'suspended'),
+      allowNull: false,
+      defaultValue: 'active'
     },
-    createdBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+    lastLogin: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     updatedBy: {
       type: DataTypes.INTEGER,
