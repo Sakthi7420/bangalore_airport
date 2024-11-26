@@ -5,9 +5,11 @@ import {
   DataType,
   ForeignKey,
   HasMany,
+  BelongsTo,
 } from 'sequelize-typescript';
 
 import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path to EnrolledCourse model
+import { Role } from './Role';
 
 // @Table
 // export class User extends Model {
@@ -90,17 +92,18 @@ export class User extends Model {
   @Column({ type: DataType.DATE, allowNull: true })
   dateOfJoining?: Date; 
 
-  @Column({ type: DataType.ENUM('trainee', 'trainer', 'admin', 'sales'),
-  allowNull: false,
-  defaultValue: 'trainee',
-  })
-  role!: 'trainee' | 'trainer' | 'admin' | 'sales';
-
   @Column({ type: DataType.ENUM('active', 'suspended', 'inactive'), allowNull: false, defaultValue: 'active' })
   accountStatus!: 'active' | 'suspended' | 'inactive';
 
   @Column({ type: DataType.DATE, allowNull: true })
   lastLogin?: Date;
+
+  @ForeignKey(() => Role)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  roleId!: number;  // Foreign key for Role
+
+  @BelongsTo(() => Role)
+  role!: Role;
 
   @HasMany(() => EnrolledCourse)
   enrolledCourses!: EnrolledCourse[];

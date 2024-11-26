@@ -6,31 +6,31 @@ import {
 } from '@gwcdata/node-server-engine';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
-import { User } from 'db';
+import { Permission, Role, User } from 'db';
 
 export const registerHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
 ) => {
-  const { 
-    firstName, 
-    lastName, 
-    email, 
-    phoneNumber, 
-    password, 
-    role,
-   } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    password,
+    roleId,
+  } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-    firstName, 
-    lastName, 
-    email, 
-    phoneNumber, 
-    password: hashedPassword, 
-    role,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      password: hashedPassword,
+      roleId,
     });
-    
+
     res
       .status(201)
       .json({ message: 'User created successfully', userId: user.id });
@@ -40,13 +40,13 @@ export const registerHandler: EndpointHandler<EndpointAuthType> = async (
 };
 
 
-const updateUserLastLogin = async (id: number): Promise<void> => {
-  const user = await User.findByPk(id);
-  if (user) {
-    user.lastLogin = new Date();  // Set lastLogin to current date and time
-    await user.save();
-  }
-};
+// const updateUserLastLogin = async (id: number): Promise<void> => {
+//   const user = await User.findByPk(id);
+//   if (user) {
+//     user.lastLogin = new Date();  // Set lastLogin to current date and time
+//     await user.save();
+//   }
+// };
 
 export const loginHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
@@ -56,10 +56,10 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
   try {
     const user = await User.findOne({
       where: { email },
-      attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role', 'password'],
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'roleId', 'password'],
       raw: true
     });
-    
+
     if (!user) {
       res.status(401).json({ message: 'Invalid credentials' });
       return;
@@ -71,12 +71,11 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
       return;
     }
 
-    await updateUserLastLogin(user.id);
+    // await updateUserLastLogin(user.id);
 
 
     const tokenExpiry = Math.floor(Date.now() / 1000) + 60 * 60;
     const accessToken = generateJwtToken(user);
-
 
     const { password: _, ...userWithoutPassword } = user;
 
@@ -128,38 +127,123 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType> = async (
 };
 
 
+// Handler to get user details with role and permissions
+export const getUserDetailsHandler: EndpointHandler<EndpointAuthType> = async (
+  req: EndpointRequestType[EndpointAuthType],
+  res: Response
+): Promise<void> => {
+  try {
+    const { user: { id } } = req; // Assuming userId is passed as a parameter
+
+    // Fetch the user with their associated role and permissions
+    const user = await User.findOne({
+      where: { id },
+      include: [
+        {
+          model: Role, // Include the role
+          include: [
+            {
+              model: Permission, // Include the permissions through RolePermission
+              through: { attributes: [] }, // Exclude the RolePermission table itself from the response
+              attributes: ['id', 'resource'], // Specify what attributes to include from Permission
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    console.log(user);
+
+    // Structure the response
+    const userWithRoleAndPermissions = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: {
+        id: user.role.id,
+        name: user.role.name,
+        permissions: user.role.permissions.map(permission => ({
+          id: permission.id,
+          resource: permission.resource,
+        })),
+      },
+    };
+
+    // Return the response in the desired format
+    res.status(200).json(userWithRoleAndPermissions);
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while fetching user data' });
+    return;
+  }
+};
+
+
+export const getUserByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+
+  const { id } = req.params;
+
+  try {
+
+    const user = await User.findOne({ where: { id } });
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    res.status(200).json({ userDetails: user })
+    return;
+  } catch {
+    res.status(500).json({ message: 'Error fetching user' });
+    return;
+  }
+}
+
+
 //create new User 
 export const createUserHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
 
-    const { 
-      firstName, 
-      lastName, 
-      email, 
-      phoneNumber,
-      password, 
-      dateOfJoining, 
-      role
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    password,
+    dateOfJoining,
+    roleId
   } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      firstName, 
-      lastName, 
-      email, 
-      phoneNumber, 
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
       password: hashedPassword,
-      dateOfJoining, 
-      role
+      dateOfJoining,
+      roleId
     });
 
-    if (req.user?.role !== 'admin') {
-      res.status(403).json({ message: 'You don\'t have an Permission to create a new user' });
-      return;
-    };
+    // if (req.user?.role !== 'admin') {
+    //   res.status(403).json({ message: 'You don\'t have an Permission to create a new user' });
+    //   return;
+    // };
 
     res.status(200).json({ message: 'User created successfully', user });
     return;
@@ -180,15 +264,15 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
   const { id } = req.params;
 
   const {
-    firstName, 
-    lastName, 
-    email, 
+    firstName,
+    lastName,
+    email,
     phoneNumber,
     address,
     qualification,
     profilePic,
-    dateOfJoining, 
-    role,
+    dateOfJoining,
+    roleId,
     accountStatus,
   } = req.body;
 
@@ -208,29 +292,29 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
 
     const updatedBy = req.user?.id;
 
-  user.set({
-    firstName: firstName, 
-    lastName: lastName, 
-    email: email,  
-    phoneNumber: phoneNumber,  
-    address: address,
-    qualification: qualification,
-    profilePic: profilePic,
-    dateOfJoining: dateOfJoining, 
-    role: role,
-    accountStatus: accountStatus,
-    updatedBy: updatedBy
-  });
+    user.set({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+      address: address,
+      qualification: qualification,
+      profilePic: profilePic,
+      dateOfJoining: dateOfJoining,
+      roleId: roleId,
+      accountStatus: accountStatus,
+      updatedBy: updatedBy
+    });
 
-  await user.save();
+    await user.save();
 
-  res.status(200).json({ message: 'User updated successfully', user })
-  return;
+    res.status(200).json({ message: 'User updated successfully', user })
+    return;
 
-} catch (error) {
-  res.status(500).json({ message: 'Error updating courseDetails', error });
-  return;
-}
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating courseDetails', error });
+    return;
+  }
 };
 
 //delete user
@@ -245,7 +329,7 @@ export const deleteUserHandler: EndpointHandler<EndpointAuthType> = async (
 
     const user = await User.findByPk(id);
 
-    if(req.user?.role !== 'admin') {
+    if (req.user?.role !== 'admin') {
       res.status(403).json({ message: 'You don\'t have Permission to delete the user' });
       return;
     }
@@ -254,7 +338,7 @@ export const deleteUserHandler: EndpointHandler<EndpointAuthType> = async (
       res.status(403).json({ message: 'Admin cannot delete their own account' });
       return;
     }
-    
+
 
     if (!user) {
       res.status(404).json({ message: 'User not found' });

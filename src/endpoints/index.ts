@@ -7,3 +7,6 @@ export * from './courseCategory';
 export * from './trainingPlans';
 
 export * from './courseDetails';
+
+export * from './role';
+

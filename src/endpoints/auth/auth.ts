@@ -6,7 +6,17 @@ import {
   createUserValidator, 
   updateUserValidator
 } from './auth.validator';
-import { registerHandler, loginHandler, logoutHandler, getAllUsersHandler, createUserHandler, updateUserHandler, deleteUserHandler } from './auth.handler';
+import { 
+  registerHandler, 
+  loginHandler, 
+  logoutHandler, 
+  getAllUsersHandler, 
+  getUserByIdHandler,
+  getUserDetailsHandler, 
+  createUserHandler, 
+  updateUserHandler, 
+  deleteUserHandler } 
+from './auth.handler';
 
 export const registerEndpoint = new Endpoint({
   path: '/auth/register',
@@ -41,11 +51,27 @@ export const getUserEndpoint = new Endpoint({
   validator: {}
 });
 
+export const getUserByIdEndpoint = new Endpoint({
+  path: '/auth/users/:id',
+  method: EndpointMethod.GET,
+  handler: getUserByIdHandler,
+  authType: EndpointAuthType.JWT,
+  validator: {}
+});
+
+export const getUserDetailsByIdEndpoint = new Endpoint({
+  path: '/auth/userDetails',
+  method: EndpointMethod.GET,
+  handler: getUserDetailsHandler,
+  authType: EndpointAuthType.JWT,
+  validator: {}
+})
+
 export const createUserEndpoint = new Endpoint({
   path: '/auth/create-users',
   method: EndpointMethod.POST,
   handler: createUserHandler,
-  authType: EndpointAuthType.JWT,
+  authType: EndpointAuthType.NONE,
   validator: createUserValidator
 })
 
@@ -64,3 +90,4 @@ export const deleteUserEndpoint = new Endpoint({
   authType: EndpointAuthType.JWT,
   validator: {}
 })
+

@@ -141,10 +141,15 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.DATEONLY,
       allowNull: true
     },
-    role: {
-      type: DataTypes.ENUM('trainee', 'trainer', 'admin', 'sales'),
+    roleId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 'trainee', // Default role set to 'trainee'
+      references: {
+        model: 'Roles',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     },
     accountStatus: {
       type: DataTypes.ENUM('active', 'inactive', 'suspended'),
