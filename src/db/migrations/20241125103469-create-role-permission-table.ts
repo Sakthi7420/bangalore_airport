@@ -1,4 +1,3 @@
-import { Pool } from 'mysql2/typings/mysql/lib/Pool';
 import { QueryInterface, DataTypes, literal } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
@@ -11,12 +10,22 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
         },
         roleId: {
             type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        permissionId: {
+            references: {
+              model: 'Roles',
+              key: 'id',
+            },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+          },
+          permissionId: {
             type: DataTypes.INTEGER,
-            allowNull: false
-        },
+            references: {
+              model: 'Permissions',
+              key: 'id',
+            },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+          },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -29,39 +38,8 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
         }
     });
 
-    await queryInterface.addConstraint('RolePermissions', {
-        fields: ['roleId'],
-        type: 'foreign key',
-        name: 'FK_rolePermissions_roleId_roles',
-        references: {
-            table: 'Roles',
-            field: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-    });
-
-    await queryInterface.addConstraint('RolePermissions', {
-        fields: ['permissionId'],
-        type: 'foreign key',
-        name: 'FK_rolePermissions_permissionId_permissions',
-        references: {
-            table: 'Permissions',
-            field: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-    });
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
-    await queryInterface.removeConstraint(
-        'RolePermissions',
-        'FK_rolePermissions_roleId_roles'
-    );
-    await queryInterface.removeConstraint(
-        'RolePermissions',
-        'FK_rolePermissions_permissionId_permissions'
-    );
     await queryInterface.dropTable('RolePermissions');
 }

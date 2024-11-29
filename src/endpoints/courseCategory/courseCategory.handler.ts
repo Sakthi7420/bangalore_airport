@@ -1,4 +1,4 @@
-import { 
+import {
     EndpointAuthType,
     EndpointHandler,
     EndpointRequestType
@@ -11,8 +11,9 @@ export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
 ): Promise<void> => {
+
     try {
-        // Fetch all categories
+
         const categories = await CourseCategory.findAll();
 
         if (categories.length === 0) {
@@ -34,14 +35,14 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
 ): Promise<void> => {
-    const { courseCategory, description, courseCategoryImg, } = req.body;
-    // console.log(req.body);
 
-    if(req.user?.role !== 'admin') {
-        res.status(403).json({ message: 'You don\'t have Permission' });
+    const { courseCategory, description, courseCategoryImg, } = req.body;
+
+    if (req.user?.roleId !== 1) {
+        res.status(403).json({ message: 'You don\'t have Permission to create a new category' });
         return;
     }
-    
+
     try {
         const newCategory = await CourseCategory.create({
             courseCategory,
@@ -49,14 +50,14 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
             courseCategoryImg
         });
         res
-        .status(201)
-        .json({ message: 'Course category created successfully', data: newCategory});
+            .status(201)
+            .json({ message: 'Course category created successfully', data: newCategory });
         return;
     }
     catch (error) {
         res
-        .status(500)
-        .json({ message: 'Error creating course category', data: error});
+            .status(500)
+            .json({ message: 'Error creating course category', data: error });
         return;
     }
 };
@@ -66,11 +67,13 @@ export const getCategoryByIdHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
 ): Promise<void> => {
+
     const { id } = req.params;
+
     try {
         const category = await CourseCategory.findByPk(id);
 
-        if(!category){
+        if (!category) {
             res.status(404).json({ message: 'CategoryId not found' })
             return;
         }
@@ -87,16 +90,16 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
 ): Promise<void> => {
+
     const { id } = req.params;
     const { courseCategory, description, courseCategoryImg } = req.body;
-    console.log('data', req.body);
 
     try {
 
         const category = await CourseCategory.findByPk(id);
 
-        if (req.user?.role !== 'admin') {
-            res.status(403).json({ message: 'You don\'t have permission' });
+        if (req.user?.roleId !== 1) {
+            res.status(403).json({ message: 'You don\'t have permission to update this category' });
             return;
         }
 
@@ -105,25 +108,21 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
             return;
         }
 
-        category.set({courseCategory : courseCategory,
-            description : description,
-            courseCategoryImg : courseCategoryImg})
+        category.set({
+            courseCategory: courseCategory,
+            description: description,
+            courseCategoryImg: courseCategoryImg
+        });
 
         await category.save();
 
-        res.status(200).json({
-            message: 'Category updated successfully',
-            category,
-            reqbody : req.body
-        });
+        res.status(200).json({ message: 'Category updated successfully', category });
         return;
     } catch (error) {
-        console.error(error); // Log the error for debugging
         res.status(500).json({ message: 'Error updating category', error });
         return;
     }
 };
-
 
 
 //Delete a category
@@ -131,12 +130,14 @@ export const deleteCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
 ): Promise<void> => {
+
     const { id } = req.params;
+
     try {
         const category = await CourseCategory.findByPk(id);
 
-        if(req.user?.role !== 'admin') {
-            res.status(403).json({ message: 'You don\'t have Permission' });
+        if (req.user?.roleId !== 1) {
+            res.status(403).json({ message: 'You don\'t have Permission to delete this category' });
             return;
         }
 

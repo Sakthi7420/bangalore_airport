@@ -42,5 +42,5 @@ export const trainingPlansValidator: Schema = {
         exists: {
             errorMessage: 'Start date is required',
         }
-    }, 
+    },
 };

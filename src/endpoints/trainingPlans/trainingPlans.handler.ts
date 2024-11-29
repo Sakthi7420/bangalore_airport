@@ -12,7 +12,8 @@ import { Response } from 'express';
 export const getTrainingPlanHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
-): Promise<void> => {
+) => {
+
     try {
 
         const trainingPlan = await TrainingPlan.findAll();
@@ -23,8 +24,11 @@ export const getTrainingPlanHandler: EndpointHandler<EndpointAuthType> = async (
         }
 
         res.status(200).json({ trainingPlans: trainingPlan });
+        return;
+
     } catch (error) {
         res.status(500).json({ message: 'Internal Server error', data: error });
+        return;
     }
 }
 
@@ -43,85 +47,29 @@ export const createTrainingPlanHandler: EndpointHandler<EndpointAuthType> = asyn
         startDate,
         endDate
     } = req.body;
-    
-        try { 
-    
-            const trainer = await User.findByPk(trainerId);
 
-            if(req.user?.role !== 'admin') {
-                res.status(403).json({ message: 'You don\'t have Permission' });
-                return;
-            }
-
-            if (!trainer) {
-                res.status(404).json({ message: 'Trainer not found' });
-                return;
-            }
-
-            const trainee = await User.findByPk(assignedTo);
-
-            if (!trainee) {
-                res.status(404).json({ message: 'Trainee not found' });
-                return;
-            }
-
-            const newTrainingPlan = await TrainingPlan.create({
-                trainingName,
-                description,
-                trainerId,
-                status,
-                assignedTo,
-                startDate,
-                endDate
-            });
-
-            res.status(201).json({ message: 'TrainingPlan Created Successfully', trainingplan: newTrainingPlan });
-            return;
-        } catch (error) {
-            res.status(500).json({ message: 'Internal Server error', data: error });
-            return;
-        }   
-};
-
-//get by id
-export const getTraininPlanByIdHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
-    res: Response
-  ): Promise<void> => {
-  
-    const { id } = req.params;
-  
     try {
-      const trainingPlan = await TrainingPlan.findByPk(id, {
-        include: [
-          { model: User, as: 'trainee' },  
-          { model: User, as: 'trainer' }   
-        ]
-      });
-  
-      if (!trainingPlan) {
-        res.status(404).json({ message: 'Training Plan not found' });
-        return;
-      }
-  
-      res.status(200).json({ trainingPlan });
-      return;
-  
-    } catch (error) {
-      res.status(500).json({ message: 'Internal Server error', data: error });
-      return;
-    }
-  };
-  
-  //Update Training Plan
-  export const updateTrainingPlanHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
-    res: Response
-  ): Promise<void> => {
 
-    const { id } = req.params;
+        const trainer = await User.findByPk(trainerId);
 
-        const {
+        if(req.user?.roleId !== 1) {
+            res.status(403).json({ message: 'You don\'t have Permission to create New Training Plan' });
+            return;
+        }
+
+        if (!trainer) {
+            res.status(404).json({ message: 'Trainer not found' });
+            return;
+        }
+
+        const trainee = await User.findByPk(assignedTo);
+
+        if (!trainee) {
+            res.status(404).json({ message: 'Trainee not found' });
+            return;
+        }
+
+        const newTrainingPlan = await TrainingPlan.create({
             trainingName,
             description,
             trainerId,
@@ -129,64 +77,123 @@ export const getTraininPlanByIdHandler: EndpointHandler<EndpointAuthType> = asyn
             assignedTo,
             startDate,
             endDate
-        } = req.body;
+        });
 
-        try {
+        res.status(201).json({ message: 'TrainingPlan Created Successfully', trainingplan: newTrainingPlan });
+        return;
 
-            if(req.user?.role !== 'admin') {
-                res.status(403).json({ message: 'You dont have Permission' });
-                return;
-            }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server error', data: error });
+        return;
+    }
+};
 
-            const trainingPlan = await TrainingPlan.findByPk(id);
+//get by id
+export const getTraininPlanByIdHandler: EndpointHandler<EndpointAuthType> = async (
+    req: EndpointRequestType[EndpointAuthType],
+    res: Response
+) => {
 
-            if (!trainingPlan) {
-                res.status(404).json({ message: 'trainingPlan not found' });
-                return;
-            }
+    const { id } = req.params;
 
-            if (trainerId) {
-                const trainer = await User.findByPk(trainerId);
-                if (!trainer) {
-                    res.status(404).json({ message: 'Trainer not found' });
-                    return;
-                }
-            }
-    
-            if (assignedTo) {
-                const trainee = await User.findByPk(assignedTo);
-                if (!trainee) {
-                    res.status(404).json({ message: 'Trainee not found' });
-                    return;
-                }
-            }
+    try {
 
-            trainingPlan.set({
-            trainingName : trainingName,
-            description : description,
-            trainerId : trainerId,
-            assignedTo : assignedTo,
-            startDate : startDate,
-            endDate : endDate,
-            status : status
+        const trainingPlan = await TrainingPlan.findByPk(id, {
+            include: [
+                { model: User, as: 'trainee' },
+                { model: User, as: 'trainer' }
+            ]
+        });
 
-            })
-
-            await trainingPlan.save();
-
-            res.status(200).json({ message: 'Training plan updated successfully', trainingPlan });
-            return;
-        } catch (error) {
-            res.status(500).json({ message: 'Error updating training plan', error });
+        if (!trainingPlan) {
+            res.status(404).json({ message: 'Training Plan not found' });
             return;
         }
+
+        res.status(200).json({ trainingPlan });
+        return;
+
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server error', data: error });
+        return;
+    }
+};
+
+//Update Training Plan
+export const updateTrainingPlanHandler: EndpointHandler<EndpointAuthType> = async (
+    req: EndpointRequestType[EndpointAuthType],
+    res: Response
+): Promise<void> => {
+
+    const { id } = req.params;
+
+    const {
+        trainingName,
+        description,
+        trainerId,
+        status,
+        assignedTo,
+        startDate,
+        endDate
+    } = req.body;
+
+    try {
+
+        if(req.user?.roleId !== 1) {
+            res.status(403).json({ message: 'You don\t have Permission to update this Training Plan' });
+            return;
+        }
+
+        const trainingPlan = await TrainingPlan.findByPk(id);
+
+        if (!trainingPlan) {
+            res.status(404).json({ message: 'trainingPlan not found' });
+            return;
+        }
+
+        if (trainerId) {
+            const trainer = await User.findByPk(trainerId);
+            if (!trainer) {
+                res.status(404).json({ message: 'Trainer not found' });
+                return;
+            }
+        }
+
+        if (assignedTo) {
+            const trainee = await User.findByPk(assignedTo);
+            if (!trainee) {
+                res.status(404).json({ message: 'Trainee not found' });
+                return;
+            }
+        }
+
+        trainingPlan.set({
+            trainingName: trainingName,
+            description: description,
+            trainerId: trainerId,
+            assignedTo: assignedTo,
+            startDate: startDate,
+            endDate: endDate,
+            status: status
+
+        })
+
+        await trainingPlan.save();
+
+        res.status(200).json({ message: 'Training plan updated successfully', trainingPlan });
+        return;
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating training plan', error });
+        return;
+    }
 };
 
 //delete TrainingPlan
 export const deleteTrainingPlanHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
-  ): Promise<void> => {
+): Promise<void> => {
 
     const { id } = req.params;
 
@@ -194,8 +201,8 @@ export const deleteTrainingPlanHandler: EndpointHandler<EndpointAuthType> = asyn
 
         const trainingPlan = await TrainingPlan.findByPk(id);
 
-        if(req.user?.role !== 'admin') {
-            res.status(403).json({ message: 'You don\'t have a Permission' });
+        if(req.user?.roleId !== 1) {
+            res.status(403).json({ message: 'You don\'t have a Permission to delete this training Plan' });
             return;
         }
 
@@ -206,9 +213,10 @@ export const deleteTrainingPlanHandler: EndpointHandler<EndpointAuthType> = asyn
 
         await trainingPlan.destroy();
 
-        res.status(200).json({ message: 'Training plan deleted successfully'});
+        res.status(200).json({ message: 'Training plan deleted successfully' });
         return;
+
     } catch (error) {
         res.status(500).json({ message: 'Error deleting training plan', error });
     }
-  };
+};

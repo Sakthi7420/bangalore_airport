@@ -107,10 +107,10 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType> = async (
 
     const users = await User.findAll();
 
-    if (req.user?.role !== 'admin') {
-      res.status(403).json({ message: 'You don\'t have Permission' });
-      return;
-    }
+    // if (req.user?.role !== 'admin') {
+    //   res.status(403).json({ message: 'You don\'t have Permission' });
+    //   return;
+    // }
 
     if (!users) {
       res.status(404).json({ message: 'No users found' });
@@ -128,24 +128,29 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType> = async (
 
 
 // Handler to get user details with role and permissions
-export const getUserDetailsHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const getUserDetailsHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
-  try {
-    const { user: { id } } = req; // Assuming userId is passed as a parameter
 
-    // Fetch the user with their associated role and permissions
+  const { id } = req.params;
+
+  try {
+
+
     const user = await User.findOne({
       where: { id },
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber'],
+      // raw: true,
       include: [
         {
-          model: Role, // Include the role
+          model: Role,
+          attributes: ['id', 'name', 'description'],
           include: [
             {
-              model: Permission, // Include the permissions through RolePermission
-              through: { attributes: [] }, // Exclude the RolePermission table itself from the response
-              attributes: ['id', 'resource'], // Specify what attributes to include from Permission
+              model: Permission,
+              through: { attributes: [] },
+              attributes: ['id', 'resource'],
             },
           ],
         },
@@ -157,26 +162,8 @@ export const getUserDetailsHandler: EndpointHandler<EndpointAuthType> = async (
       return;
     }
 
-    console.log(user);
-
-    // Structure the response
-    const userWithRoleAndPermissions = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: {
-        id: user.role.id,
-        name: user.role.name,
-        permissions: user.role.permissions.map(permission => ({
-          id: permission.id,
-          resource: permission.resource,
-        })),
-      },
-    };
-
     // Return the response in the desired format
-    res.status(200).json(userWithRoleAndPermissions);
+    res.status(200).json({ userDetails: user });
     return;
   } catch (error) {
     console.error(error);
@@ -194,6 +181,7 @@ export const getUserByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
   const { id } = req.params;
 
+  
   try {
 
     const user = await User.findOne({ where: { id } });
@@ -285,10 +273,10 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
       return;
     }
 
-    if (req.user?.role !== 'admin' || req.user?.id !== id) {
-      res.status(403).json({ message: 'You do not have permission to update this user' });
-      return;
-    }
+    // if (req.user?.role !== 'admin' || req.user?.id !== id) {
+    //   res.status(403).json({ message: 'You do not have permission to update this user' });
+    //   return;
+    // }
 
     const updatedBy = req.user?.id;
 
@@ -329,15 +317,15 @@ export const deleteUserHandler: EndpointHandler<EndpointAuthType> = async (
 
     const user = await User.findByPk(id);
 
-    if (req.user?.role !== 'admin') {
-      res.status(403).json({ message: 'You don\'t have Permission to delete the user' });
-      return;
-    }
+    // if (req.user?.role !== 'admin') {
+    //   res.status(403).json({ message: 'You don\'t have Permission to delete the user' });
+    //   return;
+    // }
 
-    if (req.user?.id === id) {
-      res.status(403).json({ message: 'Admin cannot delete their own account' });
-      return;
-    }
+    // if (req.user?.id === id) {
+    //   res.status(403).json({ message: 'Admin cannot delete their own account' });
+    //   return;
+    // }
 
 
     if (!user) {

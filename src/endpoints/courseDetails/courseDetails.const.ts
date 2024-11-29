@@ -1,0 +1,1 @@
+export const COURSEDETAILS_NOT_FOUND = 'CourseDetails not found';

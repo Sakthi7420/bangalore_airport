@@ -1,5 +1,6 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
 import { RolePermission } from './RolePermission';
+import { Role } from './Role';
 
 
 @Table
@@ -23,7 +24,8 @@ export class Permission extends Model {
   @Column({ type: DataType.DATE, defaultValue: DataType.NOW })
   updatedAt!: Date; // Timestamp when the permission was last updated
 
-  @HasMany(() => RolePermission)
-  rolePermissions!: RolePermission[]; // Relationship to role permissions
+  @BelongsToMany(() => Role, () => RolePermission)
+  roles!: Role[];
+
 }
 

@@ -1,11 +1,11 @@
 import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server-engine";
 import { courseValidator } from "./courses.validator";
-import { 
-    createCourseHandler, 
+import {
+    createCourseHandler,
     getCourseByIdHandler,
-    getCourseHandler, 
-    updateCourseHandler, 
-    deleteCourseHandler 
+    getCourseHandler,
+    updateCourseHandler,
+    deleteCourseHandler
 } from './courses.handler';
 
 

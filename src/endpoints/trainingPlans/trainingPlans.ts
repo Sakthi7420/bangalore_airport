@@ -1,6 +1,6 @@
 import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server-engine";
 import { trainingPlansValidator } from "./trainingPlans.validator";
-import { 
+import {
     getTrainingPlanHandler,
     createTrainingPlanHandler,
     getTraininPlanByIdHandler,
@@ -9,7 +9,7 @@ import {
 } from './trainingPlans.handler';
 
 
-export const createTrainingPlanEndpoint = new Endpoint({ 
+export const createTrainingPlanEndpoint = new Endpoint({
     path: '/auth/create-trainingplan',
     method: EndpointMethod.POST,
     handler: createTrainingPlanHandler,
@@ -18,7 +18,7 @@ export const createTrainingPlanEndpoint = new Endpoint({
 });
 
 
-export const getAllTrainingPlanEndpoint = new Endpoint({ 
+export const getAllTrainingPlanEndpoint = new Endpoint({
     path: '/auth/gettrainingplan',
     method: EndpointMethod.GET,
     handler: getTrainingPlanHandler,

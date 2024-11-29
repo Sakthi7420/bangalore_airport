@@ -1,0 +1,1 @@
+export const TRAININGPLANS_NOT_FOUND = 'TrainingPlan not found';

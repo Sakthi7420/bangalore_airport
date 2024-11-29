@@ -1,0 +1,1 @@
+export const COURSECATEGORY_NOT_FOUND = 'CourseCategory not found';

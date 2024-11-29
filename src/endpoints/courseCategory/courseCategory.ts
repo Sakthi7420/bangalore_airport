@@ -1,6 +1,6 @@
 import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server-engine";
 import { courseCategoryValidator } from "./courseCategory.validator";
-import { 
+import {
     courseCategoryHandler,
     getCategoryByIdHandler,
     getCategoriesHandler,

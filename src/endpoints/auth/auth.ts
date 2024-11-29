@@ -60,7 +60,7 @@ export const getUserByIdEndpoint = new Endpoint({
 });
 
 export const getUserDetailsByIdEndpoint = new Endpoint({
-  path: '/auth/userDetails',
+  path: '/auth/userDetails/:id',
   method: EndpointMethod.GET,
   handler: getUserDetailsHandler,
   authType: EndpointAuthType.JWT,

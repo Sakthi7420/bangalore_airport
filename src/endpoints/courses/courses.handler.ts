@@ -19,12 +19,14 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
     if (course.length === 0) {
       res.status(404).json({ message: 'No course found' });
       return;
-  }
+    }
 
-  res.status(200).json({ course: course });
+    res.status(200).json({ course: course });
+    return;
 
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', data: error});
+    res.status(500).json({ message: 'Internal Server Error', data: error });
+    return;
   }
 }
 
@@ -39,10 +41,10 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType> = async (
 
     const category = await CourseCategory.findByPk(courseCategoryId);
 
-    if(req.user?.role !== 'admin') {
-      res.status(403).json({ message: 'You don\'t have Permission' });
+    if (req.user?.roleId !== 1) {
+      res.status(403).json({ message: 'You don\'t have Permission to create a New course' });
       return;
-  }
+    }
     if (!category) {
       res.status(404).json({ message: 'Course category not found' });
       return;
@@ -64,6 +66,7 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType> = async (
 
     res.status(201).json({ message: 'Course created successfully', course });
     return;
+
   } catch (error) {
     res.status(500).json({ message: 'Error creating course', error });
     return;
@@ -92,6 +95,7 @@ export const getCourseByIdHandler: EndpointHandler<EndpointAuthType> = async (
 
     res.status(200).json({ course: course });
     return;
+
   } catch (error) {
     res.status(500).json({ message: 'Error fetching course', error });
     return;
@@ -103,16 +107,18 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
+
   const { id } = req.params;
   const { courseName, courseDesc, courseCategoryId, courseInstructorId } = req.body;
 
   try {
+
     const course = await Course.findByPk(id);
 
-    if(req.user?.role !== 'admin') {
-      res.status(403).json({ message: 'You don\'t have Permission' });
+    if (req.user?.roleId !== 1) {
+      res.status(403).json({ message: 'You don\'t have Permission to update this course' });
       return;
-  }
+    }
 
     if (!course) {
       res.status(404).json({ message: 'Course not found' });
@@ -131,16 +137,18 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType> = async (
       return;
     }
 
-    course.set({ courseName : courseName, 
-      courseDesc : courseDesc,
-      courseCategoryId : courseCategoryId,
-      courseInstructorId :courseInstructorId
-     }); 
+    course.set({
+      courseName: courseName,
+      courseDesc: courseDesc,
+      courseCategoryId: courseCategoryId,
+      courseInstructorId: courseInstructorId
+    });
 
     await course.save();
 
     res.status(200).json({ message: 'Course updated successfully', course });
     return;
+
   } catch (error) {
     res.status(500).json({ message: 'Error updating course', error });
     return;
@@ -152,14 +160,16 @@ export const deleteCourseHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
+
   const { id } = req.params;
+
   try {
     const course = await Course.findByPk(id);
 
-    if(req.user?.role !== 'admin') {
-      res.status(403).json({ message: 'You don\'t have Permission' });
+    if (req.user?.roleId !== 1) {
+      res.status(403).json({ message: 'You don\'t have Permission to delete this course' });
       return;
-  }
+    }
 
     if (!course) {
       res.status(404).json({ message: 'Course not found' });
@@ -170,6 +180,7 @@ export const deleteCourseHandler: EndpointHandler<EndpointAuthType> = async (
 
     res.status(200).json({ message: 'Course deleted successfully' });
     return;
+    
   } catch (error) {
     res.status(500).json({ message: 'Error deleting course', error });
     return;
