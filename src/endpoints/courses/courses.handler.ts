@@ -3,9 +3,7 @@ import {
   EndpointHandler,
   EndpointRequestType
 } from '@gwcdata/node-server-engine';
-import { Course } from 'db';
-import { CourseCategory } from 'db';
-import { User } from 'db';
+import { Course, CourseCategory, User, Permission, Role } from 'db';
 import { Response } from 'express';
 
 export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
@@ -41,10 +39,28 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType> = async (
 
     const category = await CourseCategory.findByPk(courseCategoryId);
 
-    if (req.user?.roleId !== 1) {
-      res.status(403).json({ message: 'You don\'t have Permission to create a New course' });
+    const userRole = req.user?.roleId;
+    if (!userRole) {
+      res.status(403).json({ message: 'User role not found' });
       return;
     }
+
+    const roleWithPermission = await Role.findOne({
+      where: { id: userRole },
+      include: {
+        model: Permission,
+        where: { resource: 'CreateCourse' }, 
+        through: {
+          attributes: [] 
+        }
+      }
+    });
+
+    if (!roleWithPermission) {
+      res.status(403).json({ message: 'does not have permission for CreateCourse' });
+      return;
+    }
+
     if (!category) {
       res.status(404).json({ message: 'Course category not found' });
       return;
@@ -115,11 +131,27 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType> = async (
 
     const course = await Course.findByPk(id);
 
-    if (req.user?.roleId !== 1) {
-      res.status(403).json({ message: 'You don\'t have Permission to update this course' });
+    const userRole = req.user?.roleId;
+    if (!userRole) {
+      res.status(403).json({ message: 'User role not found' });
       return;
     }
 
+    const roleWithPermission = await Role.findOne({
+      where: { id: userRole },
+      include: {
+        model: Permission,
+        where: { resource: 'UpdateCourse' }, 
+        through: {
+          attributes: [] 
+        }
+      }
+    });
+
+    if (!roleWithPermission) {
+      res.status(403).json({ message: 'does not have permission for UpdateCourse' });
+      return;
+    }
     if (!course) {
       res.status(404).json({ message: 'Course not found' });
       return;
@@ -166,8 +198,25 @@ export const deleteCourseHandler: EndpointHandler<EndpointAuthType> = async (
   try {
     const course = await Course.findByPk(id);
 
-    if (req.user?.roleId !== 1) {
-      res.status(403).json({ message: 'You don\'t have Permission to delete this course' });
+    const userRole = req.user?.roleId;
+    if (!userRole) {
+      res.status(403).json({ message: 'User role not found' });
+      return;
+    }
+
+    const roleWithPermission = await Role.findOne({
+      where: { id: userRole },
+      include: {
+        model: Permission,
+        where: { resource: 'DeleteCourse' }, 
+        through: {
+          attributes: [] 
+        }
+      }
+    });
+
+    if (!roleWithPermission) {
+      res.status(403).json({ message: 'does not have permission for DeleteCourse' });
       return;
     }
 

@@ -1,0 +1,324 @@
+/create-trainingplan:
+  post:
+    summary: Create a new training plan
+    tags:
+      - trainingPlan
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              trainingName:
+                type: string
+                example: 'Full Stack Development Training'
+              description:
+                type: string
+                example: 'Comprehensive training on Full Stack Development.'
+              trainerId:
+                type: integer
+                example: 2
+              assignedTo:
+                type: integer
+                example: 5
+              status:
+                type: string
+                enum: ['active', 'inactive']
+                example: 'active'
+              startDate:
+                type: string
+                format: date
+                example: '2024-12-01'
+              endDate:
+                type: string
+                format: date
+                example: '2025-06-01'
+            required:
+              - trainingName
+              - trainerId
+              - assignedTo
+              - startDate
+    responses:
+      '201':
+        description: Training plan created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Training plan created successfully'
+      '400':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      msg:
+                        type: string
+                        example: 'trainerId is required'
+
+/gettrainingplan:
+  get:
+    summary: Get all training plans
+    tags:
+      - trainingPlan
+    responses:
+      '200':
+        description: List of all training plans
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  trainingName:
+                    type: string
+                    example: 'Full Stack Development Training'
+                  description:
+                    type: string
+                    example: 'Comprehensive training on Full Stack Development.'
+                  trainerId:
+                    type: integer
+                    example: 2
+                  assignedTo:
+                    type: integer
+                    example: 5
+                  status:
+                    type: string
+                    enum: ['active', 'inactive']
+                    example: 'active'
+                  startDate:
+                    type: string
+                    format: date
+                    example: '2024-12-01'
+                  endDate:
+                    type: string
+                    format: date
+                    example: '2025-06-01'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching training plans'
+
+/gettrainingplan/{id}:
+  get:
+    summary: Get training plan by ID
+    tags:
+      - trainingPlan
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the training plan to retrieve
+        schema:
+          type: integer
+          example: 1
+    responses:
+      '200':
+        description: Training plan details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trainingName:
+                  type: string
+                  example: 'Full Stack Development Training'
+                description:
+                  type: string
+                  example: 'Comprehensive training on Full Stack Development.'
+                trainerId:
+                  type: integer
+                  example: 2
+                assignedTo:
+                  type: integer
+                  example: 5
+                status:
+                  type: string
+                  enum: ['active', 'inactive']
+                  example: 'active'
+                startDate:
+                  type: string
+                  format: date
+                  example: '2024-12-01'
+                endDate:
+                  type: string
+                  format: date
+                  example: '2025-06-01'
+      '404':
+        description: Training plan not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Training plan not found'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching training plan'
+
+/updatetrainingplan/{id}:
+  put:
+    summary: Update training plan by ID
+    tags:
+      - trainingPlan
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the training plan to update
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              trainingName:
+                type: string
+                example: 'Updated Full Stack Development Training'
+              description:
+                type: string
+                example: 'Updated comprehensive training on Full Stack Development.'
+              trainerId:
+                type: integer
+                example: 2
+              assignedTo:
+                type: integer
+                example: 5
+              status:
+                type: string
+                enum: ['active', 'inactive']
+                example: 'inactive'
+              startDate:
+                type: string
+                format: date
+                example: '2024-12-01'
+              endDate:
+                type: string
+                format: date
+                example: '2025-06-01'
+            required:
+              - trainingName
+              - trainerId
+              - assignedTo
+              - startDate
+    responses:
+      '200':
+        description: Training plan updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Training plan updated successfully'
+      '400':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      msg:
+                        type: string
+                        example: 'trainerId is required'
+      '404':
+        description: Training plan not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Training plan not found'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error updating training plan'
+
+/deletetrainingplan/{id}:
+  delete:
+    summary: Delete training plan by ID
+    tags:
+      - trainingPlan
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the training plan to delete
+        schema:
+          type: integer
+          example: 1
+    responses:
+      '200':
+        description: Training plan deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Training plan deleted successfully'
+      '404':
+        description: Training plan not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Training plan not found'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error deleting training plan'

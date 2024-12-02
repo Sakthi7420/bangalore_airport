@@ -9,7 +9,7 @@ import {
 } from './courseCategory.handler';
 
 export const createCategoryEndpoint = new Endpoint({
-    path: '/auth/createcourse-category',
+    path: '/createcourse-category',
     method: EndpointMethod.POST,
     handler: courseCategoryHandler,
     authType: EndpointAuthType.JWT,
@@ -17,7 +17,7 @@ export const createCategoryEndpoint = new Endpoint({
 });
 
 export const getCategoryByIdEndpoint = new Endpoint({
-    path: '/auth/getcategory/:id',
+    path: '/getcoursecategory/:id',
     method: EndpointMethod.GET,
     handler: getCategoryByIdHandler,
     authType: EndpointAuthType.NONE,
@@ -25,7 +25,7 @@ export const getCategoryByIdEndpoint = new Endpoint({
 });
 
 export const getCategoryEndpoint = new Endpoint({
-    path: '/auth/getcategory',
+    path: '/getcategory',
     method: EndpointMethod.GET,
     handler: getCategoriesHandler,
     authType: EndpointAuthType.NONE,
@@ -33,7 +33,7 @@ export const getCategoryEndpoint = new Endpoint({
 });
 
 export const updateCategoryEndpoint = new Endpoint({
-    path: '/auth/updatecategory/:id',
+    path: '/updatecategory/:id',
     method: EndpointMethod.PUT,
     handler: updateCategoryHandler,
     authType: EndpointAuthType.JWT,
@@ -41,7 +41,7 @@ export const updateCategoryEndpoint = new Endpoint({
 });
 
 export const deleteCategoryHandlerEndpoint = new Endpoint({
-    path: '/auth/deletecategory/:id',
+    path: '/deletecategory/:id',
     method: EndpointMethod.DELETE,
     handler: deleteCategoryHandler,
     authType: EndpointAuthType.JWT,

@@ -3,7 +3,7 @@ import {
     EndpointHandler,
     EndpointRequestType
 } from '@gwcdata/node-server-engine';
-import { CourseDetail } from 'db';
+import { CourseCategory, CourseDetail } from 'db';
 import { Course } from 'db';
 import { Response } from 'express';
 
@@ -37,14 +37,14 @@ export const createCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
     res: Response
 ): Promise<void> => {
 
-    const { courseId, courseLectures, courseQandA, notes, aboutCourse } = req.body;
+    const { courseId,courseCategoryId, courseLectures, courseQandA, notes, aboutCourse } = req.body;
 
     try {
 
         const course = await Course.findByPk(courseId);
 
         if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission' });
+            res.status(403).json({ message: 'You don\'t have Permission to create a new course details' });
             return;
         }
 
@@ -55,6 +55,7 @@ export const createCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
 
         const courseDetails = await CourseDetail.create({
             courseId,
+            courseCategoryId,
             courseLectures,
             courseQandA,
             notes,
@@ -81,6 +82,7 @@ export const getCourseDetailsByIdHandler: EndpointHandler<EndpointAuthType> = as
 
         const courseDetails = await CourseDetail.findByPk(id, {
             include: [
+                { model: CourseCategory, as: 'courseCategory' },
                 { model: Course, as: 'course' },
             ]
         });
@@ -90,7 +92,7 @@ export const getCourseDetailsByIdHandler: EndpointHandler<EndpointAuthType> = as
             return;
         }
 
-        res.status(200).json({ message: 'Course details found successfully', courseDetails });
+        res.status(200).json({  courseDetails: courseDetails });
         return;
 
     } catch (error) {
@@ -110,6 +112,7 @@ export const updateCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
 
     const {
         courseId,
+        courseCategoryId,
         courseLectures,
         courseQandA,
         notes,
@@ -121,7 +124,7 @@ export const updateCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
         const courseDetails = await CourseDetail.findByPk(id);
 
         if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission' });
+            res.status(403).json({ message: 'You don\'t have Permissionn to update course details' });
             return;
         }
 
@@ -137,6 +140,7 @@ export const updateCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
 
         courseDetails.set({
             courseId: courseId,
+            courseCategoryId: courseCategoryId,
             courseLectures: courseLectures,
             courseQandA: courseQandA,
             notes: notes,
@@ -168,7 +172,7 @@ export const deleteCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
         const courseDetails = await CourseDetail.findByPk(id);
 
         if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission' });
+            res.status(403).json({ message: 'You don\'t have Permission to delete course details' });
             return;
         }
 

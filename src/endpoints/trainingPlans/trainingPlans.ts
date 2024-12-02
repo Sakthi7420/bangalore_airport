@@ -10,7 +10,7 @@ import {
 
 
 export const createTrainingPlanEndpoint = new Endpoint({
-    path: '/auth/create-trainingplan',
+    path: '/create-trainingplan',
     method: EndpointMethod.POST,
     handler: createTrainingPlanHandler,
     authType: EndpointAuthType.JWT,
@@ -19,7 +19,7 @@ export const createTrainingPlanEndpoint = new Endpoint({
 
 
 export const getAllTrainingPlanEndpoint = new Endpoint({
-    path: '/auth/gettrainingplan',
+    path: '/gettrainingplan',
     method: EndpointMethod.GET,
     handler: getTrainingPlanHandler,
     authType: EndpointAuthType.NONE,
@@ -28,7 +28,7 @@ export const getAllTrainingPlanEndpoint = new Endpoint({
 
 
 export const getTrainingPlanByIdEndpoint = new Endpoint({
-    path: '/auth/gettrainingplan/:id',
+    path: '/gettrainingplan/:id',
     method: EndpointMethod.GET,
     handler: getTraininPlanByIdHandler,
     authType: EndpointAuthType.NONE,
@@ -37,7 +37,7 @@ export const getTrainingPlanByIdEndpoint = new Endpoint({
 
 
 export const updateTrainingPlanEndpoint = new Endpoint({
-    path: '/auth/updatetrainingplan/:id',
+    path: '/updatetrainingplan/:id',
     method: EndpointMethod.PUT,
     handler: updateTrainingPlanHandler,
     authType: EndpointAuthType.JWT,
@@ -46,7 +46,7 @@ export const updateTrainingPlanEndpoint = new Endpoint({
 
 
 export const deleteTrainingPlanEndpoint = new Endpoint({
-    path: '/auth/deletetrainingplan/:id',
+    path: '/deletetrainingplan/:id',
     method: EndpointMethod.DELETE,
     handler: deleteTrainingPlanHandler,
     authType: EndpointAuthType.JWT,

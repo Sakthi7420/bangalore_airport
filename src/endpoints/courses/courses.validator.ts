@@ -1,6 +1,7 @@
 import { Schema } from 'express-validator';
 
-export const courseValidator: Schema = {
+
+export const createCourseValidator: Schema = {
     courseName: {
         in: 'body',
         exists: {
@@ -39,3 +40,40 @@ export const courseValidator: Schema = {
         }
     }
 };
+
+
+
+export const updateCourseValidator: Schema = {
+    courseName: {
+        in: 'body',
+        optional: { options: { nullable: true } }, 
+        isLength: {
+            errorMessage: 'Course Name must be at least 5 characters long',
+            options: { min: 5 }
+        }
+    },
+    courseDesc: {
+        in: 'body',
+        optional: { options: { nullable: true } }, 
+        isLength: {
+            errorMessage: 'Course Description must be at least 20 characters long',
+            options: { min: 20 }
+        }
+    },
+    courseCategoryId: {
+        in: 'body',
+        optional: { options: { nullable: true } }, 
+        isInt: {
+            errorMessage: 'CourseCategoryId must be an Integer'
+        }
+    },
+    courseInstructorId: {
+        in: 'body',
+        optional: { options: { nullable: true } }, 
+        isInt: {
+            errorMessage: 'CourseInstructorId must be an Integer'
+        }
+    }
+};
+
+
