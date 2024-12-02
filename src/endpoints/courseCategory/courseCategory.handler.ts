@@ -38,10 +38,10 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
 
     const { courseCategory, description, courseCategoryImg, } = req.body;
 
-    if (req.user?.roleId !== 1) {
-        res.status(403).json({ message: 'You don\'t have Permission to create a new category' });
-        return;
-    }
+    // if (req.user?.roleId !== 1) {
+    //     res.status(403).json({ message: 'You don\'t have Permission to create a new category' });
+    //     return;
+    // }
 
     try {
         const newCategory = await CourseCategory.create({
@@ -98,10 +98,10 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
 
         const category = await CourseCategory.findByPk(id);
 
-        if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have permission to update this category' });
-            return;
-        }
+        // if (req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\'t have permission to update this category' });
+        //     return;
+        // }
 
         if (!category) {
             res.status(404).json({ message: 'Category not found' });
@@ -136,10 +136,10 @@ export const deleteCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     try {
         const category = await CourseCategory.findByPk(id);
 
-        if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission to delete this category' });
-            return;
-        }
+        // if (req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\'t have Permission to delete this category' });
+        //     return;
+        // }
 
         if (!category) {
             res.status(404).json({ message: 'Category not found' });

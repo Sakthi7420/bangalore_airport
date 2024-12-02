@@ -43,10 +43,10 @@ export const createCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
 
         const course = await Course.findByPk(courseId);
 
-        if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission to create a new course details' });
-            return;
-        }
+        // if (req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\'t have Permission to create a new course details' });
+        //     return;
+        // }
 
         if (!course) {
             res.status(404).send({ message: 'Course not found' });
@@ -123,10 +123,10 @@ export const updateCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
 
         const courseDetails = await CourseDetail.findByPk(id);
 
-        if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permissionn to update course details' });
-            return;
-        }
+        // if (req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\'t have Permissionn to update course details' });
+        //     return;
+        // }
 
         if (!courseDetails) {
             res.status(404).send({ message: 'Course details not found' });
@@ -171,10 +171,10 @@ export const deleteCourseDetailsHandler: EndpointHandler<EndpointAuthType> = asy
 
         const courseDetails = await CourseDetail.findByPk(id);
 
-        if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission to delete course details' });
-            return;
-        }
+        // if (req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\'t have Permission to delete course details' });
+        //     return;
+        // }
 
         if (!courseDetails) {
             res.status(404).json({ message: 'courseDetails not found' });
