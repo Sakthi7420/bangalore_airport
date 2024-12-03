@@ -166,9 +166,9 @@
 
 /roles/{roleId}:
   get:
-    summary: Get permissions for a role
+    summary: Get Role Details
     description: Fetches the list of permissions associated with a specific role.
-    operationId: getRolePermissions
+    operationId: getRoleDetails
     security:
       - bearerAuth: []
     tags:
@@ -181,7 +181,7 @@
           type: integer
     responses:
       '200':
-        description: A list of permissions for the role
+        description: A Role Details
         content:
           application/json:
             schema:
@@ -194,7 +194,7 @@
                   action:
                     type: string
       '404':
-        description: No permissions found for the role
+        description: Role not found
       '500':
         description: Internal server error
 

@@ -16,7 +16,6 @@ import {
   getPermissionsHandler,
   updatePermissionHandler,
   deletePermissionHandler,
-  getRolePermissionsHandler,
   getRoleDetailsHandler
 } from './role.handler';
 import { checkPermission } from 'middleware';
@@ -64,15 +63,6 @@ export const deleteRoleEndpoint = new Endpoint({
   authType: EndpointAuthType.JWT,
   validator: deleteRoleValidator,
   middleware: [checkPermission('DeleteRole')]
-});
-
-export const getRolePermissionsEndpoint = new Endpoint({
-  path: '/role/:roleId/permissions',
-  method: EndpointMethod.GET,
-  handler: getRolePermissionsHandler,
-  authType: EndpointAuthType.JWT,
-  validator: {},
-  middleware: [checkPermission('GetPermission')] 
 });
 
 export const getPermissionsEndpoint = new Endpoint({

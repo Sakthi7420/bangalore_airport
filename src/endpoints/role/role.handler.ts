@@ -269,41 +269,6 @@ export const createPermissionHandler: EndpointHandler<
   }
 };
 
-// Handler to get permissions by roleId
-export const getRolePermissionsHandler: EndpointHandler<
-  EndpointAuthType.JWT
-> = async (
-  req: EndpointRequestType[EndpointAuthType.JWT],
-  res: Response
-): Promise<void> => {
-  const { roleId } = req.params;
-
-  try {
-    // Fetch permissions related to the roleId using a join between RolePermissions and Permission
-    const permissions = await Permission.findAll({
-      attributes: ['id', 'action'],
-      include: [
-        {
-          model: RolePermission,
-          where: { roleId }, // Filter based on the roleId
-          required: true // Ensures we only get permissions that are associated with the roleId
-        }
-      ]
-    });
-
-    if (!permissions || permissions.length === 0) {
-      res
-        .status(404)
-        .json({ message: 'No permissions found for the given roleId' });
-      return;
-    }
-
-    res.status(200).json({ permissions });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching role permissions', error });
-  }
-};
-
 // Handler to get all permissions
 export const getPermissionsHandler: EndpointHandler<
   EndpointAuthType.JWT
