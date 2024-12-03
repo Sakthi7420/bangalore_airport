@@ -3,18 +3,41 @@ import { Schema } from 'express-validator';
 export const createRoleValidator: Schema = {
   name: {
     in: 'body',
-    exists: { errorMessage: 'Role name is required' },
+    exists: {
+      errorMessage: 'Role name is required'
+    },
+    isString: {
+      errorMessage: 'Role name must be a string'
+    },
     isLength: {
-      errorMessage: 'Role name must be at least 3 characters long',
-      options: { min: 3 }
+      options: { max: 255 },
+      errorMessage: 'Role name cannot exceed 255 characters'
     }
   },
   description: {
     in: 'body',
     optional: true,
+    isString: {
+      errorMessage: 'Description must be a string'
+    },
     isLength: {
-      errorMessage: 'Description must be at least 5 characters long',
-      options: { min: 5 }
+      options: { max: 500 },
+      errorMessage: 'Description cannot exceed 500 characters'
+    }
+  },
+  permissions: {
+    in: 'body',
+    optional: true,
+    isArray: {
+      errorMessage: 'Permissions must be an array of actions'
+    },
+    custom: {
+      options: (permissions: any) => {
+        if (permissions && permissions.some((perm: any) => typeof perm !== 'string')) {
+          throw new Error('Each permission must be a string');
+        }
+        return true;
+      }
     }
   }
 };
@@ -22,70 +45,107 @@ export const createRoleValidator: Schema = {
 export const updateRoleValidator: Schema = {
   id: {
     in: 'params',
-    isInt: { errorMessage: 'Role ID must be an integer' },
-    toInt: true
+    exists: {
+      errorMessage: 'Role ID is required'
+    },
+    isInt: {
+      errorMessage: 'Role ID must be an integer'
+    }
   },
-  ...createRoleValidator // Reusing fields from createRoleValidator
+  name: {
+    in: 'body',
+    optional: true,
+    isString: {
+      errorMessage: 'Role name must be a string'
+    },
+    isLength: {
+      options: { max: 255 },
+      errorMessage: 'Role name cannot exceed 255 characters'
+    }
+  },
+  description: {
+    in: 'body',
+    optional: true,
+    isString: {
+      errorMessage: 'Description must be a string'
+    },
+    isLength: {
+      options: { max: 500 },
+      errorMessage: 'Description cannot exceed 500 characters'
+    }
+  },
+  permissions: {
+    in: 'body',
+    optional: true,
+    isArray: {
+      errorMessage: 'Permissions must be an array of actions'
+    },
+    custom: {
+      options: (permissions: any) => {
+        if (permissions && permissions.some((perm: any) => typeof perm !== 'string')) {
+          throw new Error('Each permission must be a string');
+        }
+        return true;
+      }
+    }
+  }
 };
 
 export const deleteRoleValidator: Schema = {
   id: {
     in: 'params',
-    isInt: { errorMessage: 'Role ID must be an integer' },
-    toInt: true
-  }
-};
-
-export const assignPermissionsValidator: Schema = {
-  id: {
-    in: 'params',
-    isInt: { errorMessage: 'Role ID must be an integer' },
-    toInt: true
-  },
-  permissionIds: {
-    in: 'body',
-    exists: { errorMessage: 'Permission IDs are required' },
-    isArray: { errorMessage: 'Permission IDs must be an array' }
+    exists: {
+      errorMessage: 'Role ID is required'
+    },
+    isInt: {
+      errorMessage: 'Role ID must be an integer'
+    }
   }
 };
 
 export const createPermissionValidator: Schema = {
-  // name: {
-  //   in: 'body',
-  //   exists: { errorMessage: 'Permission name is required' },
-  //   isLength: {
-  //     errorMessage: 'Permission name must be at least 3 characters long',
-  //     options: { min: 3 }
-  //   }
-  // },
-  resource: {
+  action: {
     in: 'body',
-    optional: true,
+    exists: {
+      errorMessage: 'Action is required'
+    },
+    isString: {
+      errorMessage: 'Action must be a string'
+    },
     isLength: {
-      errorMessage: 'Description must be at least 5 characters long',
-      options: { min: 1 }
+      options: { max: 255 },
+      errorMessage: 'Action cannot exceed 255 characters'
     }
   }
 };
 
 export const updatePermissionValidator: Schema = {
-  id: {
-    in: 'params',
-    isInt: { errorMessage: 'Permission ID must be an integer' },
-    toInt: true
-  },
-  ...createPermissionValidator // Reusing fields from createPermissionValidator
-};
-
-export const deletePermissionValidator: Schema = {
-  id: {
-    in: 'params',
-    isInt: { errorMessage: 'Permission ID must be an integer' },
-    toInt: true
+  action: {
+    in: 'body',
+    optional: true,
+    isString: {
+      errorMessage: 'Action must be a string'
+    },
+    isLength: {
+      options: { max: 255 },
+      errorMessage: 'Action cannot exceed 255 characters'
+    }
   }
 };
 
-// Validator for getting permissions
-export const getPermissionsValidator: Schema = {
-  // No specific query parameters needed for this case, but can be expanded
+export const deletePermissionValidator: Schema = {
+  action: {
+    in: 'params',
+    exists: {
+      errorMessage: 'Permission action is required'
+    },
+    isString: {
+      errorMessage: 'Permission action must be a string'
+    },
+    isLength: {
+      options: { max: 255 },
+      errorMessage: 'Permission action cannot exceed 255 characters'
+    }
+  }
 };
+

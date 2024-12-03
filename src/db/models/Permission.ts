@@ -1,17 +1,24 @@
-import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  BelongsToMany,
+  PrimaryKey
+} from 'sequelize-typescript';
 import { RolePermission } from './RolePermission';
 import { Role } from './Role';
 
-
 @Table
 export class Permission extends Model {
-  // @Column({ type: DataType.STRING, allowNull: false })
-  // action!: string; // The action that the permission allows
+  @PrimaryKey
+  @Column({ type: DataType.STRING, allowNull: false })
+  action!: string; // The action that the permission allows, now the primary key
 
   @Column({ type: DataType.STRING, allowNull: false })
-  resource!: string; // The resource that the permission applies to
+  description!: string;
 
-  //Audit table
+  // Audit columns
   @Column({ type: DataType.INTEGER, allowNull: true })
   createdBy?: number; // User who created the permission
 
@@ -26,6 +33,4 @@ export class Permission extends Model {
 
   @BelongsToMany(() => Role, () => RolePermission)
   roles!: Role[];
-
 }
-

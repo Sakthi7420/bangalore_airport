@@ -16,14 +16,12 @@ export class RolePermission extends Model {
   roleId!: number; // Foreign key referencing Role
 
   @ForeignKey(() => Permission)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  permissionId!: number; // Foreign key referencing Permission
+  @Column({ type: DataType.STRING, allowNull: false })
+  action!: string; // Now referencing 'action' instead of 'permissionId'
 
-  // Association with Role
   @BelongsTo(() => Role)
   role!: Role;
 
-  // Association with Permission
   @BelongsTo(() => Permission)
   permission!: Permission;
 }

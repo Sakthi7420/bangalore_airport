@@ -3,92 +3,110 @@ import {
   createRoleValidator,
   updateRoleValidator,
   deleteRoleValidator,
-  assignPermissionsValidator,
   createPermissionValidator,
   updatePermissionValidator,
-  deletePermissionValidator,
-  getPermissionsValidator
+  deletePermissionValidator
 } from './role.validator';
 import {
   createRoleHandler,
   getRolesHandler,
   updateRoleHandler,
   deleteRoleHandler,
-  assignPermissionsHandler,
   createPermissionHandler,
   getPermissionsHandler,
   updatePermissionHandler,
-  deletePermissionHandler
+  deletePermissionHandler,
+  getRolePermissionsHandler,
+  getRoleDetailsHandler
 } from './role.handler';
+import { checkPermission } from 'middleware';
+
+export const getRoleDetailsEndpoint = new Endpoint({
+  path: '/roles/:roleId',
+  method: EndpointMethod.GET,
+  handler: getRoleDetailsHandler,
+  authType: EndpointAuthType.JWT,
+  validator: {},
+  middleware: [checkPermission('GetRole')] 
+});
 
 export const getRolesEndpoint = new Endpoint({
-  path: '/auth/roles',
+  path: '/roles',
   method: EndpointMethod.GET,
   handler: getRolesHandler,
   authType: EndpointAuthType.JWT,
-  validator: {}
+  validator: {},
+  middleware: [checkPermission('GetRole')]
 });
 
 export const createRoleEndpoint = new Endpoint({
-  path: '/auth/roles',
+  path: '/roles',
   method: EndpointMethod.POST,
   handler: createRoleHandler,
   authType: EndpointAuthType.JWT,
-  validator: createRoleValidator
+  validator: createRoleValidator,
+  middleware: [checkPermission('CreateRole')]
 });
 
 export const updateRoleEndpoint = new Endpoint({
-  path: '/auth/roles/:id',
+  path: '/roles/:id',
   method: EndpointMethod.PUT,
   handler: updateRoleHandler,
   authType: EndpointAuthType.JWT,
-  validator: updateRoleValidator
+  validator: updateRoleValidator,
+  middleware: [checkPermission('UpdateRole')]
 });
 
 export const deleteRoleEndpoint = new Endpoint({
-  path: '/auth/roles/:id',
+  path: '/roles/:id',
   method: EndpointMethod.DELETE,
   handler: deleteRoleHandler,
   authType: EndpointAuthType.JWT,
-  validator: deleteRoleValidator
+  validator: deleteRoleValidator,
+  middleware: [checkPermission('DeleteRole')]
 });
 
-export const assignPermissionsEndpoint = new Endpoint({
-  path: '/auth/roles/:id/permissions',
-  method: EndpointMethod.PUT,
-  handler: assignPermissionsHandler,
+export const getRolePermissionsEndpoint = new Endpoint({
+  path: '/role/:roleId/permissions',
+  method: EndpointMethod.GET,
+  handler: getRolePermissionsHandler,
   authType: EndpointAuthType.JWT,
-  validator: assignPermissionsValidator
+  validator: {},
+  middleware: [checkPermission('GetPermission')] 
 });
 
 export const getPermissionsEndpoint = new Endpoint({
-  path: '/auth/permissions',
+  path: '/permissions',
   method: EndpointMethod.GET,
   handler: getPermissionsHandler,
   authType: EndpointAuthType.JWT,
-  validator: getPermissionsValidator
+  validator: {},
+  middleware: [checkPermission('GetPermission')]
 });
 
 export const createPermissionEndpoint = new Endpoint({
-  path: '/auth/permissions',
+  path: '/permissions',
   method: EndpointMethod.POST,
   handler: createPermissionHandler,
   authType: EndpointAuthType.JWT,
-  validator: createPermissionValidator
+  validator: createPermissionValidator,
+  middleware: [checkPermission('CreatePermission')]
 });
 
 export const updatePermissionEndpoint = new Endpoint({
-  path: '/auth/permissions/:id',
+  path: '/permissions/:action',
   method: EndpointMethod.PUT,
   handler: updatePermissionHandler,
   authType: EndpointAuthType.JWT,
-  validator: updatePermissionValidator
+  validator: updatePermissionValidator,
+  middleware: [checkPermission('UpdatePermission')]
 });
 
 export const deletePermissionEndpoint = new Endpoint({
-  path: '/auth/permissions/:id',
+  path: '/permissions/:action',
   method: EndpointMethod.DELETE,
   handler: deletePermissionHandler,
   authType: EndpointAuthType.JWT,
-  validator: deletePermissionValidator
+  validator: deletePermissionValidator,
+  middleware: [checkPermission('DeletePermission')]
 });
