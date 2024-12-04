@@ -77,9 +77,9 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
   // Insert a default user with the 'admin' role
   await queryInterface.bulkInsert('Users', [
     {
-      firstName: 'Ram',
+      firstName: 'GWC',
       lastName: 'Admin',
-      email: 'ram@gwc.ai',
+      email: 'admin@gwc.ai',
       password: '$2b$10$QapWKNNihqtqiFLeLU/eXOhRCD4vpMbULwzf0fV15hze8FnfT8DQ6', // example hashed password
       roleId: 1, // Assuming the admin role has id = 1
       accountStatus: 'active'
