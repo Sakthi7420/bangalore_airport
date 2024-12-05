@@ -151,7 +151,7 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
         accountStatus: updateUser.accountStatus,
     }
 
-    user.set({
+    updateUser.set({
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -165,7 +165,7 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
       updatedBy: user?.id
     });
 
-    await user.save();
+    await updateUser.save();
 
     await Audit.create({
         entityType: 'User',
@@ -208,7 +208,7 @@ export const deleteUserHandler: EndpointHandler<EndpointAuthType> = async (
       performedBy: user?.id
     })
 
-    await user.destroy();
+    await deleteUser.destroy();
 
     res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {

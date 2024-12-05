@@ -4,16 +4,19 @@ import {
   Model,
   DataType,
   BelongsToMany,
-  PrimaryKey
+  PrimaryKey,
+  Unique
 } from 'sequelize-typescript';
 import { RolePermission } from './RolePermission';
 import { Role } from './Role';
 
 @Table
 export class Permission extends Model {
-  @PrimaryKey
-  @Column({ type: DataType.STRING, allowNull: false })
+  @Column({ type: DataType.STRING, allowNull: false ,unique: true,})
   action!: string; // The action that the permission allows, now the primary key
+  
+  @Column({ type: DataType.STRING, allowNull: false })
+  groupName!: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
   description!: string;

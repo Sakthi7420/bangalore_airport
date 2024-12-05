@@ -36,7 +36,7 @@ export const getRoleDetailsHandler: EndpointHandler<
           {
             model: Permission,
             through: { attributes: [] }, // Exclude join table attributes
-            attributes: ['action'] // Select permission attributes
+            attributes: ['action', 'groupName'] // Select permission attributes
           }
         ]
       })
@@ -52,7 +52,10 @@ export const getRoleDetailsHandler: EndpointHandler<
       name: role.name,
       description: role.description,
       permissions:
-        role.permissions?.map((permission: any) => permission.action) || []
+        role.permissions?.map((permission: any) => ({
+          action: permission.action,
+          groupName: permission.groupName
+        })) || []
     };
 
     res.status(200).json(formattedRole);
@@ -73,7 +76,7 @@ export const getRolesHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         {
           model: Permission,
           through: { attributes: [] }, // Exclude join table attributes
-          attributes: ['action'] // Select permission attributes
+          attributes: ['action', 'groupName'] // Select permission attributes
         }
       ]
     });
@@ -86,8 +89,10 @@ export const getRolesHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         name: roleData.name,
         description: roleData.description,
         permissions:
-          roleData.permissions?.map((permission: any) => permission.action) ||
-          []
+          roleData.permissions?.map((permission: any) => ({
+            action: permission.action,
+            groupName: permission.groupName
+          })) || []
       };
     });
 
@@ -102,7 +107,7 @@ export const createRoleHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
-  const { name, description, permissions } = req.body; // Changed to use actions (permissions array)
+  const { name, description, permissions } = req.body; // permissions should now be an array of actions (strings)
   const { user } = req; // Getting the authenticated user
 
   try {
@@ -113,12 +118,31 @@ export const createRoleHandler: EndpointHandler<EndpointAuthType> = async (
       createdBy: user?.id
     });
 
-    // If permissions (actions) are provided, associate them with the role
     if (permissions && permissions.length > 0) {
-      // Loop through the permissions (actions) and associate them
-      const rolePermissions = permissions.map((action: string) => ({
+      // Fetch the permission IDs for the provided actions
+      const matchedPermissions = await Permission.findAll({
+        where: {
+          action: permissions // Match the actions to fetch the permission IDs
+        },
+        attributes: ['id']
+      });
+
+      if (matchedPermissions.length !== permissions.length) {
+        const missingPermissions = permissions.filter(
+          (action: string) =>
+            !matchedPermissions.some((perm) => perm.action === action)
+        );
+        res.status(400).json({
+          message: 'Some permissions were not found',
+          missingPermissions
+        });
+        return;
+      }
+
+      // Map the permission IDs to the role permissions
+      const rolePermissions = matchedPermissions.map((permission) => ({
         roleId: role.id,
-        action,
+        permissionId: permission.id,
         createdBy: user?.id
       }));
 
@@ -126,7 +150,7 @@ export const createRoleHandler: EndpointHandler<EndpointAuthType> = async (
       await RolePermission.bulkCreate(rolePermissions);
     }
 
-    // Create audit entry
+    // Create an audit entry
     await Audit.create({
       entityType: 'Role',
       entityId: role.id,
@@ -135,25 +159,44 @@ export const createRoleHandler: EndpointHandler<EndpointAuthType> = async (
       performedBy: user?.id
     });
 
-    res.status(201).json({ message: 'Role created successfully', role });
+    // Format the result to include permissions as an array of strings
+    const formattedRole = {
+      id: role.id,
+      name: role.name,
+      description: role.description,
+      permissions:
+        role.permissions?.map((permission: any) => ({
+          action: permission.action,
+          groupName: permission.groupName
+        })) || []
+    };
+
+    res
+      .status(201)
+      .json({ message: 'Role created successfully', role: formattedRole });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: ROLE_CREATION_ERROR, error });
   }
 };
 
-// Handler to update a role
 export const updateRoleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
-  const { name, description, permissions } = req.body; // Now using actions (permissions)
+  const { name, description, permissions } = req.body; // permissions should now be an array of actions (strings)
   const { user } = req;
 
   try {
     // Find the existing role by primary key (id)
     const role = await Role.findByPk(id, {
-      include: [Permission] // To fetch current permissions along with role
+      include: [
+        {
+          model: Permission, // Ensure Permission is correctly associated
+          as: 'permissions' // Match the alias defined in the model association
+        }
+      ]
     });
 
     if (!role) {
@@ -169,23 +212,45 @@ export const updateRoleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         role.permissions?.map((permission) => permission.action) || []
     };
 
-    // Update role properties if provided in the request body
-    role.name = name || role.name;
-    role.description = description || role.description;
-    role.updatedBy = user?.id;
+    role.set({
+      name: name || role.name,
+      description: description || role.description,
+      updatedBy: user?.id
+    });
+
     await role.save();
 
     // If permissions (actions) are provided, update the role's permissions
     if (permissions && permissions.length > 0) {
+      // Fetch the permission IDs for the provided actions
+      const matchedPermissions = await Permission.findAll({
+        where: {
+          action: permissions // Match the actions to fetch the permission IDs
+        },
+        attributes: ['id']
+      });
+
+      if (matchedPermissions.length !== permissions.length) {
+        const missingPermissions = permissions.filter(
+          (action: string) =>
+            !matchedPermissions.some((perm) => perm.action === action)
+        );
+        res.status(400).json({
+          message: 'Some permissions were not found',
+          missingPermissions
+        });
+        return;
+      }
+
       // Remove existing permissions from the join table (RolePermissions)
       await RolePermission.destroy({
         where: { roleId: role.id }
       });
 
-      // Map through the permissions (actions) and prepare data for bulk insert into RolePermissions
-      const rolePermissions = permissions.map((action: string) => ({
+      // Map the permission IDs to the role permissions
+      const rolePermissions = matchedPermissions.map((permission) => ({
         roleId: role.id,
-        action, // Using action as permissionId
+        permissionId: permission.id,
         createdBy: user?.id
       }));
 
@@ -194,16 +259,39 @@ export const updateRoleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     }
 
     // Create audit entry for update
+    const newData = {
+      name: role.name,
+      description: role.description,
+      permissions:
+        permissions || role.permissions?.map((permission) => permission.action)
+    };
+
     await Audit.create({
       entityType: 'Role',
       entityId: role.id,
       action: 'UPDATE',
       oldData: previousData,
-      newData: role,
+      newData,
       performedBy: user?.id
     });
-    res.status(200).json({ message: 'Role updated successfully', role });
+
+    // Format the result to include permissions as an array of strings
+    const formattedRole = {
+      id: role.id,
+      name: role.name,
+      description: role.description,
+      permissions:
+        role.permissions?.map((permission: any) => ({
+          action: permission.action,
+          groupName: permission.groupName
+        })) || []
+    };
+
+    res
+      .status(200)
+      .json({ message: 'Role updated successfully', role: formattedRole });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: ROLE_UPDATE_ERROR, error });
   }
 };
@@ -246,24 +334,28 @@ export const createPermissionHandler: EndpointHandler<
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
-  const { action } = req.body;
+  const { action, groupName, description } = req.body;
   const { user } = req;
 
   try {
-    const permission = await Permission.create({ action, createdBy: user?.id });
-
-    // Create audit entry for permission creation
-    await Audit.create({
-      entityType: 'Permission',
-      entityId: permission.id,
-      action: 'CREATE',
-      newData: permission,
-      performedBy: user?.id
+    const permission = await Permission.create({
+      action,
+      groupName,
+      description,
+      createdBy: user?.id
     });
 
-    res
-      .status(201)
-      .json({ message: 'Permission created successfully', permission });
+    // Format the result to include only the necessary fields from permission
+    const formattedPermission = {
+      action: permission.action,
+      groupName: permission.groupName,
+      description: permission.description
+    };
+
+    res.status(201).json({
+      message: 'Permission created successfully',
+      permission: formattedPermission
+    });
   } catch (error) {
     res.status(500).json({ message: PERMISSION_CREATION_ERROR, error });
   }
@@ -277,7 +369,9 @@ export const getPermissionsHandler: EndpointHandler<
   res: Response
 ): Promise<void> => {
   try {
-    const permissions = await Permission.findAll();
+    const permissions = await Permission.findAll({
+      attributes: ['action', 'groupName', 'description'], // Specify the fields to return
+    });
     res.status(200).json({ permissions });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching permissions', error });
@@ -293,9 +387,14 @@ export const updatePermissionHandler: EndpointHandler<
 ): Promise<void> => {
   const { action } = req.params;
   const { user } = req;
+  const { groupName, description } = req.body;
 
   try {
-    const permission = await Permission.findByPk(action);
+    // Find the permission by the unique `action` field
+    const permission = await Permission.findOne({
+      where: { action }
+    });
+
     if (!permission) {
       res.status(404).json({ message: PERMISSION_NOT_FOUND });
       return;
@@ -306,8 +405,11 @@ export const updatePermissionHandler: EndpointHandler<
       action: permission.action
     };
 
-    permission.action = action || permission.action;
-    permission.updatedBy = user?.id;
+    permission.set({
+      groupName: groupName || permission.groupName,
+      description: description || permission.description,
+      updatedBy: user?.id
+    });
     await permission.save();
 
     // Create audit entry for permission update
@@ -316,13 +418,25 @@ export const updatePermissionHandler: EndpointHandler<
       entityId: permission.id,
       action: 'UPDATE',
       oldData: previousData,
-      newData: permission,
+      newData: {
+        action: permission.action,
+        groupName: permission.groupName,
+        description: permission.description
+      },
       performedBy: user?.id
     });
 
-    res
-      .status(200)
-      .json({ message: 'Permission updated successfully', permission });
+    // Format the result to include only the necessary fields from permission
+    const formattedPermission = {
+      action: permission.action,
+      groupName: permission.groupName,
+      description: permission.description
+    };
+
+    res.status(201).json({
+      message: 'Permission updated successfully',
+      permission: formattedPermission
+    });
   } catch (error) {
     res.status(500).json({ message: PERMISSION_UPDATE_ERROR, error });
   }
@@ -339,7 +453,10 @@ export const deletePermissionHandler: EndpointHandler<
   const { user } = req;
 
   try {
-    const permission = await Permission.findByPk(action);
+    const permission = await Permission.findOne({
+      where: { action }
+    });
+
     if (!permission) {
       res.status(404).json({ message: PERMISSION_NOT_FOUND });
       return;
