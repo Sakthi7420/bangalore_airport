@@ -103,7 +103,6 @@ export const deleteRoleValidator: Schema = {
   }
 };
 
-
 export const createPermissionValidator: Schema = {
   action: {
     in: 'body',
@@ -134,7 +133,6 @@ export const updatePermissionValidator: Schema = {
   }
 };
 
-
 export const deletePermissionValidator: Schema = {
   action: {
     in: 'params',
@@ -150,3 +148,4 @@ export const deletePermissionValidator: Schema = {
     }
   }
 };
+

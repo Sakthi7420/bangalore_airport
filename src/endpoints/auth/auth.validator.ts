@@ -1,6 +1,5 @@
 import { Schema } from 'express-validator';
 
-
 export const loginValidator: Schema = {
   email: {
     in: 'body',

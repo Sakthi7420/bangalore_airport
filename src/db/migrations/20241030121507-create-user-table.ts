@@ -1,4 +1,4 @@
-import { QueryInterface, DataTypes, literal } from 'sequelize';
+import { QueryInterface, DataTypes, Sequelize } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
   // Create the 'Users' table
@@ -6,20 +6,19 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey: true
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
-    email: {
-      type: DataTypes.STRING,
+    email: {      type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     dateOfBirth: {
       type: DataTypes.DATE,
@@ -27,11 +26,11 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     },
     phoneNumber: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     address: {
       type: DataTypes.STRING,
@@ -42,8 +41,8 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       allowNull: true
     },
     profilePic: {
-      type: DataTypes.STRING, // Using BLOB for profile pictures
-      allowNull: true,
+      type: DataTypes.BLOB, // Using BLOB for profile pictures
+      allowNull: true
     },
     dateOfJoining: {
       type: DataTypes.DATE,
@@ -52,37 +51,26 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     roleId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: 'Roles',
-        key: 'id',
-      },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      references: { model: 'Roles', key: 'id' },
+      onUpdate: 'CASCADE' // Correct use of onUpdate as 'CASCADE'
     },
     accountStatus: {
       type: DataTypes.ENUM('active', 'inactive', 'suspended'),
       allowNull: false,
       defaultValue: 'active'
     },
-    lastLogin: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: literal('CURRENT_TIMESTAMP'),
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-    },
+    lastLogin: { type: DataTypes.DATE, allowNull: true },
+    createdBy: { type: DataTypes.INTEGER, allowNull: true },
+    updatedBy: { type: DataTypes.INTEGER, allowNull: true },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false }
   });
 
-  await queryInterface.addIndex('Users', ['email'], { unique: true });
-  await queryInterface.addIndex('Users', ['roleId']);
-
+  await queryInterface.sequelize.query(`
+    ALTER TABLE Users
+    MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;
+  `);
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {

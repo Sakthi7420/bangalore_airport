@@ -241,28 +241,25 @@ export const deleteRoleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
 // Handler to create a new permission
 export const createPermissionHandler: EndpointHandler<
-  EndpointAuthType
+  EndpointAuthType.JWT
 > = async (
-  req: EndpointRequestType[EndpointAuthType],
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
   const { action } = req.body;
   const { user } = req;
 
   try {
-    const permission = await Permission.create({ 
-      action, 
-      createdBy: user?.id 
-    });
+    const permission = await Permission.create({ action, createdBy: user?.id });
 
     // Create audit entry for permission creation
-    // await Audit.create({
-    //   entityType: 'Permission',
-    //   entityId: permission.id,
-    //   action: 'CREATE',
-    //   newData: permission,
-    //   performedBy: user?.id
-    // });
+    await Audit.create({
+      entityType: 'Permission',
+      entityId: permission.id,
+      action: 'CREATE',
+      newData: permission,
+      performedBy: user?.id
+    });
 
     res
       .status(201)

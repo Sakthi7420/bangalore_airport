@@ -42,9 +42,9 @@ export const createRoleEndpoint = new Endpoint({
   path: '/roles',
   method: EndpointMethod.POST,
   handler: createRoleHandler,
-  authType: EndpointAuthType.NONE,
+  authType: EndpointAuthType.JWT,
   validator: createRoleValidator,
-  // middleware: [checkPermission('CreateRole')]
+  middleware: [checkPermission('CreateRole')]
 });
 
 export const updateRoleEndpoint = new Endpoint({
@@ -78,9 +78,9 @@ export const createPermissionEndpoint = new Endpoint({
   path: '/permissions',
   method: EndpointMethod.POST,
   handler: createPermissionHandler,
-  authType: EndpointAuthType.NONE,
+  authType: EndpointAuthType.JWT,
   validator: createPermissionValidator,
-  // middleware: [checkPermission('CreatePermission')]
+  middleware: [checkPermission('CreatePermission')]
 });
 
 export const updatePermissionEndpoint = new Endpoint({

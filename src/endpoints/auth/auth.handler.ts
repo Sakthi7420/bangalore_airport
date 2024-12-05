@@ -13,7 +13,6 @@ import {
   AUTH_USER_NOT_FOUND
 } from './auth.const';
 
-
 export const loginHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
@@ -57,18 +56,18 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
       })
     )?.toJSON();
 
-      // Check if userDetails or userDetails.role is null
-      if (!userDetails || !userDetails.role) {
-        res
-         .status(500)
-         .json({
-           message: AUTH_LOGIN_ERROR,
-           error: 'User role or permissions not found'
-         });
-         return;
-     }
+    // Check if userDetails or userDetails.role is null
+    if (!userDetails || !userDetails.role) {
+       res
+        .status(500)
+        .json({
+          message: AUTH_LOGIN_ERROR,
+          error: 'User role or permissions not found'
+        });
+        return;
+    }
 
-      // Transform the user object
+    // Transform the user object
     const transformedUser = {
       id: userDetails.id,
       firstName: userDetails.firstName,
@@ -84,13 +83,8 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
     const tokenExpiry = Math.floor(Date.now() / 1000) + 60 * 60;
     const accessToken = generateJwtToken(transformedUser);
 
-    res
-      .status(200)
-      .json({ accessToken, tokenExpiry, user: transformedUser });
-
+    res.status(200).json({ accessToken, tokenExpiry, user:transformedUser });
   } catch (error) {
     res.status(500).json({ message: AUTH_LOGIN_ERROR, error });
   }
 };
-
-

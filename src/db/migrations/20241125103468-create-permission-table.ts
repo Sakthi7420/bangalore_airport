@@ -1,18 +1,15 @@
-import { QueryInterface, DataTypes, literal } from 'sequelize';
-
+import { QueryInterface, DataTypes } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
-
   await queryInterface.createTable('Permissions', {
     id: {
       type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false
+      autoIncrement: true
     },
     action: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true // 'action' is the primary key
     },
     description: {
       type: DataTypes.STRING,
@@ -37,8 +34,6 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
   `);
 }
 
-
 export async function down(queryInterface: QueryInterface): Promise<void> {
-  // Drop the permissions table
   await queryInterface.dropTable('Permissions');
 }

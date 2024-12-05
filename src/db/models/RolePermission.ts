@@ -17,7 +17,7 @@ export class RolePermission extends Model {
 
   @ForeignKey(() => Permission)
   @Column({ type: DataType.STRING, allowNull: false })
-  action!: string; // Foreign key referencing 'action'
+  action!: string; // Now referencing 'action' instead of 'permissionId'
 
   @BelongsTo(() => Role)
   role!: Role;
