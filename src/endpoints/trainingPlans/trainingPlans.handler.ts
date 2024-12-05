@@ -52,10 +52,10 @@ export const createTrainingPlanHandler: EndpointHandler<EndpointAuthType> = asyn
 
         const trainer = await User.findByPk(trainerId);
 
-        if(req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission to create New Training Plan' });
-            return;
-        }
+        // if(req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\'t have Permission to create New Training Plan' });
+        //     return;
+        // }
 
         if (!trainer) {
             res.status(404).json({ message: 'Trainer not found' });
@@ -139,10 +139,10 @@ export const updateTrainingPlanHandler: EndpointHandler<EndpointAuthType> = asyn
 
     try {
 
-        if(req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\t have Permission to update this Training Plan' });
-            return;
-        }
+        // if(req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\t have Permission to update this Training Plan' });
+        //     return;
+        // }
 
         const trainingPlan = await TrainingPlan.findByPk(id);
 
@@ -201,10 +201,10 @@ export const deleteTrainingPlanHandler: EndpointHandler<EndpointAuthType> = asyn
 
         const trainingPlan = await TrainingPlan.findByPk(id);
 
-        if(req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have a Permission to delete this training Plan' });
-            return;
-        }
+        // if(req.user?.roleId !== 1) {
+        //     res.status(403).json({ message: 'You don\'t have a Permission to delete this training Plan' });
+        //     return;
+        // }
 
         if (!trainingPlan) {
             res.status(404).json({ message: 'trainingPlan not found' });

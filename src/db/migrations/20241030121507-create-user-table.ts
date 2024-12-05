@@ -1,95 +1,3 @@
-// // // import { QueryInterface, DataTypes, literal } from 'sequelize';
-
-// // // export async function up(queryInterface: QueryInterface): Promise<void> {
-// // //   // Create the users table
-// // //   await queryInterface.createTable('Users', {
-// // //     id: {
-// // //       type: DataTypes.INTEGER,
-// // //       autoIncrement: true,
-// // //       primaryKey: true
-// // //     },
-// // //     name: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: false
-// // //     },
-// // //     email: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: false,
-// // //       unique: true
-// // //     },
-// // //     password: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: false
-// // //     },
-// // //     profilePic: {
-// // //       type: DataTypes.BLOB, // Using BLOB for profile pictures
-// // //       allowNull: true
-// // //     },
-// // //     phoneNumber: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: true
-// // //     },
-// // //     role: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: true
-// // //     },
-// // //     destination: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: true
-// // //     },
-// // //     department: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: true
-// // //     },
-// // //     dateOfJoining: {
-// // //       type: DataTypes.DATE,
-// // //       allowNull: true
-// // //     },
-// // //     position: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: true
-// // //     },
-// // //     employmentType: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: true
-// // //     },
-// // //     dateOfTermination: {
-// // //       type: DataTypes.DATE,
-// // //       allowNull: true
-// // //     },
-// // //     reasonForTermination: {
-// // //       type: DataTypes.STRING,
-// // //       allowNull: true
-// // //     },
-// // //     createdBy: {
-// // //       type: DataTypes.INTEGER,
-// // //       allowNull: true
-// // //     },
-// // //     updatedBy: {
-// // //       type: DataTypes.INTEGER,
-// // //       allowNull: true
-// // //     },
-// // //     createdAt: {
-// // //       type: DataTypes.DATE,
-// // //       allowNull: false,
-// // //       defaultValue: literal('CURRENT_TIMESTAMP')
-// // //     },
-// // //     updatedAt: {
-// // //       type: DataTypes.DATE,
-// // //       allowNull: false,
-// // //       defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-// // //     }
-// // //   });
-// // // }
-
-// // // export async function down(queryInterface: QueryInterface): Promise<void> {
-
-// // //   // Drop the users table
-// // //   await queryInterface.dropTable('Users');
-// // // }
-
-
-
 import { QueryInterface, DataTypes, literal } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
@@ -134,11 +42,11 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       allowNull: true
     },
     profilePic: {
-      type: DataTypes.BLOB, // Using BLOB for profile pictures
+      type: DataTypes.STRING, // Using BLOB for profile pictures
       allowNull: true,
     },
     dateOfJoining: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: true
     },
     roleId: {
@@ -160,10 +68,6 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.DATE,
       allowNull: true
     },
-    updatedBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -172,9 +76,13 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+      defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
     },
   });
+
+  await queryInterface.addIndex('Users', ['email'], { unique: true });
+  await queryInterface.addIndex('Users', ['roleId']);
+
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {

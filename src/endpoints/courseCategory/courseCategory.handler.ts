@@ -94,6 +94,10 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
     const { id } = req.params;
     const { courseCategory, description, courseCategoryImg } = req.body;
 
+    console.log('courseCategory', courseCategory);
+    console.log('description', description);
+    console.log('courseCategoryImg', courseCategoryImg);
+    
     try {
 
         const category = await CourseCategory.findByPk(id);

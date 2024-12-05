@@ -17,28 +17,25 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
-          permissionId: {
-            type: DataTypes.INTEGER,
+          action: {
+            type: DataTypes.STRING,
             references: {
               model: 'Permissions',
-              key: 'id',
+              key: 'action',
             },
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP')
-        },
-        updatedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-        }
-    });
-
-}
+          createdAt: { type: DataTypes.DATE, allowNull: false },
+          updatedAt: { type: DataTypes.DATE, allowNull: false }
+        });
+      
+        await queryInterface.sequelize.query(`
+          ALTER TABLE RolePermissions
+          MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;
+        `);
+      }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.dropTable('RolePermissions');

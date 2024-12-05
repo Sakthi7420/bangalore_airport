@@ -10,3 +10,4 @@ export * from './courseDetails';
 
 export * from './role';
 
+export * from './users';

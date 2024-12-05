@@ -1,15 +1,13 @@
-import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsToMany, PrimaryKey } from 'sequelize-typescript';
 import { RolePermission } from './RolePermission';
 import { Role } from './Role';
 
 
 @Table
 export class Permission extends Model {
-  // @Column({ type: DataType.STRING, allowNull: false })
-  // action!: string; // The action that the permission allows
-
+  @PrimaryKey
   @Column({ type: DataType.STRING, allowNull: false })
-  resource!: string; // The resource that the permission applies to
+  action!: string; // The action that the permission allows
 
   //Audit table
   @Column({ type: DataType.INTEGER, allowNull: true })
