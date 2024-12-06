@@ -76,4 +76,16 @@ export const updateCourseValidator: Schema = {
     }
 };
 
+export const deleteCourseValidator: Schema = {
+    id: {
+        in: 'params',
+        exists: {
+            errorMessage: 'CourseId is Required'
+        },
+        isInt: {
+            errorMessage: 'CourseId must be an Integer'
+        }
+    }
+}
+
 

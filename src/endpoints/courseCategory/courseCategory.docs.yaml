@@ -1,8 +1,61 @@
-/createcourse-category:
+/coursecategory:
+  get:
+    summary: Get all courseCategories
+    description: Retrieves a list of all coursecategory
+    tags:
+      - CourseCategory
+    responses:
+      200:
+        description: List of courseCategories
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  courseCategory:
+                    type: string
+                    example: 'Fullstack'
+                  description:
+                    type: string
+                    example: 'The Fullstack course category provides detailed information about fullstack development.'
+                  courseCategoryImg:
+                    type: string
+                    example: "https://example.com/course-category-image.jpg"
+      404:
+        description: No coursecategory found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'No courseCategory found'
+
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching course categories'
+
   post:
     summary: Create a new category
+    description: Creates a new coursecategory with provided details.
+    operationId: createCourseCategory
+    security:
+      - bearerAuth: []
     tags:
-      - courseCategory
+      - CourseCategory
     requestBody: 
       required: true
       content:
@@ -24,7 +77,7 @@
               - courseCategory
               - courseCategoryImg
     responses:
-      '201':
+      201:
         description: courseCategory created successfully
         content:
           application/json:
@@ -34,58 +87,8 @@
                 message:
                   type: string
                   example: 'courseCategory created successfully'
-      '400':
-        description: Validation error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                errors:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      msg:
-                        type: string
-                        example: 'courseCategory is required'
-                    properties:
-                      msg:
-                        type: string
-                        example: 'courseCategoryImg is required'
-
-/getcoursecategory/{id}:
-  get:
-    summary: Get a courseCategory by ID
-    tags:
-      - courseCategory
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the courseCategory
-        schema:
-          type: integer
-          example: 1
-    responses:
-      '200':
-        description: CourseCategory details
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                courseCategory:
-                  type: string
-                  example: 'Fullstack'
-                description:
-                  type: string
-                  example: 'The Fullstack category provides detailed information about fullstack development.'
-                courseCategoryImg:
-                  type: string
-                  example: "https://example.com/course-category-image.jpg"
-      '404':
-        description: CourseCategory not found
+      500:
+        description: CourseCategory creation error
         content:
           application/json:
             schema:
@@ -93,9 +96,12 @@
               properties:
                 message:
                   type: string
-                  example: 'CourseCategory not found'
-      '500':
-        description: Internal server error
+                  example: "Error occurred while creating the coursecategory"
+                error:
+                  type: string
+
+      401:
+        description: Unauthorized
         content:
           application/json:
             schema:
@@ -103,13 +109,18 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching courseCategory'
+                  example: Unauthorized request
+      
 
-/updatecategory/{id}:
+/coursecategory/{id}:
   put:
     summary: Update a courseCategory by ID
+    description: Updates the information of courseCategory by ID.
+    operationId: updateCourseCategory
+    security:
+      - bearerAuth: []
     tags:
-      - courseCategory
+      - CourseCategory
     parameters:
       - name: id
         in: path
@@ -137,7 +148,7 @@
             required:
               - courseCategory
     responses:
-      '200':
+      200:
         description: CourseCategory updated successfully
         content:
           application/json:
@@ -147,22 +158,7 @@
                 message:
                   type: string
                   example: 'CourseCategory updated successfully'
-      '400':
-        description: Validation error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                errors:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      msg:
-                        type: string
-                        example: 'courseCategory is required'
-      '404':
+      404:
         description: CourseCategory not found
         content:
           application/json:
@@ -171,8 +167,8 @@
               properties:
                 message:
                   type: string
-                  example: 'CourseCategory not found'
-      '500':
+                  example: 'Course not found'
+      500:
         description: Internal server error
         content:
           application/json:
@@ -182,12 +178,18 @@
                 message:
                   type: string
                   example: 'Error updating courseCategory'
+                error:
+                  type: string
 
-/deletecategory/{id}:
+
   delete:
     summary: Delete a courseCategory by ID
+    description: Deletes a courseCategory by ID.
+    operationId: deleteCourseCategory
+    security:
+      - bearerAuth: []
     tags:
-      - courseCategory
+      - CourseCategory
     parameters:
       - name: id
         in: path
@@ -197,7 +199,7 @@
           type: integer
           example: 1
     responses:
-      '200':
+      200:
         description: CourseCategory deleted successfully
         content:
           application/json:
@@ -207,7 +209,7 @@
                 message:
                   type: string
                   example: 'CourseCategory deleted successfully'
-      '404':
+      404:
         description: CourseCategory not found
         content:
           application/json:
@@ -217,7 +219,7 @@
                 message:
                   type: string
                   example: 'CourseCategory not found'
-      '500':
+      500:
         description: Internal server error
         content:
           application/json:
@@ -228,34 +230,47 @@
                   type: string
                   example: 'Error deleting courseCategory'
 
-/getcategory:
+          
   get:
-    summary: Get all courseCategories
+    summary: Get a courseCategory by ID
     tags:
-      - courseCategory
+      - CourseCategory
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the courseCategory
+        schema:
+          type: integer
+          example: 1
     responses:
-      '200':
-        description: List of courseCategories
+      200:
+        description: CourseCategory details
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  courseCategory:
-                    type: string
-                    example: 'Fullstack'
-                  description:
-                    type: string
-                    example: 'The Fullstack course category provides detailed information about fullstack development.'
-                  courseCategoryImg:
-                    type: string
-                    example: "https://example.com/course-category-image.jpg"
-      '500':
+              type: object
+              properties:
+                courseCategory:
+                  type: string
+                  example: 'Fullstack'
+                description:
+                  type: string
+                  example: 'The Fullstack category provides detailed information about fullstack development.'
+                courseCategoryImg:
+                  type: string
+                  example: "https://example.com/course-category-image.jpg"
+      404:
+        description: CourseCategory not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'CourseCategory not found'
+      500:
         description: Internal server error
         content:
           application/json:
@@ -264,4 +279,5 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching course categories'
+                  example: 'Error fetching courseCategory'
+

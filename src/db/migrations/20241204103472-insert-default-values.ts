@@ -67,22 +67,22 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     {
       action: 'CreateUser',
       description: 'Create a new user',
-      groupName: 'Role & Permission'
+      groupName: 'User Management'
     },
     {
       action: 'GetUser',
       description: 'Get details of a user',
-      groupName: 'User'
+      groupName: 'User Management'
     },
     {
       action: 'UpdateUser',
       description: 'update an existing user',
-      groupName: 'User'
+      groupName: 'User Management'
     },
     {
       action: 'DeleteUser',
       description: 'update an existing user',
-      groupName: 'User'
+      groupName: 'User Management'
     }
   ]);
 

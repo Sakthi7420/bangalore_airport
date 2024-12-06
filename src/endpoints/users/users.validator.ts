@@ -52,6 +52,15 @@ export const createUserValidator: Schema = {
             errorMessage: 'Phone number is required'
         }
     },
+    dateOfBirth: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Date of birth is required'
+        },
+        isDate: {
+            errorMessage: 'Date of birth must be a valid date'
+        }
+    },
     password: {
         in: 'body',
         exists: {
@@ -60,12 +69,12 @@ export const createUserValidator: Schema = {
         isLength: {
             options: { min: 8, max: 20 },
             errorMessage: 'Password must be between 8 and 20 characters long',
-        },
-        matches: {
-            options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            errorMessage:
-                'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-        },
+        }
+        // matches: {
+        //     options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        //     errorMessage:
+        //         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+        // },
     },
     dateOfJoining: {
         in: 'body',
@@ -119,7 +128,7 @@ export const updateUserValidator: Schema = {
             errorMessage: 'Last name must be a string',
         },
         isLength: {
-            options: { min: 2 },
+            options: { min: 1 },
             errorMessage: 'Last name must be at least 2 characters',
         }
     },
@@ -141,26 +150,20 @@ export const updateUserValidator: Schema = {
             }
         }
     },
+    dateOfBirth: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Date of birth is required'
+        },
+        isDate: {
+            errorMessage: 'Date of birth must be a valid date'
+        }
+    },
     phoneNumber: {
         in: 'body',
         exists: {
             errorMessage: 'Phone number is required'
         }
-    },
-    password: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Password is required'
-        },
-        isLength: {
-            options: { min: 8, max: 20 },
-            errorMessage: 'Password must be between 8 and 20 characters long',
-        },
-        matches: {
-            options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            errorMessage:
-                'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-        },
     },
     dateOfJoining: {
         in: 'body',
@@ -179,6 +182,15 @@ export const updateUserValidator: Schema = {
         isInt: {
             errorMessage: 'Role must be an integer'
         }
+    },
+    accountStatus: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Account status is required'
+        },
+        isString: {
+            errorMessage: 'Account status must be a string'
+        },
     }
 };
 

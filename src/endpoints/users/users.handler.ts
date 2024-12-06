@@ -16,8 +16,8 @@ import {
 
 
  //create new User 
-export const createUserHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 
@@ -25,6 +25,7 @@ export const createUserHandler: EndpointHandler<EndpointAuthType> = async (
     firstName,
     lastName,
     email,
+    dateOfBirth,
     phoneNumber,
     password,
     dateOfJoining,
@@ -38,11 +39,12 @@ export const createUserHandler: EndpointHandler<EndpointAuthType> = async (
       firstName,
       lastName,
       email,
+      dateOfBirth,
       phoneNumber,
       password: hashedPassword,
       dateOfJoining,
       roleId,
-      // createdBy: user?.id
+      createdBy: user?.id
     });
 
     await Audit.create({
@@ -102,15 +104,11 @@ export const getUserByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   } catch {
     res.status(500).json({ message: USER_GET_ERROR });
   }
-}
-
-
-//
-
+};
 
 // //update a new user
-export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 
@@ -120,6 +118,7 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
     firstName,
     lastName,
     email,
+    dateOfBirth,
     phoneNumber,
     address,
     qualification,
@@ -142,6 +141,7 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
         firstName: updateUser.firstName,
         lastName: updateUser.lastName,
         email: updateUser.email,
+        dateOfBirth: updateUser.dateOfBirth,
         phoneNumber: updateUser.phoneNumber,
         address: updateUser.address,
         qualification: updateUser.qualification,
@@ -155,6 +155,7 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
       firstName: firstName,
       lastName: lastName,
       email: email,
+      dateOfBirth: dateOfBirth,
       phoneNumber: phoneNumber,
       address: address,
       qualification: qualification,
@@ -176,15 +177,15 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType> = async (
         performedBy: user?.id
       });
 
-    res.status(200).json({ message: 'User updated successfully', user })
+    res.status(200).json({ message: 'User updated successfully', user: updateUser })
   } catch (error) {
     res.status(500).json({ message: USER_UPDATE_ERROR, error });
   }
 };
 
 // //delete user
-export const deleteUserHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const deleteUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 

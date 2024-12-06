@@ -19,9 +19,9 @@ export const createUserEndpoint = new Endpoint({
     path: '/users',
     method: EndpointMethod.POST,
     handler: createUserHandler,
-    authType: EndpointAuthType.NONE,
+    authType: EndpointAuthType.JWT,
     validator: createUserValidator,
-    // middleware: [checkPermission('CreateUser')]
+    middleware: [checkPermission('CreateUser')]
 });
 
 export const getAllUserEndpoint = new Endpoint({

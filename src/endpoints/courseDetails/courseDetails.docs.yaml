@@ -1,8 +1,52 @@
-/create-coursedetails:
+/coursedetails:
+  get:
+    summary: Get all course details
+    tags:
+      - CourseDetails
+    responses:
+      '200':
+        description: List of course details
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  courseId:
+                    type: integer
+                    example: 1
+                  courseCategoryId:
+                    type: integer
+                    example: 1
+                  courseLectures:
+                    type: string
+                    example: 'Lecture 1: Introduction to Course'
+                  courseQandA:
+                    type: string
+                    example: 'Question: What is the course about? Answer: It is an introductory course.'
+                  notes:
+                    type: string
+                    example: 'Important notes for the course.'
+                  aboutCourse:
+                    type: string
+                    example: 'This course provides an introduction to programming.'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching course details'
+
+
   post:
     summary: Create course details for a course
     tags:
-      - courseDetails
+      - CourseDetails
     requestBody:
       required: true
       content:
@@ -60,115 +104,11 @@
                         type: string
                         example: 'courseLectures is required'
 
-/get-coursedetails:
-  get:
-    summary: Get all course details
-    tags:
-      - courseDetails
-    responses:
-      '200':
-        description: List of course details
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  courseId:
-                    type: integer
-                    example: 1
-                  courseCategoryId:
-                    type: integer
-                    example: 1
-                  courseLectures:
-                    type: string
-                    example: 'Lecture 1: Introduction to Course'
-                  courseQandA:
-                    type: string
-                    example: 'Question: What is the course about? Answer: It is an introductory course.'
-                  notes:
-                    type: string
-                    example: 'Important notes for the course.'
-                  aboutCourse:
-                    type: string
-                    example: 'This course provides an introduction to programming.'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Error fetching course details'
-
-/get-coursedetails/{id}:
-  get:
-    summary: Get course details by ID
-    tags:
-      - courseDetails
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the course detail
-        schema:
-          type: integer
-          example: 1
-    responses:
-      '200':
-        description: Course detail by ID
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                courseId:
-                  type: integer
-                  example: 1
-                courseCategoryId:
-                  type: integer
-                  example: 1
-                courseLectures:
-                  type: string
-                  example: 'Lecture 1: Introduction to Course'
-                courseQandA:
-                  type: string
-                  example: 'Question: What is the course about? Answer: It is an introductory course.'
-                notes:
-                  type: string
-                  example: 'Important notes for the course.'
-                aboutCourse:
-                  type: string
-                  example: 'This course provides an introduction to programming.'
-      '404':
-        description: Course detail not found
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Course detail not found'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Error fetching course detail'
-
-/update-coursedetails/{id}:
+/coursedetails/{id}:
   put:
     summary: Update course details by ID
     tags:
-      - courseDetails
+      - CourseDetails
     parameters:
       - name: id
         in: path
@@ -247,11 +187,10 @@
                   example: 'Error updating course detail'
 
 
-/delete-coursedetails/{id}:
   delete:
     summary: Delete course details by ID
     tags:
-      - courseDetails
+      - CourseDetails
     parameters:
       - name: id
         in: path
@@ -291,3 +230,62 @@
                 message:
                   type: string
                   example: 'Error deleting course detail'
+    
+  get:
+    summary: Get course details by ID
+    tags:
+      - CourseDetails
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the course detail
+        schema:
+          type: integer
+          example: 1
+    responses:
+      '200':
+        description: Course detail by ID
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId:
+                  type: integer
+                  example: 1
+                courseCategoryId:
+                  type: integer
+                  example: 1
+                courseLectures:
+                  type: string
+                  example: 'Lecture 1: Introduction to Course'
+                courseQandA:
+                  type: string
+                  example: 'Question: What is the course about? Answer: It is an introductory course.'
+                notes:
+                  type: string
+                  example: 'Important notes for the course.'
+                aboutCourse:
+                  type: string
+                  example: 'This course provides an introduction to programming.'
+      '404':
+        description: Course detail not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Course detail not found'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching course detail'

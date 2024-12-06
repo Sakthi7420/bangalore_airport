@@ -10,7 +10,7 @@ import {
 
 
 export const createCourseDetailsEndpoint = new Endpoint({
-    path: '/create-coursedetails',
+    path: '/coursedetails',
     method: EndpointMethod.POST,
     handler: createCourseDetailsHandler,
     authType: EndpointAuthType.JWT,
@@ -18,7 +18,7 @@ export const createCourseDetailsEndpoint = new Endpoint({
 });
 
 export const getAllCourseDetailsEndpoint = new Endpoint({
-    path: '/get-coursedetails',
+    path: '/coursedetails',
     method: EndpointMethod.GET,
     handler: getCourseDetailsHandler,
     authType: EndpointAuthType.NONE,
@@ -26,7 +26,7 @@ export const getAllCourseDetailsEndpoint = new Endpoint({
 });
 
 export const getCourseDetailsByIdEndpoint = new Endpoint({
-    path: '/get-coursedetails/:id',
+    path: '/coursedetails/:id',
     method: EndpointMethod.GET,
     handler: getCourseDetailsByIdHandler,
     authType: EndpointAuthType.NONE,
@@ -35,7 +35,7 @@ export const getCourseDetailsByIdEndpoint = new Endpoint({
 
 
 export const updateCourseDetailsEndpoint = new Endpoint({
-    path: '/update-coursedetails/:id',
+    path: '/coursedetails/:id',
     method: EndpointMethod.PUT,
     handler: updateCourseDetailsHandler,
     authType: EndpointAuthType.JWT,
@@ -44,7 +44,7 @@ export const updateCourseDetailsEndpoint = new Endpoint({
 
 
 export const deleteCourseDetailsEndpoint = new Endpoint({
-    path: '/delete-coursedetails/:id',
+    path: '/coursedetails/:id',
     method: EndpointMethod.DELETE,
     handler: deleteCourseDetailsHandler,
     authType: EndpointAuthType.JWT,

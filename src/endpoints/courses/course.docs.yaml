@@ -1,78 +1,11 @@
-/createcourse:
-  post:
-    summary: Create a new course
-    tags:
-      - course
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              courseName:
-                type: string
-                example: 'Basic of python'
-              courseDesc:
-                type: string
-                example: 'the course provides basic of python'
-              courseCategoryId:
-                type: integer
-                example: 1
-              courseInstructorId:
-                type: ineger
-                example: 1
-            required:
-              - courseName
-              - courseDesc
-              - courseCategoryId
-              - courseInstructorId
-    responses:
-      '201':
-        description: course created successfully
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'course created successfully'
-      '400':
-        description: Validation error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                errors:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      msg:
-                        type: string
-                        example: 'courseName is required'
-                    properties:
-                      msg:
-                        type: string
-                        example: 'courseDesc is required'
-                    properties:
-                      msg:
-                        type: integer
-                        example: 'courseCategoryId is required'
-                    properties:
-                      msg:
-                        type: integer
-                        example: 'courseInstructorId is required'
-                    
-/getcourses:
+/course:
   get:
     summary: Get all courses
+    description: Retrieves a list of all course
     tags:
-      - course
+      - Course
     responses:
-      '200':
+      200:
         description: List of all courses
         content:
           application/json:
@@ -96,7 +29,7 @@
                       courseInstructorId:
                         type: integer
                         example: 1
-      '404':
+      404:
         description: No courses found
         content:
           application/json:
@@ -106,7 +39,7 @@
                 message:
                   type: string
                   example: 'No courses found'
-      '500':
+      500:
         description: Internal server error
         content:
           application/json:
@@ -117,45 +50,37 @@
                   type: string
                   example: 'Internal Server Error'
 
-
-/getcourse/{id}:
-  get:
-    summary: Get a course by ID
+  post:
+    summary: Create a new course
+    description: Creates a new course with provided details.
+    operationId: createCourse
+    security:
+      - bearerAuth: []
     tags:
-      - course
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the course
-        schema:
-          type: integer
-          example: 1
+      - Course
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              courseName:
+                type: string
+                example: 'Basic of python'
+              courseDesc:
+                type: string
+                example: 'the course provides basic of python'
+              courseCategoryId:
+                type: integer
+                example: 1
+              courseInstructorId:
+                type: ineger
+                example: 1
+    
     responses:
-      '200':
-        description: Course details
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                course:
-                  type: object
-                  properties:
-                    courseName:
-                      type: string
-                      example: 'Basic of Python'
-                    courseDesc:
-                      type: string
-                      example: 'The course provides basics of Python'
-                    courseCategoryId:
-                      type: integer
-                      example: 1
-                    courseInstructorId:
-                      type: integer
-                      example: 1
-      '404':
-        description: Course not found
+      201:
+        description: course created successfully
         content:
           application/json:
             schema:
@@ -163,9 +88,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Course not found'
-      '500':
-        description: Internal server error
+                  example: 'course created successfully'
+      500:
+        description: Course creation error
         content:
           application/json:
             schema:
@@ -173,13 +98,31 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching course'
+                  example: "Error occurred while creating the course"
+                error:
+                  type: string
 
-/updatecourse/{id}:
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Unauthorized request    
+                                    
+
+/course/{id}:
   put:
     summary: Update a course by ID
+    description: Updates the information of course by ID.
+    operationId: updateCourse
+    security:
+      - bearerAuth: []
     tags:
-      - course
+      - Course
     parameters:
       - name: id
         in: path
@@ -207,13 +150,9 @@
               courseInstructorId:
                 type: integer
                 example: 2
-            required:
-              - courseName
-              - courseDesc
-              - courseCategoryId
-              - courseInstructorId
+        
     responses:
-      '200':
+      200:
         description: Course updated successfully
         content:
           application/json:
@@ -223,34 +162,8 @@
                 message:
                   type: string
                   example: 'Course updated successfully'
-      '400':
-        description: Validation error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                errors:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      msg:
-                        type: string
-                        example: 'courseName is required'
-                    properties:
-                      msg:
-                        type: string
-                        example: 'courseDesc is required'
-                    properties:
-                      msg:
-                        type: integer
-                        example: 'courseCategoryId is required'
-                    properties:
-                      msg:
-                        type: integer
-                        example: 'courseInstructorId is required'
-      '404':
+      
+      404:
         description: Course not found
         content:
           application/json:
@@ -260,7 +173,7 @@
                 message:
                   type: string
                   example: 'Course not found'
-      '500':
+      500:
         description: Internal server error
         content:
           application/json:
@@ -270,12 +183,18 @@
                 message:
                   type: string
                   example: 'Error updating course'
+                error:
+                  type: string
 
-/deletecourse/{id}:
+
   delete:
     summary: Delete a course by ID
+    description: Deletes a course by ID.
+    operationId: deleteCourse
+    security:
+      - bearerAuth: []
     tags:
-      - course
+      - Course
     parameters:
       - name: id
         in: path
@@ -285,7 +204,7 @@
           type: integer
           example: 1
     responses:
-      '200':
+      200:
         description: Course deleted successfully
         content:
           application/json:
@@ -295,7 +214,7 @@
                 message:
                   type: string
                   example: 'Course deleted successfully'
-      '404':
+      404:
         description: Course not found
         content:
           application/json:
@@ -305,7 +224,7 @@
                 message:
                   type: string
                   example: 'Course not found'
-      '500':
+      500:
         description: Internal server error
         content:
           application/json:
@@ -315,6 +234,68 @@
                 message:
                   type: string
                   example: 'Error deleting course'
+                error:
+                  type: string
+
+
+  get:
+    summary: Get a course by ID
+    tags:
+      - Course
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the course
+        schema:
+          type: integer
+          example: 1
+    responses:
+      200:
+        description: Course details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course:
+                  type: object
+                  properties:
+                    courseName:
+                      type: string
+                      example: 'Basic of Python'
+                    courseDesc:
+                      type: string
+                      example: 'The course provides basics of Python'
+                    courseCategoryId:
+                      type: integer
+                      example: 1
+                    courseInstructorId:
+                      type: integer
+                      example: 1
+      404:
+        description: Course not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Course not found'
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching course'
+                error:
+                  type: string
+
 
 
 
