@@ -73,9 +73,7 @@
               courseCategoryImg:
                 type: string
                 example: "https://example.com/course-category-image.jpg"
-            required:
-              - courseCategory
-              - courseCategoryImg
+        
     responses:
       201:
         description: courseCategory created successfully
@@ -145,8 +143,7 @@
               courseCategoryImg:
                 type: string
                 example: "https://example.com/course-category-image.jpg"
-            required:
-              - courseCategory
+          
     responses:
       200:
         description: CourseCategory updated successfully
