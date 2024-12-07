@@ -2,7 +2,7 @@ import {
   EndpointAuthType,
   EndpointHandler,
   EndpointRequestType
-} from '@gwcdata/node-server-engine';
+} from 'node-server-engine';
 import {
   COURSE_NOT_FOUND,
   COURSE_CREATION_ERROR,

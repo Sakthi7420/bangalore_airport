@@ -1,5 +1,5 @@
-import {Server} from '@gwcdata/node-server-engine';
-import {generatePkiEnvironment} from '@gwcdata/test-tools';
+import {Server} from 'node-server-engine';
+import {generatePkiEnvironment} from 'backend-test-tools';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {Application} from 'express';

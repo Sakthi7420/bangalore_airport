@@ -2,7 +2,7 @@ import {
     EndpointAuthType,
     EndpointHandler,
     EndpointRequestType
-} from '@gwcdata/node-server-engine';
+} from 'node-server-engine';
 import { CourseCategory, CourseDetail } from 'db';
 import { Course } from 'db';
 import { Response } from 'express';

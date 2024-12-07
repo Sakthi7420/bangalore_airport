@@ -2,7 +2,7 @@ import {
   reportError,
   sequelize,
   runPendingMigrations
-} from '@gwcdata/node-server-engine';
+} from 'node-server-engine';
 import { createServer } from 'app';
 import * as models from 'db/models';
 

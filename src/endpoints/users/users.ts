@@ -1,4 +1,4 @@
-import { Endpoint, EndpointAuthType, EndpointMethod } from '@gwcdata/node-server-engine';
+import { Endpoint, EndpointAuthType, EndpointMethod } from 'node-server-engine';
 import {
     createUserValidator, 
     updateUserValidator

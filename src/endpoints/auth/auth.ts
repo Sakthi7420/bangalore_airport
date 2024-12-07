@@ -2,7 +2,7 @@ import {
   Endpoint,
   EndpointMethod,
   EndpointAuthType
-} from '@gwcdata/node-server-engine';
+} from 'node-server-engine';
 import { loginValidator } from './auth.validator';
 import { loginHandler } from './auth.handler';
 

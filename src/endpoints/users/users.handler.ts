@@ -2,7 +2,7 @@ import {
     EndpointAuthType,
     EndpointRequestType,
     EndpointHandler,
-} from '@gwcdata/node-server-engine';
+} from 'node-server-engine';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import { User, Audit } from 'db';

@@ -1,4 +1,4 @@
-import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server-engine";
+import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
 import { trainingPlansValidator } from "./trainingPlans.validator";
 import {
     getTrainingPlanHandler,
