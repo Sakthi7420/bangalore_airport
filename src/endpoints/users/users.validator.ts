@@ -52,15 +52,6 @@ export const createUserValidator: Schema = {
             errorMessage: 'Phone number is required'
         }
     },
-    dateOfBirth: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Date of birth is required'
-        },
-        isDate: {
-            errorMessage: 'Date of birth must be a valid date'
-        }
-    },
     password: {
         in: 'body',
         exists: {
@@ -148,15 +139,6 @@ export const updateUserValidator: Schema = {
                     throw new Error('Email already in use');
                 }
             }
-        }
-    },
-    dateOfBirth: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Date of birth is required'
-        },
-        isDate: {
-            errorMessage: 'Date of birth must be a valid date'
         }
     },
     phoneNumber: {

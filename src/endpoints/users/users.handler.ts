@@ -5,7 +5,7 @@ import {
 } from '@gwcdata/node-server-engine';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
-import { User, Audit } from 'db';
+import { User, Audit, Role } from 'db';
 import {
     USER_NOT_FOUND,
     USER_CREATION_ERROR,
@@ -25,7 +25,6 @@ export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     firstName,
     lastName,
     email,
-    dateOfBirth,
     phoneNumber,
     password,
     dateOfJoining,
@@ -34,16 +33,23 @@ export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   const { user } = req; // Getting the authenticated user
 
   try {
+
+    const roleRecord = await Role.findOne({ where: { id: roleId } });
+
+    if (!roleRecord) {
+      res.status(400).json({ message: 'Invalid roleId' });
+      return;
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       firstName,
       lastName,
       email,
-      dateOfBirth,
       phoneNumber,
       password: hashedPassword,
       dateOfJoining,
-      roleId,
+      roleId: roleRecord.id,
       createdBy: user?.id
     });
 
@@ -54,6 +60,7 @@ export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         newData: newUser,
         performedBy: user?.id
       });
+
 
     res.status(200).json({ message: 'User created successfully', newUser });
   } catch (error) {
@@ -69,7 +76,14 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 ) => {
   try {
 
-    const users = await User.findAll();
+    const users = await User.findAll({
+      include: [
+        {
+          model: Role,
+          attributes: ["name"], 
+        },
+      ],
+    });
 
     if (!users) {
       res.status(404).json({ message: USER_NOT_FOUND });

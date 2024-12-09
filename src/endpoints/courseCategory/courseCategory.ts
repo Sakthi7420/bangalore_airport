@@ -24,7 +24,7 @@ export const getCategoryByIdEndpoint = new Endpoint({
     handler: getCategoryByIdHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    middleware: [checkPermission('GetCategory')]
+    // middleware: [checkPermission('GetCategory')]
 });
 
 export const getCategoryEndpoint = new Endpoint({
@@ -33,7 +33,7 @@ export const getCategoryEndpoint = new Endpoint({
     handler: getCategoriesHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    middleware: [checkPermission('GetCategory')]
+    // middleware: [checkPermission('GetCategory')]
 });
 
 export const updateCategoryEndpoint = new Endpoint({

@@ -22,7 +22,7 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
     const course = await Course.findAll();
 
     if (course.length === 0) {
-      res.status(404).json({ message: COURSE_NOT_FOUND });
+      res.status(404).json({ message: COURSE_NOT_FOUND }); 
       return;
     }
 
