@@ -23,4 +23,7 @@ export class Course extends Model {
 
   @BelongsTo(() => User)
   instructor!: User;
+  CourseCategory: any;
+  User: any;
+  trainer: any;
 }

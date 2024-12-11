@@ -68,5 +68,6 @@ export class User extends Model {
 
   @HasMany(() => EnrolledCourse)
   enrolledCourses!: EnrolledCourse[];
+  Role: any;
 
 }

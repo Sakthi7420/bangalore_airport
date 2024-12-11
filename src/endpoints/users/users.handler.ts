@@ -84,13 +84,19 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         },
       ],
     });
+    
 
     if (!users) {
       res.status(404).json({ message: USER_NOT_FOUND });
       return;
     }
 
-    res.status(200).json({ Users: users });
+    const usersWithRole = users.map(user => ({
+      ...user.toJSON(), 
+      roleName: user.Role?.name
+    }));
+
+    res.status(200).json({ Users: usersWithRole });
   } catch (error) {
     res.status(500).json({ message: USER_GET_ERROR, error });
   }

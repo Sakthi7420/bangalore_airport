@@ -123,24 +123,24 @@ export const updateUserValidator: Schema = {
             errorMessage: 'Last name must be at least 2 characters',
         }
     },
-    email: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Email is required'
-        },
-        isEmail: {
-            errorMessage: 'Email is not valid'
-        },
-        normalizeEmail: true, // Automatically normalize email
-        custom: {
-            options: async (value) => {
-                const user = await User.findOne({ where: { email: value }, raw: true });
-                if (user) {
-                    throw new Error('Email already in use');
-                }
-            }
-        }
-    },
+    // email: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Email is required'
+    //     },
+    //     isEmail: {
+    //         errorMessage: 'Email is not valid'
+    //     },
+    //     normalizeEmail: true, // Automatically normalize email    ----> while updating need to validated email other than exisiting email
+    //     custom: {
+    //         options: async (value) => {
+    //             const user = await User.findOne({ where: { email: value }, raw: true });
+    //             if (user) {
+    //                 throw new Error('Email already in use');
+    //             }
+    //         }
+    //     }
+    // },
     phoneNumber: {
         in: 'body',
         exists: {

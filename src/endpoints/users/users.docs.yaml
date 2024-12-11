@@ -190,7 +190,7 @@
               phoneNumber:
                 type: string
                 example: "0987654321"
-              dataOfBirth:
+              dateOfBirth:
                 type: string
                 format: date
               address:
