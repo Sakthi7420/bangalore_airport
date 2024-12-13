@@ -5,7 +5,7 @@ import {
 } from 'node-server-engine';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
-import { User, Audit } from 'db';
+import { User, Audit, Role } from 'db';
 import {
     USER_NOT_FOUND,
     USER_CREATION_ERROR,
@@ -16,8 +16,8 @@ import {
 
 
  //create new User 
-export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-  req: EndpointRequestType[EndpointAuthType.JWT],
+export const createUserHandler: EndpointHandler<EndpointAuthType> = async (
+  req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
 
@@ -34,6 +34,14 @@ export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   const { user } = req; // Getting the authenticated user
 
   try {
+
+    const roleRecord = await Role.findOne({ where: { id: roleId } });
+
+    if (!roleRecord) {
+      res.status(400).json({ message: 'Invalid roleId' });
+      return;
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       firstName,
@@ -69,14 +77,28 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 ) => {
   try {
 
-    const users = await User.findAll();
+    const users = await User.findAll({
+      include: [
+        {
+          model: Role,
+          attributes: ["name"], 
+        },
+      ],
+    });
 
     if (!users) {
       res.status(404).json({ message: USER_NOT_FOUND });
       return;
     }
 
-    res.status(200).json({ Users: users });
+    // const usersWithRole = users.map(user => ({
+    //   ...user.toJSON(),
+    //   roleName: user.role?.name
+    // }));
+ 
+    // res.status(200).json({ Users: usersWithRole });
+
+
   } catch (error) {
     res.status(500).json({ message: USER_GET_ERROR, error });
   }
@@ -106,12 +128,11 @@ export const getUserByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   }
 };
 
-// //update a new user
 export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
-
+ 
   const { id } = req.params;
   const { user } = req;
   const {
@@ -127,16 +148,16 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     roleId,
     accountStatus,
   } = req.body;
-
+ 
   try {
-
+ 
     const updateUser = await User.findByPk(id);
-
+ 
     if (!updateUser) {
       res.status(404).json({ message: USER_NOT_FOUND });
       return;
     }
-
+ 
     const previousData = {
         firstName: updateUser.firstName,
         lastName: updateUser.lastName,
@@ -150,7 +171,7 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         roleId: updateUser.roleId,
         accountStatus: updateUser.accountStatus,
     }
-
+ 
     updateUser.set({
       firstName: firstName,
       lastName: lastName,
@@ -165,9 +186,9 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       accountStatus: accountStatus,
       updatedBy: user?.id
     });
-
+ 
     await updateUser.save();
-
+ 
     await Audit.create({
         entityType: 'User',
         entityId: updateUser.id,
@@ -176,12 +197,13 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         newData: updateUser,
         performedBy: user?.id
       });
-
+ 
     res.status(200).json({ message: 'User updated successfully', user: updateUser })
   } catch (error) {
     res.status(500).json({ message: USER_UPDATE_ERROR, error });
   }
 };
+ 
 
 // //delete user
 export const deleteUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (

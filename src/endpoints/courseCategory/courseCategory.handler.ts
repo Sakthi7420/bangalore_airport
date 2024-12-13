@@ -36,8 +36,8 @@ export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
 
 
 //create category
-export const courseCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-    req: EndpointRequestType[EndpointAuthType.JWT],
+export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
+    req: EndpointRequestType[EndpointAuthType],
     res: Response
 ): Promise<void> => {
 

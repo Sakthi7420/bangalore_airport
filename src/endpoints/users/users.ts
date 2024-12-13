@@ -19,9 +19,9 @@ export const createUserEndpoint = new Endpoint({
     path: '/users',
     method: EndpointMethod.POST,
     handler: createUserHandler,
-    authType: EndpointAuthType.JWT,
+    authType: EndpointAuthType.NONE,
     validator: createUserValidator,
-    middleware: [checkPermission('CreateUser')]
+    // middleware: [checkPermission('CreateUser')]
 });
 
 export const getAllUserEndpoint = new Endpoint({
@@ -30,7 +30,7 @@ export const getAllUserEndpoint = new Endpoint({
     handler: getAllUsersHandler,
     authType: EndpointAuthType.JWT,
     validator: {},
-    middleware: [checkPermission('GetUser')]
+    // middleware: [checkPermission('GetUser')]
 });
 
 export const getUserByIdEndpoint = new Endpoint({
@@ -39,7 +39,7 @@ export const getUserByIdEndpoint = new Endpoint({
     handler: getUserByIdHandler,
     authType: EndpointAuthType.JWT,
     validator: {},
-    middleware: [checkPermission('GetUser')]
+    // middleware: [checkPermission('GetUser')]
 });
 
 export const updateUserEndpoint = new Endpoint({

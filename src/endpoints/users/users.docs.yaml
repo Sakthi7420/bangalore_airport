@@ -190,6 +190,9 @@
               phoneNumber:
                 type: string
                 example: "0987654321"
+              dataOfBirth:
+                type: string
+                format: date
               address:
                 type: string
                 example: "123 Main St."

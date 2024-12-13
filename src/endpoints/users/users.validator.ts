@@ -52,15 +52,15 @@ export const createUserValidator: Schema = {
             errorMessage: 'Phone number is required'
         }
     },
-    dateOfBirth: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Date of birth is required'
-        },
-        isDate: {
-            errorMessage: 'Date of birth must be a valid date'
-        }
-    },
+    // dateOfBirth: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Date of birth is required'
+    //     },
+    //     isDate: {
+    //         errorMessage: 'Date of birth must be a valid date'
+    //     }
+    // },
     password: {
         in: 'body',
         exists: {
@@ -132,6 +132,7 @@ export const updateUserValidator: Schema = {
             errorMessage: 'Last name must be at least 2 characters',
         }
     },
+
     email: {
         in: 'body',
         exists: {
@@ -140,25 +141,33 @@ export const updateUserValidator: Schema = {
         isEmail: {
             errorMessage: 'Email is not valid'
         },
-        normalizeEmail: true, // Automatically normalize email
+        normalizeEmail: true,
+        optional: true, // Automatically normalize email    ----> while updating need to validated email other than exisiting email
         custom: {
-            options: async (value) => {
-                const user = await User.findOne({ where: { email: value }, raw: true });
-                if (user) {
+            options: async (value, { req }) => {
+                if (!req.params?.id) {
+                    throw new Error('User ID is required in params');
+                  }
+                const existingUser = await User.findOne({ where: { id: req.params.id }, raw: true });
+                if (existingUser && existingUser.email !== value) {
+                  const user = await User.findOne({ where: { email: value }, raw: true });
+                  if (user) {
                     throw new Error('Email already in use');
+                  }
                 }
-            }
+              },
         }
     },
-    dateOfBirth: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Date of birth is required'
-        },
-        isDate: {
-            errorMessage: 'Date of birth must be a valid date'
-        }
-    },
+    
+    // dateOfBirth: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Date of birth is required'
+    //     },
+    //     isDate: {
+    //         errorMessage: 'Date of birth must be a valid date'
+    //     }
+    // },
     phoneNumber: {
         in: 'body',
         exists: {

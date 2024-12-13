@@ -13,9 +13,9 @@ export const createCategoryEndpoint = new Endpoint({
     path: '/coursecategory',
     method: EndpointMethod.POST,
     handler: courseCategoryHandler,
-    authType: EndpointAuthType.JWT,
+    authType: EndpointAuthType.NONE,
     validator: courseCategoryValidator,
-    middleware: [checkPermission('CreateCategory')]
+    // middleware: [checkPermission('CreateCategory')]
 });
 
 export const getCategoryByIdEndpoint = new Endpoint({
@@ -24,7 +24,7 @@ export const getCategoryByIdEndpoint = new Endpoint({
     handler: getCategoryByIdHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    middleware: [checkPermission('GetCategory')]
+    // middleware: [checkPermission('GetCategory')]
 });
 
 export const getCategoryEndpoint = new Endpoint({
@@ -33,7 +33,7 @@ export const getCategoryEndpoint = new Endpoint({
     handler: getCategoriesHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    middleware: [checkPermission('GetCategory')]
+    // middleware: [checkPermission('GetCategory')]
 });
 
 export const updateCategoryEndpoint = new Endpoint({

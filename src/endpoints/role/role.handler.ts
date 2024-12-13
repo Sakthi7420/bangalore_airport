@@ -180,8 +180,8 @@ export const createRoleHandler: EndpointHandler<EndpointAuthType> = async (
   }
 };
 
-export const updateRoleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-  req: EndpointRequestType[EndpointAuthType.JWT],
+export const updateRoleHandler: EndpointHandler<EndpointAuthType> = async (
+  req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
@@ -329,9 +329,9 @@ export const deleteRoleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
 // Handler to create a new permission
 export const createPermissionHandler: EndpointHandler<
-  EndpointAuthType.JWT
+  EndpointAuthType
 > = async (
-  req: EndpointRequestType[EndpointAuthType.JWT],
+  req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
   const { action, groupName, description } = req.body;
@@ -380,9 +380,9 @@ export const getPermissionsHandler: EndpointHandler<
 
 // Handler to update a permission
 export const updatePermissionHandler: EndpointHandler<
-  EndpointAuthType.JWT
+  EndpointAuthType
 > = async (
-  req: EndpointRequestType[EndpointAuthType.JWT],
+  req: EndpointRequestType[EndpointAuthType],
   res: Response
 ): Promise<void> => {
   const { action } = req.params;

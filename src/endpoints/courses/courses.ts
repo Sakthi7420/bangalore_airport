@@ -14,9 +14,9 @@ export const createCourseEndpoint = new Endpoint({
     path: '/course',
     method: EndpointMethod.POST,
     handler: createCourseHandler,
-    authType: EndpointAuthType.JWT,
+    authType: EndpointAuthType.NONE,
     validator: createCourseValidator,
-    middleware: [checkPermission('CreateCourse')]
+    // middleware: [checkPermission('CreateCourse')]
 });
 
 export const getAllCourseEndPoint = new Endpoint({
@@ -25,7 +25,7 @@ export const getAllCourseEndPoint = new Endpoint({
     handler: getCourseHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    middleware: [checkPermission('GetCourse')]
+    // middleware: [checkPermission('GetCourse')]
 });
 
 export const getCourseByIdEndPoint = new Endpoint({
