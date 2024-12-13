@@ -61,11 +61,6 @@ export const createUserValidator: Schema = {
             options: { min: 8, max: 20 },
             errorMessage: 'Password must be between 8 and 20 characters long',
         }
-        // matches: {
-        //     options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        //     errorMessage:
-        //         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-        // },
     },
     dateOfJoining: {
         in: 'body',
@@ -123,24 +118,31 @@ export const updateUserValidator: Schema = {
             errorMessage: 'Last name must be at least 2 characters',
         }
     },
-    // email: {
-    //     in: 'body',
-    //     exists: {
-    //         errorMessage: 'Email is required'
-    //     },
-    //     isEmail: {
-    //         errorMessage: 'Email is not valid'
-    //     },
-    //     normalizeEmail: true, // Automatically normalize email    ----> while updating need to validated email other than exisiting email
-    //     custom: {
-    //         options: async (value) => {
-    //             const user = await User.findOne({ where: { email: value }, raw: true });
-    //             if (user) {
-    //                 throw new Error('Email already in use');
-    //             }
-    //         }
-    //     }
-    // },
+    email: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Email is required'
+        },
+        isEmail: {
+            errorMessage: 'Email is not valid'
+        },
+        normalizeEmail: true,
+        optional: true, // Automatically normalize email    ----> while updating need to validated email other than exisiting email
+        custom: {
+            options: async (value, { req }) => {
+                if (!req.params?.id) {
+                    throw new Error('User ID is required in params');
+                  }
+                const existingUser = await User.findOne({ where: { id: req.params.id }, raw: true });
+                if (existingUser && existingUser.email !== value) {
+                  const user = await User.findOne({ where: { email: value }, raw: true });
+                  if (user) {
+                    throw new Error('Email already in use');
+                  }
+                }
+              },
+        }
+    },
     phoneNumber: {
         in: 'body',
         exists: {

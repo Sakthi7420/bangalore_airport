@@ -93,7 +93,7 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
     const usersWithRole = users.map(user => ({
       ...user.toJSON(), 
-      roleName: user.Role?.name
+      roleName: user.role?.name
     }));
 
     res.status(200).json({ Users: usersWithRole });

@@ -24,7 +24,6 @@ export const getCategoryByIdEndpoint = new Endpoint({
     handler: getCategoryByIdHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    // middleware: [checkPermission('GetCategory')]
 });
 
 export const getCategoryEndpoint = new Endpoint({
@@ -33,7 +32,6 @@ export const getCategoryEndpoint = new Endpoint({
     handler: getCategoriesHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    // middleware: [checkPermission('GetCategory')]
 });
 
 export const updateCategoryEndpoint = new Endpoint({
@@ -45,7 +43,7 @@ export const updateCategoryEndpoint = new Endpoint({
     middleware: [checkPermission('UpdateCategory')]
 });
 
-export const deleteCategoryHandlerEndpoint = new Endpoint({
+export const deleteCategoryEndpoint = new Endpoint({
     path: '/coursecategory/:id',
     method: EndpointMethod.DELETE,
     handler: deleteCategoryHandler,

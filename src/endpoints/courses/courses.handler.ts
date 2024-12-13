@@ -19,7 +19,18 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
 ): Promise<void> => {
   try {
 
-    const course = await Course.findAll();
+    const course = await Course.findAll({
+        include: [
+          {
+            model: CourseCategory,
+            attributes: ['courseCategory', 'id'] 
+          },
+          {
+            model: User,
+            attributes: ['firstName','lastName', 'id']
+          }
+          ]
+      });
 
     if (course.length === 0) {
       res.status(404).json({ message: COURSE_NOT_FOUND }); 
