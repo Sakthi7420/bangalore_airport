@@ -45,8 +45,8 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
 
 
 // Create a new course
-export const createCourseHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 

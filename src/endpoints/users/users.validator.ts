@@ -132,7 +132,6 @@ export const updateUserValidator: Schema = {
             errorMessage: 'Last name must be at least 2 characters',
         }
     },
-
     email: {
         in: 'body',
         exists: {
@@ -158,7 +157,6 @@ export const updateUserValidator: Schema = {
               },
         }
     },
-    
     // dateOfBirth: {
     //     in: 'body',
     //     exists: {

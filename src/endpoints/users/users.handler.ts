@@ -16,8 +16,8 @@ import {
 
 
  //create new User 
-export const createUserHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 
@@ -91,12 +91,12 @@ export const getAllUsersHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       return;
     }
 
-    // const usersWithRole = users.map(user => ({
-    //   ...user.toJSON(),
-    //   roleName: user.role?.name
-    // }));
+    const usersWithRole = users.map(user => ({
+      ...user.toJSON(),
+      roleName: user.role?.name
+    }));
  
-    // res.status(200).json({ Users: usersWithRole });
+    res.status(200).json({ Users: usersWithRole });
 
 
   } catch (error) {
