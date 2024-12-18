@@ -3,7 +3,7 @@ import {
   EndpointRequestType,
   EndpointHandler,
   generateJwtToken
-} from '@gwcdata/node-server-engine';
+} from 'node-server-engine';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import { Permission, Role, User } from 'db';

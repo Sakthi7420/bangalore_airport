@@ -2,7 +2,7 @@ import {
   EndpointHandler,
   EndpointAuthType,
   EndpointRequestType
-} from '@gwcdata/node-server-engine';
+} from 'node-server-engine';
 import { Response } from 'express';
 import { Role, Permission, RolePermission, Audit } from 'db';
 import {
