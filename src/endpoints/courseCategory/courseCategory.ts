@@ -8,14 +8,26 @@ import {
     deleteCategoryHandler
 } from './courseCategory.handler';
 import { checkPermission } from "middleware";
+import upload from "middleware/fileUploader";
+
+
+// export const createCategoryEndpoint = new Endpoint({
+//     path: '/coursecategory',
+//     method: EndpointMethod.POST,
+//     handler: courseCategoryHandler,
+//     authType: EndpointAuthType.JWT,
+//     validator: courseCategoryValidator,
+//     middleware: [checkPermission('CreateCategory')]
+// });
+
 
 export const createCategoryEndpoint = new Endpoint({
-    path: '/coursecategory',
-    method: EndpointMethod.POST,
-    handler: courseCategoryHandler,
-    authType: EndpointAuthType.JWT,
-    validator: courseCategoryValidator,
-    middleware: [checkPermission('CreateCategory')]
+  path: '/coursecategory',
+  method: EndpointMethod.POST,
+  handler: courseCategoryHandler,
+  authType: EndpointAuthType.JWT,
+  validator: courseCategoryValidator,
+  middleware: [checkPermission('CreateCategory')]
 });
 
 export const getCategoryByIdEndpoint = new Endpoint({

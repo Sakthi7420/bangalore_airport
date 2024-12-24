@@ -41,7 +41,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       allowNull: true
     },
     profilePic: {
-      type: DataTypes.BLOB, // Using BLOB for profile pictures
+      type: DataTypes.STRING,
       allowNull: true
     },
     dateOfJoining: {

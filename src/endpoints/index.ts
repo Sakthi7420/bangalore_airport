@@ -11,3 +11,5 @@ export * from './courseDetails';
 export * from './role';
 
 export * from './users';
+
+export * from './enrolledCourses';

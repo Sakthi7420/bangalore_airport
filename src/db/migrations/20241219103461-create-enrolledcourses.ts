@@ -45,27 +45,25 @@ export async function up(queryInterface: QueryInterface): Promise<void>{
         },
         enrollmentDate: {
             type: DataTypes.DATE,
-            allowNull: true,
+            allowNull: false,
         },
         enrollmentStatus: {
             type: DataTypes.ENUM('active', 'completed', 'inactive'),
             defaultValue: 'active',
             allowNull: false,
         },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP'), // OR Sequelize.fn('NOW')
-          },
-          updatedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), // OR Sequelize.fn('NOW')
-          },
-    })
+        createdAt: {type: DataTypes.DATE, allowNull: false },
+        updatedAt: {type: DataTypes.DATE, allowNull: false},
+    });
+
+    await queryInterface.sequelize.query(
+        `ALTER TABLE EnrolledCourses
+        MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;
+    `)
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
-
+    // delete a 'enrolledcourses' table
     await queryInterface.dropTable('EnrolledCourses')
 }

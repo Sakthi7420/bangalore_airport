@@ -28,11 +28,15 @@ export class EnrolledCourse extends Model {
     defaultValue: 'active',
     allowNull: false,
   })
-  enrollmentStatus!: 'active' | 'completed' | 'inactive'; // New field to track enrollment status
+  enrollmentStatus!: 'active' | 'completed' | 'inactive';
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { as: 'trainee' })
   user!: User;
 
-  @BelongsTo(() => Course)
+  @BelongsTo(() => Course, { as: 'course' })
   course!: Course;
+
+  @BelongsTo(() => CourseCategory, { as: 'courseCategory' })
+  courseCategory!: CourseCategory;
+
 }

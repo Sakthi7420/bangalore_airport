@@ -67,6 +67,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/mocha": "^10.0.9",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.8.4",
     "@types/sequelize": "^4.28.20",
     "@types/sinon": "^17.0.3",

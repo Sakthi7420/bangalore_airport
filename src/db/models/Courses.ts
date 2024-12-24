@@ -18,7 +18,7 @@ export class Course extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseInstructorId!: number;
 
-  @BelongsTo(() => CourseCategory)
+  @BelongsTo(() => CourseCategory, { as: 'category' })
   category!: CourseCategory;
 
   @BelongsTo(() => User)
@@ -26,4 +26,4 @@ export class Course extends Model {
   CourseCategory: any;
   User: any;
   trainer: any;
-}
+};

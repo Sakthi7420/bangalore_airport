@@ -152,6 +152,7 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
       courseCategoryId: updateCourse.courseCategoryId,
       courseInstructorId: updateCourse.courseInstructorId
     }
+    
     updateCourse.set({
       courseName: courseName,
       courseDesc: courseDesc,

@@ -18,22 +18,21 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             allowNull: true
         },
         courseCategoryImg: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT('long'),
             allowNull: true
         },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP'), // OR Sequelize.fn('NOW')
-          },
-          updatedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), // OR Sequelize.fn('NOW')
-          },
+        createdAt: { type: DataTypes.DATE },
+        updatedAt: { type: DataTypes.DATE },
     });
+
+    await queryInterface.sequelize.query(`
+        ALTER TABLE CourseCategories
+        MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;
+        `);
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
+    //drop the 'courseCategories' table
     await queryInterface.dropTable('CourseCategories');
 }
