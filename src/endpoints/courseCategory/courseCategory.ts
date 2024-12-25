@@ -13,7 +13,7 @@ export const createCategoryEndpoint = new Endpoint({
     path: '/coursecategory',
     method: EndpointMethod.POST,
     handler: courseCategoryHandler,
-    authType: EndpointAuthType.NONE,
+    authType: EndpointAuthType.JWT,
     validator: courseCategoryValidator,
     // middleware: [checkPermission('CreateCategory')]
 });

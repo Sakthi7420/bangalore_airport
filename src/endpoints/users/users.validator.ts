@@ -172,15 +172,15 @@ export const updateUserValidator: Schema = {
             errorMessage: 'Phone number is required'
         }
     },
-    dateOfJoining: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Date of joining is required'
-        },
-        isDate: {
-            errorMessage: 'Invalid date of joining'
-        },
-    },
+    // dateOfJoining: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Date of joining is required'
+    //     },
+    //     isDate: {
+    //         errorMessage: 'Invalid date of joining'
+    //     },
+    // },
     roleId: {
         in: 'body',
         exists: {

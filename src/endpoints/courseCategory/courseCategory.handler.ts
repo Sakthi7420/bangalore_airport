@@ -13,6 +13,13 @@ import {
     COURSECATEGORY_GET_ERROR
 } from './courseCategory.const';
 
+
+function isValidBase64(base64String: string): boolean {
+    // Regular expression to check if the string is a valid base64 image string (with a data URI scheme)
+    const base64Regex = /^data:image\/(png|jpeg|jpg|gif);base64,/;
+    return base64Regex.test(base64String);
+}
+
 //Get Categories
 export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
@@ -34,39 +41,41 @@ export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
     }
 };
 
-
-//create category
-export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
+// create category
+export const courseCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
-
     const { user } = req;
-    const { courseCategory, description, courseCategoryImg, } = req.body;
-
+    const { courseCategory, description, courseCategoryImg } = req.body;
+ 
+    // Validate base64 image format
+    if (!isValidBase64(courseCategoryImg)) {
+        res.status(400).json({ message: 'Invalid base64 image format.' });
+        return;
+    }
+ 
     try {
+        // Create the new course category with the base64 image string
         const newCategory = await CourseCategory.create({
             courseCategory,
             description,
-            courseCategoryImg
+            courseCategoryImg, // Store base64 string directly in DB
         });
-
+ 
+        // Log the action in the audit table
         await Audit.create({
             entityType: 'CourseCategory',
             entityId: newCategory.id,
             action: 'CREATE',
             newData: newCategory,
-            performedBy: user?.id
+            performedBy: user?.id,
         });
-
-        res
-            .status(201)
-            .json({ message: 'Course category created successfully', data: newCategory });
-    }
-    catch (error) {
-        res
-            .status(500)
-            .json({ message: COURSECATEGORY_CREATION_ERROR, error });
+ 
+        // Respond with success
+        res.status(201).json({ message: 'Course category created successfully', data: newCategory });
+    } catch (error) {
+        res.status(500).json({ message: COURSECATEGORY_CREATION_ERROR, error });
     }
 };
 

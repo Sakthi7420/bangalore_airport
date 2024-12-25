@@ -10,7 +10,7 @@ export class CourseCategory extends Model {
   @Column({ type: DataType.TEXT, allowNull: true })
   description?: string;  // Optional field to add a description for each category
 
-  @Column({ type: DataType.STRING, allowNull: true })
+  @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseCategoryImg!: string;
 
   @HasMany(() => Course)

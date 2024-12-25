@@ -42,7 +42,6 @@ export const createCourseValidator: Schema = {
 };
 
 
-
 export const updateCourseValidator: Schema = {
     courseName: {
         in: 'body',
