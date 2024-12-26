@@ -37,9 +37,9 @@ export class User extends Model {
   @Column({ type: DataType.STRING, allowNull: true })
   qualification?: string;
 
-  @Column({ type: DataType.STRING, allowNull: true })
+  @Column({ type: DataType.TEXT('long'), allowNull: true })
   profilePic?: string;
-
+  
   @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })
   dateOfJoining?: Date;
 

@@ -14,6 +14,12 @@ import {
     USER_GET_ERROR
 } from './users.const';
 
+function isValidBase64(base64String: string): boolean {
+  // Regular expression to check if the string is a valid base64 image string (with a data URI scheme)
+  const base64Regex = /^data:image\/(png|jpeg|jpg|gif);base64,/;
+  return base64Regex.test(base64String);
+}
+
 
  //create new User 
 export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
@@ -29,11 +35,17 @@ export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     phoneNumber,
     password,
     dateOfJoining,
+    profilePic,
     roleId
   } = req.body;
   const { user } = req; // Getting the authenticated user
 
   try {
+
+    if (!isValidBase64(profilePic)) {
+      res.status(400).json({ message: 'Invalid base64 image format.' });
+      return;
+  }
 
     const roleRecord = await Role.findOne({ where: { id: roleId } });
 
@@ -51,6 +63,7 @@ export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       phoneNumber,
       password: hashedPassword,
       dateOfJoining,
+      profilePic,
       roleId,
       createdBy: user?.id
     });
