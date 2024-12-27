@@ -13,3 +13,5 @@ export * from './role';
 export * from './users';
 
 export * from './batch';
+
+export * from './modules';
