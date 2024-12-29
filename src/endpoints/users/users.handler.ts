@@ -5,7 +5,7 @@ import {
 } from 'node-server-engine';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
-import { User, Audit, Role } from 'db';
+import { User, Audit, Role, BatchModuleSchedules, Batch, Course, Module } from 'db';
 import {
     USER_NOT_FOUND,
     USER_CREATION_ERROR,
@@ -13,6 +13,13 @@ import {
     USER_DELETION_ERROR,
     USER_GET_ERROR
 } from './users.const';
+import { where } from 'sequelize';
+
+function isValidBase64(base64String: string): boolean {
+  // Regular expression to check if the string is a valid base64 image string (with a data URI scheme)
+  const base64Regex = /^data:image\/(png|jpeg|jpg|gif);base64,/;
+  return base64Regex.test(base64String);
+}
 
 
  //create new User 
@@ -113,12 +120,48 @@ export const getUserByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   
   try {
 
-    const user = await User.findOne({ where: { id } });
+    const user = await User.findByPk(id);
+
+  //   const user = (
+  //     await User.findOne({ where: { id },
+  //     attributes: ['id', 'firstName', 'lastName'],
+  //     include: [
+  //       {
+  //         model: Course, as: 'course',
+  //         attributes: ['id', 'courseName']
+  //       },
+  //       {
+  //         model: Batch, as: 'batch',
+  //         attributes: ['id', 'batchName']
+  //       },
+  //       {
+  //         model: Module, as: 'module',
+  //         attributes: ['id', 'moduleName']
+  //       },
+  //       {
+  //         model: BatchModuleSchedules, as: 'batchModuleSchedules',
+  //         attributes: ['id', 'scheduleDateTime', 'duration']
+  //       }
+  //     ]
+  //   })
+  // )?.toJSON();
 
     if (!user) {
       res.status(404).json({ message: USER_NOT_FOUND });
       return;
     }
+
+    // const transformedUser = {
+    //   id: user.id,
+    //   firstName: user.firstName,
+    //   lastName: user.lastName,
+    //   course: user.course.map((course: { courseName: string }) => course.courseName),
+    //   batch: user.batch.map((batch: { batchName: string }) => batch.batchName),
+    //   module: user.module.map((module: { moduleName: string }) => module.moduleName),
+    //   batchModuleSchedules: user.batchModuleSchedules.map((batchModuleSchedule: { 
+    //     scheduleDateTime: string, duration: string }) => 
+    //       ({ scheduleDateTime: batchModuleSchedule.scheduleDateTime, duration: batchModuleSchedule.duration }))
+    // }
 
     res.status(200).json({ user })
   } catch {
@@ -156,6 +199,13 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       res.status(404).json({ message: USER_NOT_FOUND });
       return;
     }
+
+     //Validate base64 image format
+     if (!isValidBase64(profilePic)) {
+      res.status(400).json({ message: 'Invalid base64 image format.' });
+      return;
+  }
+
 
     const previousData = {
         firstName: updateUser.firstName,

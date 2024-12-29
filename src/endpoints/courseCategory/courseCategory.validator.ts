@@ -23,24 +23,20 @@ export const courseCategoryValidator: Schema = {
         isString: {
             errorMessage: 'CourseCategoryImage must be a string',
         },
-        // custom: {
-        //     options: (value, { req }) => {
-        //         // Validate that the field exists and is a valid Blob
-        //         if (!req.files || !req.files.courseCategoryImg) {
-        //             throw new Error('CourseCategoryImage must be a file');
-        //         }
-        //         const file = req.files.courseCategoryImg;
-        //         if (!(file instanceof Buffer || file instanceof Blob)) {
-        //             throw new Error('CourseCategoryImage must be a valid Blob or file');
-        //         }
-        //         return true;
-        //     },
-        // },
     },
 };    
 
 
 export const updateCourseCategoryValidator: Schema = {
+    id: {
+        in: 'params',
+        exists: {
+            errorMessage: 'CourseCategory ID is required',
+        },
+        isInt: {
+            errorMessage: 'CourseCategory ID must be an integer',
+        }
+    },
     courseCategory: {
         in: 'body',
         exists: {

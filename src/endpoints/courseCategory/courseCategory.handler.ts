@@ -49,18 +49,18 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
     const { user } = req;
     const { courseCategory, description, courseCategoryImg } = req.body;
 
-    // Validate base64 image format
+    //Validate base64 image format
     if (!isValidBase64(courseCategoryImg)) {
         res.status(400).json({ message: 'Invalid base64 image format.' });
         return;
     }
 
     try {
-        // Create the new course category with the base64 image string
+
         const newCategory = await CourseCategory.create({
             courseCategory,
             description,
-            courseCategoryImg, // Store base64 string directly in DB
+            courseCategoryImg, 
         });
 
         // Log the action in the audit table
@@ -183,6 +183,3 @@ export const deleteCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
     }
 };
 
-function validateBase64Image(courseCategoryImg: any) {
-    throw new Error('Function not implemented.');
-}

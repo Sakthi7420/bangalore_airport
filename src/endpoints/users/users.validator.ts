@@ -151,6 +151,7 @@ export const updateUserValidator: Schema = {
     },
     dateOfJoining: {
         in: 'body',
+        optional: true,
         exists: {
             errorMessage: 'Date of joining is required'
         },
@@ -158,6 +159,7 @@ export const updateUserValidator: Schema = {
             errorMessage: 'Invalid date of joining'
         },
     },
+    
     roleId: {
         in: 'body',
         exists: {

@@ -21,12 +21,10 @@
                     type: integer
                   userId:
                     type: integer
-                  courseCategoryId:
+                  batchId:
                     type: integer
                   courseId:
                     type: integer
-                  enroll:
-                    type: boolean
                   enrollmentDate:
                     type: string
       400:
@@ -70,15 +68,12 @@
               userId:
                 type: integer
                 example: 1
-              courseCategoryId:
+              batchId:
                 type: integer
                 example: 1
               courseId:
                 type: integer
                 example: 1
-              enroll:
-                type: boolean
-                example: true
               enrollmentDate:
                 type: string
                 format: date
@@ -102,14 +97,13 @@
                       type: integer
                     userId:
                       type: integer
-                    courseCategoryId:
+                    batchId:
                       type: integer
                     courseId:
                       type: integer
-                    enroll:
-                      type: boolean
                     enrollmentDate:
                       type: string
+
       500:
         description: Enrolled course creation error
         content:
@@ -159,19 +153,17 @@
               userId:
                 type: integer
                 example: 1
-              courseCategoryId:
+              batchId:
                 type: integer
                 example: 1
               courseId:
                 type: integer
                 example: 1
-              enroll:
-                type: boolean
-                example: true
               enrollmentDate:
                 type: string
                 format: date
                 example: "2023-01-01"
+
     responses:
       200:
         description: Enrolled course updated successfully
@@ -292,12 +284,10 @@
                       type: integer
                     userId:
                       type: integer
-                    courseCategoryId:
+                    batchId:
                       type: integer
                     courseId:
                       type: integer
-                    enroll:
-                      type: boolean
                     enrollmentDate:
                       type: string
       404:

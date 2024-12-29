@@ -103,8 +103,8 @@ export const getRolesHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 };
 
 // Handler to create a new role
-export const createRoleHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const createRoleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
   const { name, description, permissions } = req.body; // permissions should now be an array of actions (strings)

@@ -4,7 +4,7 @@ import {
     EndpointRequestType
 } from 'node-server-engine';
 import { Response } from 'express';
-import { CourseCategory, Course, EnrolledCourse, Audit, User } from 'db'
+import { Course, EnrolledCourse, Audit, User, Batch } from 'db'
 import {
     ENROLLEDCOURSE_CREATE_ERROR,
     ENROLLEDCOURSE_UPDATE_ERROR,
@@ -12,7 +12,7 @@ import {
     ENROLLEDCOURSE_GET_ERROR,
     ENROLLEDCOURSE_NOT_FOUND,
     USER_NOT_FOUND,
-    COURSECATEGORY_NOT_FOUND,
+    BATCH_NOT_FOUND,
     COURSE_NOT_FOUND
 } from './enrolledCourses.const'
 
@@ -22,35 +22,13 @@ export const createEnrolledCourseHandler: EndpointHandler<EndpointAuthType.JWT> 
 ): Promise<void> => {
 
     const { user } = req;
-    const { userId, courseCategoryId, courseId, enrollmentDate } = req.body;
+    const { userId, courseId, batchId, enrollmentDate } = req.body;
 
     try {
-
-        const category = await CourseCategory.findByPk(courseCategoryId);
-
-        const course = await Course.findByPk(courseId);
-
-        const users = await User.findByPk(userId);
-
-        if (!category) {
-            res.status(404).json({ message: COURSECATEGORY_NOT_FOUND });
-            return;
-        }
-
-        if (!course) {
-            res.status(404).json({ message:COURSE_NOT_FOUND });
-            return;
-        }
-
-        if (!users) {
-            res.status(404).json({ message: USER_NOT_FOUND });
-            return;
-        }
-
         //create a enrolledCourse
         const enrolledCourse = await EnrolledCourse.create({
             userId,
-            courseCategoryId,
+            batchId,
             courseId,
             enrollmentDate
         });
@@ -83,15 +61,15 @@ export const getEnrolledCourseByIdHandler: EndpointHandler<EndpointAuthType.JWT>
             include: [
                 {
                     model: User, as: 'trainee',
-                    attributes: ['firstName', 'lastName', 'id']
+                    attributes: ['id','firstName', 'lastName']
                 },
                 {
-                    model: CourseCategory, as: 'courseCategory',
-                    attributes: ['courseCategory', 'id']
+                    model: Batch, as: 'batch',
+                    attributes: ['id','batchName']
                 },
                 {
                     model: Course, as: 'course',
-                    attributes: ['courseName', 'id']
+                    attributes: ['id','courseName']
                 }
             ],
         })
@@ -120,15 +98,15 @@ export const getAllEnrolledCoursesHandler: EndpointHandler<EndpointAuthType.JWT>
             include: [
                 {
                     model: User, as: 'trainee',
-                    attributes: ['firstName', 'lastName', 'id']
+                    attributes: ['id','firstName', 'lastName']
                 },
                 {
-                    model: CourseCategory, as: 'courseCategory',
-                    attributes: ['courseCategory', 'id']
+                    model: Batch, as: 'batch',
+                    attributes: ['id','batchName']
                 },
                 {
                     model: Course, as: 'course',
-                    attributes: ['courseName', 'id']
+                    attributes: ['id','courseName']
                 }
             ],
         });
@@ -151,7 +129,7 @@ export const updateEnrolledCourseHandler: EndpointHandler<EndpointAuthType.JWT> 
 
     const { user } = req;
     const { id } = req.params;
-    const { userId, courseId, courseCategoryId, enrollmentDate } = req.body;
+    const { userId, courseId, batchId, enrollmentDate } = req.body;
 
     try {
 
@@ -162,8 +140,8 @@ export const updateEnrolledCourseHandler: EndpointHandler<EndpointAuthType.JWT> 
             return;
         }
 
-        if (!courseCategoryId) {
-            res.status(400).json({ message: COURSECATEGORY_NOT_FOUND });
+        if (!batchId) {
+            res.status(400).json({ message: BATCH_NOT_FOUND });
             return;
         }
 
@@ -180,14 +158,14 @@ export const updateEnrolledCourseHandler: EndpointHandler<EndpointAuthType.JWT> 
         const previousData = {
             userId: updateEnrolledCourse.userId,
             courseId: updateEnrolledCourse.courseId,
-            courseCategoryId: updateEnrolledCourse.courseCategoryId,
+            batchId: updateEnrolledCourse.batchId,
             enrollmentDate: updateEnrolledCourse.enrollmentDate
         }
 
         updateEnrolledCourse.set({
             userId: userId,
             courseId: courseId,
-            courseCategoryId: courseCategoryId,
+            batchId: batchId,
             enrollmentDate: enrollmentDate
         });
 

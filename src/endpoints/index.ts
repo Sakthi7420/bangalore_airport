@@ -13,3 +13,9 @@ export * from './role';
 export * from './users';
 
 export * from './enrolledCourses';
+
+export * from './batchModuleSchedules';
+
+export * from './modules';
+
+export * from './batch';

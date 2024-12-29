@@ -11,13 +11,13 @@ export const createEnrollCourse: Schema = {
             errorMessage: 'User ID must be an integer',
         }
     },
-    courseCategoryId: {
+    batchId: {
         in: 'body',
         exists: {
-            errorMessage: 'Course Category ID is required',
+            errorMessage: 'Batch ID is required',
         },
         isInt: {
-            errorMessage: 'Course Category ID must be an integer',
+            errorMessage: 'Batch ID must be an integer',
         }
     },
     courseId: {
@@ -27,15 +27,6 @@ export const createEnrollCourse: Schema = {
         },
         isInt: {
             errorMessage: 'Course ID must be an integer',
-        }
-    },
-    enroll: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Enroll is required',
-        },
-        isBoolean: {
-            errorMessage: 'Enroll must be a boolean value',
         }
     },
     enrollmentDate: {
@@ -68,13 +59,13 @@ export const updateEnrollCourse: Schema = {
             errorMessage: 'User ID must be an integer',
         }
     },
-    courseCategoryId: {
+    batchId: {
         in: 'body',
         exists: {
-            errorMessage: 'Course Category ID is required',
+            errorMessage: 'Batch ID is required',
         },
         isInt: {
-            errorMessage: 'Course Category ID must be an integer',
+            errorMessage: 'Batch ID must be an integer',
         }
     },
     courseId: {
@@ -84,15 +75,6 @@ export const updateEnrollCourse: Schema = {
         },
         isInt: {
             errorMessage: 'Course ID must be an integer',
-        }
-    },
-    enroll: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Enroll is required',
-        },
-        isBoolean: {
-            errorMessage: 'Enroll must be a boolean value',
         }
     },
     enrollmentDate: {

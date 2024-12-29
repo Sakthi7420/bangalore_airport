@@ -1,0 +1,236 @@
+/batchModuleSchedule:
+  get:
+    summary: Get all batchModuleSchedule
+    description: Retrieves a list of all batchModuleSchedule
+    tags:
+      - BatchModuleSchedule
+    responses:
+      200:
+        description: List of batchModuleSchedule
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  batchId:
+                    type: integer
+                    example: 1
+                  moduleId:
+                    type: integer
+                    example: 1
+                  trainerId:
+                    type: integer
+                    example: 1
+                  scheduleDate:
+                    type: string
+                    example: '2024-01-02 10:00:00'
+                  duration:
+                    type: integer
+                    example: 60
+
+      404:
+        description: No batchModuleSchedule found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'No batchModuleSchedule found'
+
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching batchModuleSchedule'
+
+  post:
+    summary: Create a new batchModuleSchedule
+    description: Creates a new batchModuleSchedule with provided details.
+    operationId: createbatchModuleSchedule
+    security:
+      - bearerAuth: []
+    tags:
+      - BatchModuleSchedule
+    requestBody: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              batchId:
+                type: integer
+              moduleId:
+                type: integer
+              trainerId:
+                type: integer
+              scheduleDate:
+                type: string
+              duration:
+                type: integer
+        
+    responses:
+      201:
+        description: batchModuleSchedule created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'batchModuleSchedule created successfully'
+      500:
+        description: BatchModuleSchedule creation error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while creating the batchModuleSchedule"
+                error:
+                  type: string
+
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Unauthorized request
+
+/batchModuleSchedule/{id}:
+  put:
+    summary: Update a batchModuleSchedule by ID
+    description: Updates the information of a batchModuleSchedule by ID.
+    operationId: updateBatchModuleSchedule
+    security:
+      - bearerAuth: []
+    tags:
+      - BatchModuleSchedule
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the batchModuleSchedule to update
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              batchId:
+                type: integer
+              moduleId:
+                type: integer
+              trainerId:
+                type: integer
+              scheduleDate:
+                type: string
+              duration:
+                type: integer
+      
+    responses:
+      200:
+        description: batchModuleSchedule updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'batchModuleSchedule updated successfully'
+      404:
+        description: batchModuleSchedule not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'batchModuleSchedule not found'
+      500:
+        description: Error updating batchModuleSchedule
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error updating batchModuleSchedule'
+                error:
+                  type: string
+
+  delete:
+    summary: Delete a batchModuleSchedule by ID
+    description: Deletes a batchModuleSchedule by ID.
+    operationId: deleteBatchModuleSchedule
+    security:
+      - bearerAuth: []
+    tags:
+      - BatchModuleSchedule
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the batchModuleSchedule to delete
+        schema:
+          type: integer
+          example: 1
+    responses:
+      200:
+        description: batchModuleSchedule deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'batchModuleSchedule deleted successfully'
+      404:
+        description: batchModuleSchedule not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'batchModuleSchedule not found'
+      500:
+        description: Error deleting batchModuleSchedule
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error deleting batchModuleSchedule'
+                error:
+                  type: string

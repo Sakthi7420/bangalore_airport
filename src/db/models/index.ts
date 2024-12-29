@@ -12,3 +12,6 @@ export * from './Permission';
 export * from './Role';
 export * from './RolePermission';
 export * from './Audit';
+export * from './Batch';
+export * from './BatchModuleSchedules';
+export * from './Modules';

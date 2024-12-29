@@ -1,34 +1,41 @@
-/course:
+/batch:
   get:
-    summary: Get all courses
-    description: Retrieves a list of all course
+    summary: Get all batches
+    description: Retrieves a list of all batches
     tags:
-      - Course
+      - Batch
     responses:
       200:
-        description: List of all courses
+        description: List of batches
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                courses:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      courseName:
-                        type: string
-                        example: 'Basic of Python'
-                      courseDesc:
-                        type: string
-                        example: 'The course provides basics of Python'
-                      courseCategoryId:
-                        type: integer
-                        example: 1
-        
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  batchName:
+                    type: string
+                    example: 'Batch001'
+                  courseId:
+                    type: integer
+                    example: 1
+                  traineeId:
+                    type: integer
+                    example: 1
+                  startDate:
+                    type: string
+                    format: date
+                    example: '2024-01-01'
+                  endDate:
+                    type: string
+                    format: date
+                    example: '2024-06-30'
       404:
-        description: No courses found
+        description: No batches found
         content:
           application/json:
             schema:
@@ -36,7 +43,7 @@
               properties:
                 message:
                   type: string
-                  example: 'No courses found'
+                  example: 'No batches found'
       500:
         description: Internal server error
         content:
@@ -46,16 +53,16 @@
               properties:
                 message:
                   type: string
-                  example: 'Internal Server Error'
+                  example: 'Error fetching batches'
 
   post:
-    summary: Create a new course
-    description: Creates a new course with provided details.
-    operationId: createCourse
+    summary: Create a new batch
+    description: Creates a new batch with the provided details.
+    operationId: createBatch
     security:
       - bearerAuth: []
     tags:
-      - Course
+      - Batch
     requestBody:
       required: true
       content:
@@ -63,19 +70,26 @@
           schema:
             type: object
             properties:
-              courseName:
+              batchName:
                 type: string
-                example: 'Basic of python'
-              courseDesc:
-                type: string
-                example: 'the course provides basic of python'
-              courseCategoryId:
+                example: 'Batch001'
+              courseId:
                 type: integer
                 example: 1
-    
+              traineeId: 
+                type: integer
+                example: 1
+              startDate:
+                type: string
+                format: date
+                example: '2024-01-01'
+              endDate:
+                type: string
+                format: date
+                example: '2024-06-30'
     responses:
       201:
-        description: course created successfully
+        description: Batch created successfully
         content:
           application/json:
             schema:
@@ -83,9 +97,9 @@
               properties:
                 message:
                   type: string
-                  example: 'course created successfully'
+                  example: 'Batch created successfully'
       500:
-        description: Course creation error
+        description: Batch creation error
         content:
           application/json:
             schema:
@@ -93,10 +107,9 @@
               properties:
                 message:
                   type: string
-                  example: "Error occurred while creating the course"
+                  example: 'Error occurred while creating the batch'
                 error:
                   type: string
-
       401:
         description: Unauthorized
         content:
@@ -106,23 +119,22 @@
               properties:
                 message:
                   type: string
-                  example: Unauthorized request    
-                                    
+                  example: 'Unauthorized request'
 
-/course/{id}:
+/batch/{id}:
   put:
-    summary: Update a course by ID
-    description: Updates the information of course by ID.
-    operationId: updateCourse
+    summary: Update a batch by ID
+    description: Updates the information of a batch by ID.
+    operationId: updateBatch
     security:
       - bearerAuth: []
     tags:
-      - Course
+      - Batch
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the course to update
+        description: ID of the batch to update
         schema:
           type: integer
           example: 1
@@ -133,19 +145,26 @@
           schema:
             type: object
             properties:
-              courseName:
+              batchName:
                 type: string
-                example: 'Updated Python Basics'
-              courseDesc:
-                type: string
-                example: 'Updated description for the Python Basics course'
-              courseCategoryId:
+                example: 'Updated Batch001'
+              courseId:
                 type: integer
-                example: 2
-        
+                example: 1
+              traineeId:
+                type: integer
+                example: 1
+              startDate:
+                type: string
+                format: date
+                example: '2024-02-01'
+              endDate:
+                type: string
+                format: date
+                example: '2024-07-30'
     responses:
       200:
-        description: Course updated successfully
+        description: Batch updated successfully
         content:
           application/json:
             schema:
@@ -153,10 +172,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Course updated successfully'
-      
+                  example: 'Batch updated successfully'
       404:
-        description: Course not found
+        description: Batch not found
         content:
           application/json:
             schema:
@@ -164,7 +182,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Course not found'
+                  example: 'Batch not found'
       500:
         description: Internal server error
         content:
@@ -174,30 +192,29 @@
               properties:
                 message:
                   type: string
-                  example: 'Error updating course'
+                  example: 'Error updating batch'
                 error:
                   type: string
 
-
   delete:
-    summary: Delete a course by ID
-    description: Deletes a course by ID.
-    operationId: deleteCourse
+    summary: Delete a batch by ID
+    description: Deletes a batch by ID.
+    operationId: deleteBatch
     security:
       - bearerAuth: []
     tags:
-      - Course
+      - Batch 
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the course to delete
+        description: ID of the batch to delete
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Course deleted successfully
+        description: Batch deleted successfully
         content:
           application/json:
             schema:
@@ -205,9 +222,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Course deleted successfully'
+                  example: 'Batch deleted successfully'
       404:
-        description: Course not found
+        description: Batch not found
         content:
           application/json:
             schema:
@@ -215,7 +232,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Course not found'
+                  example: 'Batch not found'
       500:
         description: Internal server error
         content:
@@ -225,46 +242,47 @@
               properties:
                 message:
                   type: string
-                  example: 'Error deleting course'
-                error:
-                  type: string
-
+                  example: 'Error deleting batch'
 
   get:
-    summary: Get a course by ID
+    summary: Get a batch by ID
     tags:
-      - Course
+      - Batch
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the course
+        description: ID of the batch
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Course details
+        description: Batch details
         content:
           application/json:
             schema:
               type: object
               properties:
-                course:
-                  type: object
-                  properties:
-                    courseName:
-                      type: string
-                      example: 'Basic of Python'
-                    courseDesc:
-                      type: string
-                      example: 'The course provides basics of Python'
-                    courseCategoryId:
-                      type: integer
-                      example: 1
-                      
+                batchName:
+                  type: string
+                  example: 'Batch001'
+                courseId:
+                  type: integer
+                  example: 1
+                traineeId:
+                  type: integer
+                  example: 1
+                startDate:
+                  type: string
+                  format: date
+                  example: '2024-01-01'
+                endDate:
+                  type: string
+                  format: date
+                  example: '2024-06-30'
       404:
-        description: Course not found
+        description: Batch not found
         content:
           application/json:
             schema:
@@ -272,7 +290,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Course not found'
+                  example: 'Batch not found'
       500:
         description: Internal server error
         content:
@@ -282,10 +300,4 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching course'
-                error:
-                  type: string
-
-
-
-
+                  example: 'Error fetching batch'

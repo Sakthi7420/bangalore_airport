@@ -5,5 +5,5 @@ export const ENROLLEDCOURSE_GET_ERROR = 'Error getting enrolled course';
 export const ENROLLEDCOURSE_NOT_FOUND = 'EnrolledCourse not found';
 
 export const USER_NOT_FOUND = 'User not found';
-export const COURSECATEGORY_NOT_FOUND = 'Course category not found';
+export const BATCH_NOT_FOUND = 'Batch not found';
 export const COURSE_NOT_FOUND = 'Course not found';

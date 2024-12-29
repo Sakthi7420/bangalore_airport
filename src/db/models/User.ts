@@ -5,11 +5,16 @@ import {
   DataType,
   ForeignKey,
   HasMany,
-  BelongsTo
+  BelongsTo,
+  BelongsToMany
 } from 'sequelize-typescript';
 
 import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path to EnrolledCourse model
 import { Role } from './Role';
+import { Batch } from './Batch';
+import { Course } from './Courses';
+import { BatchModuleSchedules } from './BatchModuleSchedules';
+import { Module } from './Modules';
 
 @Table
 export class User extends Model {
@@ -70,4 +75,9 @@ export class User extends Model {
   enrolledCourses!: EnrolledCourse[];
   Role: any;
 
+  @HasMany(() => Batch)
+  batches!: Batch[];
+
+  @HasMany(() => BatchModuleSchedules)
+  batchModuleSchedules!: BatchModuleSchedules[];
 }

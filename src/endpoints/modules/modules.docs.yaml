@@ -1,34 +1,39 @@
-/course:
+/module:
   get:
-    summary: Get all courses
-    description: Retrieves a list of all course
+    summary: Get all modules
+    description: Retrieves a list of all modules, including course and creator information.
     tags:
-      - Course
+      - Module
     responses:
       200:
-        description: List of all courses
+        description: List of all modules
         content:
           application/json:
             schema:
               type: object
               properties:
-                courses:
+                modules:
                   type: array
                   items:
                     type: object
                     properties:
-                      courseName:
+                      moduleName:
                         type: string
-                        example: 'Basic of Python'
-                      courseDesc:
+                        example: 'Introduction to Node.js'
+                      moduleDescription:
                         type: string
-                        example: 'The course provides basics of Python'
-                      courseCategoryId:
+                        example: 'The module provides an introduction to Node.js and its features.'
+                      sequence:
                         type: integer
                         example: 1
-        
+                      course:
+                        type: object
+                        properties:
+                          courseName:
+                            type: string
+                            example: 'Node.js Basics'
       404:
-        description: No courses found
+        description: No modules found
         content:
           application/json:
             schema:
@@ -36,7 +41,7 @@
               properties:
                 message:
                   type: string
-                  example: 'No courses found'
+                  example: 'No modules found'
       500:
         description: Internal server error
         content:
@@ -49,13 +54,13 @@
                   example: 'Internal Server Error'
 
   post:
-    summary: Create a new course
-    description: Creates a new course with provided details.
-    operationId: createCourse
+    summary: Create a new module
+    description: Creates a new module with provided details.
+    operationId: createModule
     security:
       - bearerAuth: []
     tags:
-      - Course
+      - Module
     requestBody:
       required: true
       content:
@@ -63,19 +68,22 @@
           schema:
             type: object
             properties:
-              courseName:
+              courseId:
+                type: integer
+                example: 1
+              moduleName:
                 type: string
-                example: 'Basic of python'
-              courseDesc:
+                example: 'Advanced Node.js'
+              moduleDescription:
                 type: string
-                example: 'the course provides basic of python'
-              courseCategoryId:
+                example: 'In-depth study of Node.js features and modules.'
+              sequence:
                 type: integer
                 example: 1
     
     responses:
       201:
-        description: course created successfully
+        description: Module created successfully
         content:
           application/json:
             schema:
@@ -83,9 +91,41 @@
               properties:
                 message:
                   type: string
-                  example: 'course created successfully'
+                  example: 'Module created successfully'
+                newModule:
+                  type: object
+                  properties:
+                    moduleName:
+                      type: string
+                      example: 'Advanced Node.js'
+                    sequence:
+                      type: integer
+                      example: 2
+      400:
+        description: Missing required fields
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errorCode:
+                  type: string
+                  example: 'invalid-request'
+                message:
+                  type: string
+                  example: 'Missing required fields'
+      404:
+        description: Course not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Course not found'
       500:
-        description: Course creation error
+        description: Module creation error
         content:
           application/json:
             schema:
@@ -93,36 +133,24 @@
               properties:
                 message:
                   type: string
-                  example: "Error occurred while creating the course"
+                  example: 'Error occurred while creating the module'
                 error:
                   type: string
 
-      401:
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: Unauthorized request    
-                                    
-
-/course/{id}:
+/module/{id}:
   put:
-    summary: Update a course by ID
-    description: Updates the information of course by ID.
-    operationId: updateCourse
+    summary: Update a module by ID
+    description: Updates the information of a module by ID.
+    operationId: updateModule
     security:
       - bearerAuth: []
     tags:
-      - Course
+      - Module
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the course to update
+        description: ID of the module to update
         schema:
           type: integer
           example: 1
@@ -133,19 +161,16 @@
           schema:
             type: object
             properties:
-              courseName:
+              moduleName:
                 type: string
-                example: 'Updated Python Basics'
-              courseDesc:
+                example: 'Updated Node.js Basics'
+              moduleDescription:
                 type: string
-                example: 'Updated description for the Python Basics course'
-              courseCategoryId:
-                type: integer
-                example: 2
-        
+                example: 'Updated description for the Node.js Basics module'
+      
     responses:
       200:
-        description: Course updated successfully
+        description: Module updated successfully
         content:
           application/json:
             schema:
@@ -153,10 +178,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Course updated successfully'
-      
+                  example: 'Module updated successfully'
       404:
-        description: Course not found
+        description: Module not found
         content:
           application/json:
             schema:
@@ -164,9 +188,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Course not found'
+                  example: 'Module not found'
       500:
-        description: Internal server error
+        description: Error updating module
         content:
           application/json:
             schema:
@@ -174,30 +198,29 @@
               properties:
                 message:
                   type: string
-                  example: 'Error updating course'
+                  example: 'Error updating module'
                 error:
                   type: string
 
-
   delete:
-    summary: Delete a course by ID
-    description: Deletes a course by ID.
-    operationId: deleteCourse
+    summary: Delete a module by ID
+    description: Deletes a module by ID.
+    operationId: deleteModule
     security:
       - bearerAuth: []
     tags:
-      - Course
+      - Module
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the course to delete
+        description: ID of the module to delete
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Course deleted successfully
+        description: Module deleted successfully
         content:
           application/json:
             schema:
@@ -205,9 +228,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Course deleted successfully'
+                  example: 'Module deleted successfully'
       404:
-        description: Course not found
+        description: Module not found
         content:
           application/json:
             schema:
@@ -215,9 +238,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Course not found'
+                  example: 'Module not found'
       500:
-        description: Internal server error
+        description: Error deleting module
         content:
           application/json:
             schema:
@@ -225,46 +248,53 @@
               properties:
                 message:
                   type: string
-                  example: 'Error deleting course'
+                  example: 'Error deleting module'
                 error:
                   type: string
-
 
   get:
-    summary: Get a course by ID
+    summary: Get a module by ID
+    description: Retrieves details of a module by ID.
+    operationId: getModule
     tags:
-      - Course
+      - Module
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the course
+        description: ID of the module
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Course details
+        description: Module details
         content:
           application/json:
             schema:
               type: object
               properties:
-                course:
+                module:
                   type: object
                   properties:
-                    courseName:
+                    moduleName:
                       type: string
-                      example: 'Basic of Python'
-                    courseDesc:
+                      example: 'Introduction to Node.js'
+                    moduleDescription:
                       type: string
-                      example: 'The course provides basics of Python'
-                    courseCategoryId:
+                      example: 'This module covers the basics of Node.js.'
+                    sequence:
                       type: integer
                       example: 1
-                      
+                    course:
+                      type: object
+                      properties:
+                        courseName:
+                          type: string
+                          example: 'Node.js Basics'
+
       404:
-        description: Course not found
+        description: Module not found
         content:
           application/json:
             schema:
@@ -272,7 +302,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Course not found'
+                  example: 'Module not found'
       500:
         description: Internal server error
         content:
@@ -282,10 +312,6 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching course'
+                  example: 'Error fetching module'
                 error:
                   type: string
-
-
-
-

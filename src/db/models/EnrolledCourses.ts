@@ -2,6 +2,7 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize
 import { User } from './User';
 import { CourseCategory } from './CourseCategory';
 import { Course } from './Courses';
+import { Batch } from './Batch';
 
 @Table
 export class EnrolledCourse extends Model {
@@ -9,16 +10,13 @@ export class EnrolledCourse extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   userId!: number;
 
-  @ForeignKey(() => CourseCategory)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  courseCategoryId!: number;
-
   @ForeignKey(() => Course)
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseId!: number;
 
-  @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })
-  enroll!: boolean;
+  @ForeignKey(() => Batch)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  batchId!: number;
 
   @Column({ type: DataType.DATE, allowNull: true })
   enrollmentDate!: Date;
@@ -36,7 +34,7 @@ export class EnrolledCourse extends Model {
   @BelongsTo(() => Course, { as: 'course' })
   course!: Course;
 
-  @BelongsTo(() => CourseCategory, { as: 'courseCategory' })
-  courseCategory!: CourseCategory;
+  @BelongsTo(() => Batch, { as: 'batch' })
+  batch!: Batch;
 
 }

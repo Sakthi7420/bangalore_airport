@@ -18,16 +18,6 @@ export async function up(queryInterface: QueryInterface): Promise<void>{
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE'
         },
-        courseCategoryId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'CourseCategory',
-                key: 'id'
-            },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE'
-        },
         courseId: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -38,10 +28,15 @@ export async function up(queryInterface: QueryInterface): Promise<void>{
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE'
         },
-        enroll: {
-            type: DataTypes.BOOLEAN,
+        batchId: {
+            type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: true
+            references: {
+                model: 'Batch',
+                key: 'id'
+            },
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE'
         },
         enrollmentDate: {
             type: DataTypes.DATE,
