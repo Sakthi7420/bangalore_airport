@@ -122,8 +122,8 @@ export const deleteBatchValidator: Schema = {
         exists: {
             errorMessage: 'Batch ID is required'
         },
-        isString: {
-            errorMessage: 'Batch ID must be a string'
+        isInt: {
+            errorMessage: 'Batch ID must be a integer'
         }
     }
 };

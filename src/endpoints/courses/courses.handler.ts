@@ -34,9 +34,9 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
       return;
     }
 
-    res.status(200).json({ course: course });
+    res.status(200).json({ course });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', data: error });
+    res.status(500).json({ message: COURSE_GET_ERROR, error });
   }
 }
 
@@ -94,11 +94,11 @@ export const getCourseByIdHandler: EndpointHandler<EndpointAuthType> = async (
     });
 
     if (!course) {
-      res.status(404).json({ message: 'Course not found' });
+      res.status(404).json({ message: COURSE_NOT_FOUND });
       return;
     }
 
-    res.status(200).json({ course: course });
+    res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ message: COURSE_GET_ERROR, error });
   }
@@ -141,8 +141,6 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
       courseCategoryId: courseCategoryId
     });
 
-    await updateCourse.save();
-
     await Audit.create({
       entityType: 'Course',
       entityId: updateCourse.id,
@@ -151,6 +149,8 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
       newData: updateCourse,
       performedBy: user?.id
     });
+
+    await updateCourse.save();
 
     res.status(200).json({ message: 'Course updated successfully', updateCourse });
   } catch (error) {
@@ -171,7 +171,7 @@ export const deleteCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
     const deleteCourse = await Course.findByPk(id);
 
     if (!deleteCourse) {
-      res.status(404).json({ message: 'Course not found' });
+      res.status(404).json({ message: COURSE_NOT_FOUND });
       return;
     }
 

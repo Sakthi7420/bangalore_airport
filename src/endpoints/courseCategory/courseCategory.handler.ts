@@ -36,9 +36,9 @@ export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
             return;
         }
 
-        res.status(200).json({ category: categories  });
+        res.status(200).json({ categories  });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching categories', data: error });
+        res.status(500).json({ message: COURSECATEGORY_GET_ERROR, error });
     }
 };
 
@@ -73,7 +73,7 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
         });
 
         // Respond with success
-        res.status(201).json({ message: 'Course category created successfully', data: newCategory });
+        res.status(201).json({ message: 'Course category created successfully', newCategory });
     } catch (error) {
         res.status(500).json({ message: COURSECATEGORY_CREATION_ERROR, error });
     }
@@ -92,12 +92,12 @@ export const getCategoryByIdHandler: EndpointHandler<EndpointAuthType> = async (
         const category = await CourseCategory.findByPk(id);
 
         if (!category) {
-            res.status(404).json({ message: 'CategoryId not found' })
+            res.status(404).json({ message: COURSECATEGORY_NOT_FOUND })
             return;
         }
         res.status(200).json({ category });
     } catch (error) {
-        res.status(500).json({ message: COURSECATEGORY_GET_ERROR, data: error });
+        res.status(500).json({ message: COURSECATEGORY_GET_ERROR, error });
     }
 };
 
@@ -116,7 +116,7 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
         const updateCategory = await CourseCategory.findByPk(id);
 
         if (!updateCategory) {
-            res.status(404).json({ message: 'Category not found' });
+            res.status(404).json({ message: COURSECATEGORY_NOT_FOUND });
             return;
         }
 
@@ -132,8 +132,6 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
             courseCategoryImg: courseCategoryImg
         });
 
-        await updateCategory.save();
-
         await Audit.create({
             entityType: 'CourseCategory',
             entityId: updateCategory.id,
@@ -142,6 +140,8 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
             newData: updateCategory,
             performedBy: user?.id
           });
+
+          await updateCategory.save();
 
         res.status(200).json({ message: 'Category updated successfully', updateCategory });
     } catch (error) {
@@ -163,7 +163,7 @@ export const deleteCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
         const deleteCategory = await CourseCategory.findByPk(id);
 
         if (!deleteCategory) {
-            res.status(404).json({ message: 'Category not found' });
+            res.status(404).json({ message: COURSECATEGORY_NOT_FOUND });
             return;
         }
 

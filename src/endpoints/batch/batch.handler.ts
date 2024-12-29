@@ -41,9 +41,8 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         }
 
         res.status(200).json({ Batches: batches  });
-        console.log('batches', batches)
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching batches', data: error });
+        res.status(500).json({ message: BATCH_GET_ERROR, error });
     }
 };
 
@@ -76,7 +75,7 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
         res
             .status(201)
-            .json({ message: 'Batch created successfully', data: newBatch });
+            .json({ message: 'Batch created successfully', newBatch });
     }
     catch (error) {
         res
@@ -108,7 +107,7 @@ export const getBatchByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async 
         });
 
         if (!batch) {
-            res.status(404).json({ message: 'BatchId not found' })
+            res.status(404).json({ message: BATCH_NOT_FOUND })
             return;
         }
 
@@ -157,8 +156,6 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
             endDate: endDate
         });
 
-        await updateBatch.save();
-
         await Audit.create({
             entityType: 'Batch',
             entityId: updateBatch.id,
@@ -167,6 +164,8 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
             newData: updateBatch,
             performedBy: user?.id
           });
+
+          await updateBatch.save();
 
         res.status(200).json({ message: 'Batch updated successfully', updateBatch });
     } catch (error) {
@@ -188,7 +187,7 @@ export const deleteBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         const deleteBatch = await Batch.findByPk(id);
 
         if (!deleteBatch) {
-            res.status(404).json({ message: 'Batch not found' });
+            res.status(404).json({ message: BATCH_NOT_FOUND });
             return;
         }
 

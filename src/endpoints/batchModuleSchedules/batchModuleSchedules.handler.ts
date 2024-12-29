@@ -46,9 +46,9 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
             return;
         }
 
-        res.status(200).json({ data: batchModuleSchedule });
+        res.status(200).json({ batchModuleSchedule });
     } catch (error) {
-        res.status(500).json({ message: BATCHMODULESCHEDULES_FETCH_ERROR });
+        res.status(500).json({ message: BATCHMODULESCHEDULES_FETCH_ERROR, error });
     }
 }
 
@@ -80,8 +80,7 @@ export const createBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             performedBy: user?.id,
         });
 
-        // Respond with success
-        res.status(201).json({ message: 'BactchSchedule created successfully', data: newBatchModuleSchedule });
+        res.status(201).json({ message: 'BactchSchedule created successfully', newBatchModuleSchedule });
     } catch (error) {
         res.status(500).json({ message: BATCHMODULESCHEDULES_CREATION_ERROR, error });
     }
@@ -121,7 +120,7 @@ export const getBatchModuleScheduleByIdHandler: EndpointHandler<EndpointAuthType
 
         res.status(200).json({ batchModuleSchedule });
     } catch (error) {
-        res.status(500).json({ message: BATCHMODULESCHEDULES_FETCH_ERROR })
+        res.status(500).json({ message: BATCHMODULESCHEDULES_FETCH_ERROR, error })
     }
 };
 
@@ -190,7 +189,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
 
         res.status(200).json({ message: 'Batch ModuleSchedule updated successfully', updateBatchModuleSchedule });
     } catch (error) {
-        res.status(500).json({ message: BATCHMODULESCHEDULES_UPDATE_ERROR })
+        res.status(500).json({ message: BATCHMODULESCHEDULES_UPDATE_ERROR, error })
     }
 }
 
@@ -208,7 +207,7 @@ export const deleteBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
         const deleteBatchModuleSchedule = await BatchModuleSchedules.findByPk(id);
 
         if (!deleteBatchModuleSchedule) {
-            res.status(404).json({ message: 'BatchModuleSchedule not found' })
+            res.status(404).json({ message: BATCHMODULESCHEDULES_NOT_FOUND })
             return;
         }
 
@@ -224,6 +223,6 @@ export const deleteBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
 
         res.status(200).json({ message: 'BatchModuleSchedule deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: BATCHMODULESCHEDULES_DELETION_ERROR })
+        res.status(500).json({ message: BATCHMODULESCHEDULES_DELETION_ERROR, error })
     }
 }
