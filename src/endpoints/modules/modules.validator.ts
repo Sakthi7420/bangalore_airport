@@ -37,15 +37,15 @@ export const createModuleValidator: Schema = {
 //       errorMessage: 'Sequence must be an integer',
 //     },
 //   },
-  createdBy: {
-    in: 'body',
-    exists: {
-      errorMessage: 'Created By (User ID) is required',
-    },
-    isInt: {
-      errorMessage: 'Created By must be an integer',
-    },
-  },
+  // createdBy: {
+  //   in: 'body',
+  //   exists: {
+  //     errorMessage: 'Created By (User ID) is required',
+  //   },
+  //   isInt: {
+  //     errorMessage: 'Created By must be an integer',
+  //   },
+  // },
 };
 
 export const updateModuleValidator: Schema = {

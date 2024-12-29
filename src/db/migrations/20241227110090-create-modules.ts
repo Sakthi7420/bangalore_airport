@@ -32,7 +32,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     },
     createdBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Users', // Referencing the Users table
         key: 'id',

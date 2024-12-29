@@ -30,7 +30,7 @@ import {
     sequence!: number;
   
     @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER, allowNull: false })
+    @Column({ type: DataType.INTEGER, allowNull: true })
     createdBy!: number;
   
     @BelongsTo(() => User, 'createdBy')

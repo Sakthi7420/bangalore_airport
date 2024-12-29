@@ -41,11 +41,10 @@ import {
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
   ): Promise<void> => {
-    const { courseId, moduleName, moduleDescription, createdBy } = req.body;
-    let finalSequence;
+    const { courseId, moduleName, moduleDescription } = req.body;
   
     try {
-      if (!courseId || !moduleName || !moduleDescription || !createdBy) {
+      if (!courseId || !moduleName || !moduleDescription) {
         // Return a 400 error if any required fields are missing
         res.status(400).json({
           errorCode: 'invalid-request',
@@ -83,7 +82,6 @@ import {
         moduleName,
         moduleDescription,
         sequence: finalSequence, // Use the calculated sequence
-        createdBy,
       });
   
       // Log the new module to check its values
