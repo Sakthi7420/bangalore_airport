@@ -17,18 +17,8 @@ export class Course extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseCategoryId!: number;
 
-  // @ForeignKey(() => User)
-  // @Column({ type: DataType.INTEGER, allowNull: false })
-  // courseInstructorId!: number;
-
-  @BelongsTo(() => CourseCategory, { as: 'category' })
+  @BelongsTo(() => CourseCategory, { as: 'category', foreignKey: 'courseCategoryId' })
   category!: CourseCategory;
-
-  // @BelongsTo(() => User)
-  // instructor!: User;
-  // CourseCategory: any;
-  // User: any;
-  // trainer: any;
 
   @HasMany(() => Module)
   module!: Module[];

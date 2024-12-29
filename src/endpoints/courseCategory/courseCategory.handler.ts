@@ -36,7 +36,7 @@ export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
             return;
         }
 
-        res.status(200).json({ categories  });
+        res.status(200).json({ categories });
     } catch (error) {
         res.status(500).json({ message: COURSECATEGORY_GET_ERROR, error });
     }

@@ -35,7 +35,7 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
                     attributes: ['id', 'batchName']
                 },
                 {
-                    model: User, as: 'trainer',
+                    model: User, as: 'trainee',
                     attributes: ['id', 'firstName', 'lastName']
                 }
             ]

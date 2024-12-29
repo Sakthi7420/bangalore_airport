@@ -23,8 +23,8 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
     const course = await Course.findAll({
         include: [
           {
-            model: CourseCategory,
-            attributes: ['di','courseCategory'] 
+            model: CourseCategory, as: 'category',
+            attributes: ['id','courseCategory'] 
           }
           ]
       });

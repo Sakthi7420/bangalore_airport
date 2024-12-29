@@ -13,6 +13,7 @@ export class CourseCategory extends Model {
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseCategoryImg!: string;
 
-  @HasMany(() => Course)
+  @HasMany(() => Course, { foreignKey: 'courseCategoryId' })
   courses!: Course[];
+
 }

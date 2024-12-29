@@ -34,39 +34,76 @@ export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
     }
 };
 
+// export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+//     req: EndpointRequestType[EndpointAuthType.JWT],
+//     res: Response
+// ): Promise<void> => {
+
+//     const { user } = req;
+//     const { courseId, moduleName, moduleDescription, sequence } = req.body;
+
+
+//     try {
+
+//         const newModule = await Module.create({
+//             courseId,
+//             moduleName,
+//             moduleDescription,
+//             sequence,
+//         });
+
+//         // Log the action in the audit table
+//         await Audit.create({
+//             entityType: 'module',
+//             entityId: newModule.id,
+//             action: 'CREATE',
+//             newData: newModule,
+//             performedBy: user?.id,
+//         });
+
+//         res.status(201).json({ message: 'Module created successfully', newModule });
+//     } catch(error) {
+//         res.status(500).json({ message: MODULE_CREATION_ERROR, error });
+//     }
+// };
+
 export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
-): Promise<void> => {
-
+  ): Promise<void> => {
     const { user } = req;
-    const { courseId, moduleName, moduleDescription, sequence } = req.body;
-
-
+    const { courseId, moduleName, moduleDescription } = req.body; // Removed sequence from the payload
+  
     try {
-
-        const newModule = await Module.create({
-            courseId,
-            moduleName,
-            moduleDescription,
-            sequence,
-        });
-
-        // Log the action in the audit table
-        await Audit.create({
-            entityType: 'module',
-            entityId: newModule.id,
-            action: 'CREATE',
-            newData: newModule,
-            performedBy: user?.id,
-        });
-
-        res.status(201).json({ message: 'Module created successfully', newModule });
-    } catch(error) {
-        res.status(500).json({ message: MODULE_CREATION_ERROR, error });
+      // Get the highest sequence number for the given courseId
+      const maxSequence = await Module.max('sequence', { where: { courseId } });
+  
+      // If no modules exist for this courseId, start from 1
+      const nextSequence = (typeof maxSequence === 'number' ? maxSequence : 0) + 1;
+  
+      const newModule = await Module.create({
+        courseId,
+        moduleName,
+        moduleDescription,
+        sequence: nextSequence,
+      });
+  
+      // Log the action in the audit table
+      await Audit.create({
+        entityType: 'module',
+        entityId: newModule.id,
+        action: 'CREATE',
+        newData: newModule,
+        performedBy: user?.id,
+      });
+  
+      res.status(201).json({ message: 'Module created successfully', newModule });
+    } catch (error) {
+      console.error("Module creation error:", error);
+      res.status(500).json({ message: MODULE_CREATION_ERROR, error });
     }
-};
-
+  };
+  
 //get by id
 export const getModuleByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
@@ -130,7 +167,7 @@ export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async 
             courseId: courseId,
             moduleName: moduleName,
             moduleDescription: moduleDescription,
-            sequence: sequence,
+            sequence: sequence ?? updateModule.sequence
         });
 
         await Audit.create({

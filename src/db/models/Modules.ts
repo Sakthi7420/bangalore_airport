@@ -25,7 +25,7 @@ import { User } from './User';
     @Column({ type: DataType.TEXT, allowNull: true })
     moduleDescription?: string;
   
-    @Column({ type: DataType.INTEGER, allowNull: false })
+    @Column({ type: DataType.INTEGER, allowNull: true })
     sequence!: number;
 
     @BelongsTo(() => Course)

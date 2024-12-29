@@ -56,7 +56,15 @@ export const updateModuleValidator: Schema = {
       options: { min: 10 },
     },
   },
-};
+  sequence: {
+    in: 'body',
+    optional: { options: { nullable: true } },
+    isInt: {
+      errorMessage: 'sequence must be integer',
+    }
+  }
+}
+
 
 export const deleteModuleValidator: Schema = {
   id: {
