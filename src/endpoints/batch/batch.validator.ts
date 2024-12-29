@@ -55,6 +55,15 @@ export const batchValidator: Schema = {
 
 // Validator for updating a batch
 export const updateBatchValidator: Schema = {
+    id: {
+        in: 'params',
+        exists: {
+            errorMessage: 'Batch ID is required'
+        },
+        isInt: {
+            errorMessage: 'Batch ID must be a integer'
+        }
+    },
     batchName: {
         in: 'body',
         exists: {

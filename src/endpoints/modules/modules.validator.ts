@@ -32,7 +32,7 @@ export const createModuleValidator: Schema = {
 
 export const updateModuleValidator: Schema = {
   id: {
-    in: 'body',
+    in: 'params',
     exists: {
       errorMessage: 'id must be required'
     },

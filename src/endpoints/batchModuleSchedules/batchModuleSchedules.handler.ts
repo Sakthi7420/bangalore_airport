@@ -125,6 +125,7 @@ export const getBatchModuleScheduleByIdHandler: EndpointHandler<EndpointAuthType
     }
 };
 
+
 //Update BatchModuleSchedule
 export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
@@ -144,23 +145,17 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             return;
         }
 
-        const batch = await Batch.findByPk(id);
-
-        if (!batch) {
+        if (!batchId) {
             res.status(404).json({ message: BATCH_NOT_FOUND })
             return;
         }
 
-        const module = await Module.findByPk(id);
-
-        if (!module) {
+        if (!moduleId) {
             res.status(404).json({ message: MODULES_NOT_FOUND });
             return;
         }
 
-        const trainer = await User.findByPk(id);
-
-        if (!trainer) {
+        if (!trainerId) {
             res.status(404).json({ message: TRAINER_NOT_FOUND });
             return;
         }
@@ -181,7 +176,6 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             Duration: Duration
         });
 
-        await updateBatchModuleSchedule.save();
 
         await Audit.create({
             entityType: 'batchModuleSchedule',
@@ -192,7 +186,9 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             performedBy: user?.id
         });
 
-        res.status(200).json({ message: 'Batch ModuleSchedule updated successfully' });
+        await updateBatchModuleSchedule.save();
+
+        res.status(200).json({ message: 'Batch ModuleSchedule updated successfully', updateBatchModuleSchedule });
     } catch (error) {
         res.status(500).json({ message: BATCHMODULESCHEDULES_UPDATE_ERROR })
     }

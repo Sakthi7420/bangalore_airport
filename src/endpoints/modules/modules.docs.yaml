@@ -161,12 +161,18 @@
           schema:
             type: object
             properties:
+              courseId:
+                type: integer
+                example: 1
               moduleName:
                 type: string
                 example: 'Updated Node.js Basics'
               moduleDescription:
                 type: string
                 example: 'Updated description for the Node.js Basics module'
+              sequence:
+                type: integer
+                example: 1
       
     responses:
       200:

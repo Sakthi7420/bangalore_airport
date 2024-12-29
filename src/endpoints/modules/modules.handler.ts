@@ -61,7 +61,7 @@ export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async 
             performedBy: user?.id,
         });
 
-        res.status(200).json({ message: 'Module created successfully', newModule });
+        res.status(201).json({ message: 'Module created successfully', newModule });
     } catch(error) {
         res.status(500).json({ message: MODULE_CREATION_ERROR, error });
     }
@@ -114,9 +114,7 @@ export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async 
             return;
         }
 
-        const course = await Course.findByPk(courseId);
-
-        if (!course) {
+        if (!courseId) {
             res.status(404).json({ message: COURSE_NOT_FOUND });
             return;
         }
@@ -129,10 +127,10 @@ export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async 
         };
 
         updateModule.set({
-            courseId,
-            moduleName,
-            moduleDescription,
-            sequence,
+            courseId: courseId,
+            moduleName: moduleName,
+            moduleDescription: moduleDescription,
+            sequence: sequence,
         });
 
         await Audit.create({
@@ -144,7 +142,9 @@ export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async 
             performedBy: user?.id,
         });
 
-        res.status(200).json({ message: 'Module updated successfully', module });
+        await updateModule.save();
+
+        res.status(200).json({ message: 'Module updated successfully', updateModule });
     } catch (error) {
         res.status(500).json({ message: MODULE_UPDATE_ERROR, error });
     }

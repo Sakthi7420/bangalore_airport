@@ -234,3 +234,63 @@
                   example: 'Error deleting batchModuleSchedule'
                 error:
                   type: string
+
+  get:
+    summary: Get a batchModuleSchedules by ID
+    description: Retrieves the details of a specific batchSchedule by ID.
+    operationId: getBatchModuleScheduleById
+    security:
+      - bearerAuth: []
+    tags:
+      - BatchModuleSchedule
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the batchModuleSchedule to retrieve
+        schema:
+          type: integer
+          example: 1
+    responses:
+      200:
+        description: BatchModuleSchedule details retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enrolledCourse:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    userId:
+                      type: integer
+                    batchId:
+                      type: integer
+                    courseId:
+                      type: integer
+                    enrollmentDate:
+                      type: string
+      404:
+        description: BatchModuleSchedule not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "BatchModuleSchedule not found"
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while retrieving batchModuleSchedule"
+                error:
+                  type: string

@@ -169,8 +169,6 @@ export const updateEnrolledCourseHandler: EndpointHandler<EndpointAuthType.JWT> 
             enrollmentDate: enrollmentDate
         });
 
-        await updateEnrolledCourse.save();
-
         await Audit.create({
             entityType: 'enrolledCourse',
             entityId: updateEnrolledCourse.id,
@@ -179,6 +177,8 @@ export const updateEnrolledCourseHandler: EndpointHandler<EndpointAuthType.JWT> 
             newData: updateEnrolledCourse,
             performedBy: user?.id
         });
+
+        await updateEnrolledCourse.save();
 
         res.status(200).json({ message: 'enrolledCourse updated successfully', updateEnrolledCourse });
     } catch (error) {

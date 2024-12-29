@@ -33,9 +33,6 @@ export const batchModuleScheduleValidator: Schema = {
         exists: {
             errorMessage: 'Schedule Date is required',
         },
-        isDate: {
-            errorMessage: 'Schedule Date must be a valid date',
-        },
         custom: {
             options: (value) => {
                 // Manually validate the format of "YYYY-MM-DD HH:mm:ss"
@@ -100,15 +97,12 @@ export const updateBatchModuleScheduleValidator: Schema = {
         exists: {
             errorMessage: 'Schedule Date is required',
         },
-        isDate: {
-            errorMessage: 'Schedule Date must be a valid date',
-        },
         custom: {
             options: (value) => {
                 // Manually validate the format of "YYYY-MM-DD HH:mm:ss"
                 const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
                 if (!regex.test(value)) {
-                    throw new Error('Schedule Date must be in the format YYYY-MM-DD HH:mm:ss');
+                    throw new Error('Schedule DateTime must be in the format YYYY-MM-DD HH:mm:ss');
                 }
                 return true;
             }
