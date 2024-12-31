@@ -1,6 +1,6 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 
-import { Course } from './Courses'; // Ensure the path to the Course model is correct
+import { Course } from './Courses'; 
 
 @Table
 export class CourseCategory extends Model {
@@ -13,6 +13,7 @@ export class CourseCategory extends Model {
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseCategoryImg!: string;
 
-  @HasMany(() => Course)
+  @HasMany(() => Course, { foreignKey: 'courseCategoryId' })
   courses!: Course[];
+
 }

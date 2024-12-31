@@ -3,25 +3,37 @@ import {
     EndpointHandler,
     EndpointRequestType
 } from 'node-server-engine';
-import { Batch, Audit } from 'db';
+import { Batch, Audit, User, Course } from 'db';
 import { Response } from 'express';
 import { 
     BATCH_NOT_FOUND,
     BATCH_CREATION_ERROR,
     BATCH_UPDATE_ERROR,
     BATCH_DELETION_ERROR,
-    BATCH_GET_ERROR
+    BATCH_GET_ERROR,
+    USER_NOT_FOUND
 } from './batch.const';
 
 //Get batch
-export const getBatchHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
+export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
 
     try {
 
-        const batches = await Batch.findAll();
+        const batches = await Batch.findAll({
+            include: [
+                {
+                    model: Course, as: 'course',
+                    attributes:['id','courseName']
+                },
+                {
+                    model: User, as: 'trainee',
+                    attributes: ['id','firstName', 'lastName']
+                }
+            ]
+        });
 
         if (batches.length === 0) {
             res.status(404).json({ message: BATCH_NOT_FOUND });
@@ -30,24 +42,25 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType> = async (
 
         res.status(200).json({ Batches: batches  });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching batches', data: error });
+        res.status(500).json({ message: BATCH_GET_ERROR, error });
     }
 };
 
 
 //create batch
-export const BatchHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
+export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
 
     const { user } = req;
-    const { batchName, shiftTime, startDate, endDate } = req.body;
+    const { batchName, courseId, traineeId, startDate, endDate } = req.body;
 
     try {
         const newBatch = await Batch.create({
             batchName,
-            shiftTime,
+            courseId,
+            traineeId,
             startDate,
             endDate
         });
@@ -62,7 +75,7 @@ export const BatchHandler: EndpointHandler<EndpointAuthType> = async (
 
         res
             .status(201)
-            .json({ message: 'Batch created successfully', data: newBatch });
+            .json({ message: 'Batch created successfully', newBatch });
     }
     catch (error) {
         res
@@ -72,20 +85,32 @@ export const BatchHandler: EndpointHandler<EndpointAuthType> = async (
 };
 
 // Get batch by ID
-export const getBatchByIdHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
+export const getBatchByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
 
     const { id } = req.params;
 
     try {
-        const batch = await Batch.findByPk(id);
+        const batch = await Batch.findByPk(id, {
+            include: [
+                {
+                    model: Course, as: 'course',
+                    attributes:['id', 'courseName']
+                },
+                {
+                    model: User, as: 'trainee',
+                    attributes: ['id', 'firstName', 'lastName']
+                }
+            ]
+        });
 
         if (!batch) {
-            res.status(404).json({ message: 'BatchId not found' })
+            res.status(404).json({ message: BATCH_NOT_FOUND })
             return;
         }
+
         res.status(200).json({ batch });
     } catch (error) {
         res.status(500).json({ message: BATCH_GET_ERROR, data: error });
@@ -100,7 +125,7 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
     const { id } = req.params;
     const { user } = req;
-    const { batchName, shiftTime, startDate, endDate } = req.body;
+    const { batchName, courseId, traineeId, startDate, endDate } = req.body;
     
     try {
 
@@ -111,21 +136,25 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
             return;
         }
 
+        if (!traineeId) {
+            res.status(404).json({ message: USER_NOT_FOUND })
+        }
+
         const previousData = {
             batchName: updateBatch.batchName,
-            shiftTime: updateBatch.shiftTime,
+            courseId: updateBatch.courseId,
+            traineeId: updateBatch.traineeId,
             startDate: updateBatch.startDate,
             endDate: updateBatch.endDate   
           }
 
           updateBatch.set({
             batchName: batchName,
-            shiftTime: shiftTime,
+            courseId: courseId,
+            traineeId: traineeId,
             startDate: startDate,
             endDate: endDate
         });
-
-        await updateBatch.save();
 
         await Audit.create({
             entityType: 'Batch',
@@ -135,6 +164,8 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
             newData: updateBatch,
             performedBy: user?.id
           });
+
+          await updateBatch.save();
 
         res.status(200).json({ message: 'Batch updated successfully', updateBatch });
     } catch (error) {
@@ -156,7 +187,7 @@ export const deleteBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         const deleteBatch = await Batch.findByPk(id);
 
         if (!deleteBatch) {
-            res.status(404).json({ message: 'Batch not found' });
+            res.status(404).json({ message: BATCH_NOT_FOUND });
             return;
         }
 

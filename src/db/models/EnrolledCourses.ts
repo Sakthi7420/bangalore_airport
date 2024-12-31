@@ -2,6 +2,7 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize
 import { User } from './User';
 import { CourseCategory } from './CourseCategory';
 import { Course } from './Courses';
+import { Batch } from './Batch';
 
 @Table
 export class EnrolledCourse extends Model {
@@ -9,16 +10,13 @@ export class EnrolledCourse extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   userId!: number;
 
-  @ForeignKey(() => CourseCategory)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  courseCategoryId!: number;
-
   @ForeignKey(() => Course)
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseId!: number;
 
-  @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })
-  enroll!: boolean;
+  @ForeignKey(() => Batch)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  batchId!: number;
 
   @Column({ type: DataType.DATE, allowNull: true })
   enrollmentDate!: Date;
@@ -28,11 +26,15 @@ export class EnrolledCourse extends Model {
     defaultValue: 'active',
     allowNull: false,
   })
-  enrollmentStatus!: 'active' | 'completed' | 'inactive'; // New field to track enrollment status
+  enrollmentStatus!: 'active' | 'completed' | 'inactive';
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { as: 'trainee' })
   user!: User;
 
-  @BelongsTo(() => Course)
+  @BelongsTo(() => Course, { as: 'course' })
   course!: Course;
+
+  @BelongsTo(() => Batch, { as: 'batch' })
+  batch!: Batch;
+
 }

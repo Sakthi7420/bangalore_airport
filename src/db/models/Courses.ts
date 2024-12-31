@@ -1,6 +1,9 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo, AllowNull } from 'sequelize-typescript';
-import { User } from './User';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { CourseCategory } from './CourseCategory';
+import { Batch } from './Batch';
+import { EnrolledCourse } from './EnrolledCourses';
+import { Module } from './Modules'
+import { User } from './User';
 
 @Table
 export class Course extends Model {
@@ -14,13 +17,16 @@ export class Course extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseCategoryId!: number;
 
-  @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  courseInstructorId!: number;
-
-  @BelongsTo(() => CourseCategory)
+  @BelongsTo(() => CourseCategory, { as: 'category', foreignKey: 'courseCategoryId' })
   category!: CourseCategory;
 
-  @BelongsTo(() => User)
-  instructor!: User;
-}
+  @HasMany(() => Module)
+  module!: Module[];
+
+  @HasMany(() => EnrolledCourse)
+  enrolledCourses!: EnrolledCourse[];
+
+  @HasMany(() => Batch)
+  batches!: Batch[]; 
+
+};

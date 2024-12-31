@@ -25,8 +25,19 @@ export const getModulesEndpoint = new Endpoint({
   path: '/module',
   method: EndpointMethod.GET,
   handler: getModulesHandler,
-  authType: EndpointAuthType.NONE,
+  authType: EndpointAuthType.JWT,
   validator: {},
+  middleware: [checkPermission('GetModule')]
+});
+
+
+export const getModulesByIdEndpoint = new Endpoint({
+  path: '/module/:id',
+  method: EndpointMethod.GET,
+  handler: getModulesHandler,
+  authType: EndpointAuthType.JWT,
+  validator: {},
+  middleware: [checkPermission('GetModule')]
 });
 
 export const updateModuleEndpoint = new Endpoint({

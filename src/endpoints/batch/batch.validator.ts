@@ -15,13 +15,22 @@ export const batchValidator: Schema = {
             options: { min: 5 }
         }
     },
-    shiftTime: {
+    courseId: {
         in: 'body',
         exists: {
-            errorMessage: 'Shift Time is required'
+            errorMessage: 'Course is required'
         },
-        isString: {
-            errorMessage: 'Shift Time must be a string'
+        isInt: {
+            errorMessage: 'Course must be a integer'
+        }
+    },
+    traineeId: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Trainee is required'
+        },
+        isInt: {
+            errorMessage: 'Trainee must be a integer'
         }
     },
     startDate: {
@@ -46,6 +55,15 @@ export const batchValidator: Schema = {
 
 // Validator for updating a batch
 export const updateBatchValidator: Schema = {
+    id: {
+        in: 'params',
+        exists: {
+            errorMessage: 'Batch ID is required'
+        },
+        isInt: {
+            errorMessage: 'Batch ID must be a integer'
+        }
+    },
     batchName: {
         in: 'body',
         exists: {
@@ -59,13 +77,22 @@ export const updateBatchValidator: Schema = {
             options: { min: 5 }
         }
     },
-    shiftTime: {
+    courseId: {
         in: 'body',
         exists: {
-            errorMessage: 'Shift Time is required'
+            errorMessage: 'Course is required'
         },
-        isString: {
-            errorMessage: 'Shift Time must be a string'
+        isInt: {
+            errorMessage: 'Course must be a integer'
+        }
+    },
+    traineeId: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Trainee is required'
+        },
+        isInt: {
+            errorMessage: 'Trainee must be a integer'
         }
     },
     startDate: {
@@ -95,8 +122,8 @@ export const deleteBatchValidator: Schema = {
         exists: {
             errorMessage: 'Batch ID is required'
         },
-        isString: {
-            errorMessage: 'Batch ID must be a string'
+        isInt: {
+            errorMessage: 'Batch ID must be a integer'
         }
     }
 };

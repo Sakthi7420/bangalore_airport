@@ -26,29 +26,20 @@ export const createModuleValidator: Schema = {
     isLength: {
       errorMessage: 'Module Description must be at least 10 characters long',
       options: { min: 10 },
-    },
+    }
   },
-//   sequence: {
-//     in: 'body',
-//     exists: {
-//       errorMessage: 'Sequence is required',
-//     },
-//     isInt: {
-//       errorMessage: 'Sequence must be an integer',
-//     },
-//   },
-  // createdBy: {
-  //   in: 'body',
-  //   exists: {
-  //     errorMessage: 'Created By (User ID) is required',
-  //   },
-  //   isInt: {
-  //     errorMessage: 'Created By must be an integer',
-  //   },
-  // },
 };
 
 export const updateModuleValidator: Schema = {
+  id: {
+    in: 'params',
+    exists: {
+      errorMessage: 'id must be required'
+    },
+    isInt: {
+      errorMessage: 'id must be integer'
+    }
+  },
   moduleName: {
     in: 'body',
     optional: { options: { nullable: true } },
@@ -69,17 +60,11 @@ export const updateModuleValidator: Schema = {
     in: 'body',
     optional: { options: { nullable: true } },
     isInt: {
-      errorMessage: 'Sequence must be an integer',
-    },
-  },
-  updatedBy: {
-    in: 'body',
-    optional: { options: { nullable: true } },
-    isInt: {
-      errorMessage: 'Updated By must be an integer',
-    },
-  },
-};
+      errorMessage: 'sequence must be integer',
+    }
+  }
+}
+
 
 export const deleteModuleValidator: Schema = {
   id: {

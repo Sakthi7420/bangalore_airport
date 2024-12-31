@@ -1,4 +1,4 @@
-/modules:
+/module:
   get:
     summary: Get all modules
     description: Retrieves a list of all modules, including course and creator information.
@@ -32,15 +32,6 @@
                           courseName:
                             type: string
                             example: 'Node.js Basics'
-                      creator:
-                        type: object
-                        properties:
-                          firstName:
-                            type: string
-                            example: 'John'
-                          lastName:
-                            type: string
-                            example: 'Doe'
       404:
         description: No modules found
         content:
@@ -86,9 +77,10 @@
               moduleDescription:
                 type: string
                 example: 'In-depth study of Node.js features and modules.'
-              createdBy:
+              sequence:
                 type: integer
                 example: 1
+    
     responses:
       201:
         description: Module created successfully
@@ -145,7 +137,7 @@
                 error:
                   type: string
 
-/modules/{id}:
+/module/{id}:
   put:
     summary: Update a module by ID
     description: Updates the information of a module by ID.
@@ -175,9 +167,7 @@
               moduleDescription:
                 type: string
                 example: 'Updated description for the Node.js Basics module'
-              updatedBy:
-                type: integer
-                example: 2
+      
     responses:
       200:
         description: Module updated successfully
@@ -302,15 +292,7 @@
                         courseName:
                           type: string
                           example: 'Node.js Basics'
-                    creator:
-                      type: object
-                      properties:
-                        firstName:
-                          type: string
-                          example: 'John'
-                        lastName:
-                          type: string
-                          example: 'Doe'
+
       404:
         description: Module not found
         content:

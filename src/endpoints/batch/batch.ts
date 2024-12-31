@@ -2,38 +2,38 @@ import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
 import { batchValidator, updateBatchValidator, deleteBatchValidator } from "./batch.validator";
 import {
     getBatchHandler,
-    BatchHandler,
+    createBatchHandler,
     getBatchByIdHandler,
     updateBatchHandler,
     deleteBatchHandler
-} from './Batch.handler'
+} from "./batch.handler";
 import { checkPermission } from "middleware";
 
 export const createBatchEndpoint = new Endpoint({
     path: '/batch',
     method: EndpointMethod.POST,
-    handler: BatchHandler,
-    authType: EndpointAuthType.NONE,
+    handler: createBatchHandler,
+    authType: EndpointAuthType.JWT,
     validator: batchValidator,
-    // middleware: [checkPermission('CreateBatch')]
+    middleware: [checkPermission('CreateBatch')]
 });
 
 export const getBatchByIdEndpoint = new Endpoint({
     path: '/batch/:id',
     method: EndpointMethod.GET,
     handler: getBatchByIdHandler,
-    authType: EndpointAuthType.NONE,
+    authType: EndpointAuthType.JWT,
     validator: {},
-    // middleware: [checkPermission('GetBatch')]
+    middleware: [checkPermission('GetBatch')]
 });
 
 export const getBatchEndpoint = new Endpoint({
     path: '/batch',
     method: EndpointMethod.GET,
     handler: getBatchHandler,
-    authType: EndpointAuthType.NONE,
+    authType: EndpointAuthType.JWT,
     validator: {},
-    // middleware: [checkPermission('GetBatch')]
+    middleware: [checkPermission('GetBatch')]
 });
 
 export const updateBatchEndpoint = new Endpoint({
@@ -42,7 +42,7 @@ export const updateBatchEndpoint = new Endpoint({
     handler: updateBatchHandler,
     authType: EndpointAuthType.JWT,
     validator: updateBatchValidator,
-    // middleware: [checkPermission('UpdateBatch')]
+    middleware: [checkPermission('UpdateBatch')]
 });
 
 export const deleteBatchHandlerEndpoint = new Endpoint({
@@ -51,9 +51,5 @@ export const deleteBatchHandlerEndpoint = new Endpoint({
     handler: deleteBatchHandler,
     authType: EndpointAuthType.JWT,
     validator: deleteBatchValidator,
-    // middleware: [checkPermission('DeleteBatch')]
+    middleware: [checkPermission('DeleteBatch')]
 })
-
-
-
-

@@ -1,0 +1,314 @@
+/enrolledCourses:
+  get:
+    summary: Get all enrolled courses
+    description: Retrives a list of all enrolled courses.
+    operationId: getEnrolledCourses
+    security:
+      - bearerAuth: []
+    tags:
+      - Enrolled Courses
+    responses:
+      200:
+        description: List of all enrolled courses
+        content:
+          application/json:
+            schema:
+              type: array
+              items::
+                type: object
+                properties:
+                  id: 
+                    type: integer
+                  userId:
+                    type: integer
+                  batchId:
+                    type: integer
+                  courseId:
+                    type: integer
+                  enrollmentDate:
+                    type: string
+      400:
+        description: No enrolledCourse found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "No EnrolledCourse found"
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while retrieving enrolled course"
+                error:
+                  type: string
+  
+  post:
+    summary: Create a new enroll course
+    description: Create a new enroll course with the given course, course category and user id
+    operationId: createEnrollCourses
+    security:
+      - bearerAuth: []
+    tags:
+      - Enrolled Courses
+    requestBody:
+      required: true
+      content: 
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                example: 1
+              batchId:
+                type: integer
+                example: 1
+              courseId:
+                type: integer
+                example: 1
+              enrollmentDate:
+                type: string
+                format: date
+                example: "2023-01-01"
+    
+    responses:
+      201:
+        description: Enrolled Course created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Enrolled Course created successfully
+                newEnrollCourse:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    userId:
+                      type: integer
+                    batchId:
+                      type: integer
+                    courseId:
+                      type: integer
+                    enrollmentDate:
+                      type: string
+
+      500:
+        description: Enrolled course creation error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while creating the enrolled course"
+                error:
+                  type: string
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Unauthorized request 
+
+/enrolledCourses/{id}:
+  put:
+    summary: Update a enrolled course
+    description: Updates the information of a enrolled course by ID.
+    operationId: updateenrolled course
+    security:
+      - bearerAuth: []
+    tags:
+      - Enrolled Courses
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the enrolled course to update
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                example: 1
+              batchId:
+                type: integer
+                example: 1
+              courseId:
+                type: integer
+                example: 1
+              enrollmentDate:
+                type: string
+                format: date
+                example: "2023-01-01"
+
+    responses:
+      200:
+        description: Enrolled course updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Enrolled course updated successfully"
+                enrolledCourse:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+      404:
+        description: Enrolled course not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Enrolled course not found" 
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while updating enrolled course"
+                error:
+                  type: string
+
+
+  delete:
+    summary: Delete a enrolled course
+    description: Deletes a enrolled course by ID.
+    operationId: deleteenrolled course
+    security:
+      - bearerAuth: []
+    tags:
+      - Enrolled Courses
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the enrolled course to delete
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Enrolled course deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Enrolled course deleted successfully"
+      404:
+        description: Enrolled course not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Enrolled course not found"
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while deleting enrolled course"
+                error:
+                  type: string
+
+  get:
+    summary: Get a enrolled course by ID
+    description: Retrieves the details of a specific enrolled course by ID.
+    operationId: getEnrolledCourseById
+    security:
+      - bearerAuth: []
+    tags:
+      - Enrolled Courses
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the enrolled course to retrieve
+        schema:
+          type: integer
+          example: 1
+    responses:
+      200:
+        description: Enrolled course details retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enrolledCourse:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    userId:
+                      type: integer
+                    batchId:
+                      type: integer
+                    courseId:
+                      type: integer
+                    enrollmentDate:
+                      type: string
+      404:
+        description: Enrolled course not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Enrolled course not found"
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while retrieving enrolled course"
+                error:
+                  type: string

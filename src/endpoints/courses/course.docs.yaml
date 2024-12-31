@@ -26,9 +26,7 @@
                       courseCategoryId:
                         type: integer
                         example: 1
-                      courseInstructorId:
-                        type: integer
-                        example: 1
+        
       404:
         description: No courses found
         content:
@@ -73,9 +71,6 @@
                 example: 'the course provides basic of python'
               courseCategoryId:
                 type: integer
-                example: 1
-              courseInstructorId:
-                type: ineger
                 example: 1
     
     responses:
@@ -145,9 +140,6 @@
                 type: string
                 example: 'Updated description for the Python Basics course'
               courseCategoryId:
-                type: integer
-                example: 2
-              courseInstructorId:
                 type: integer
                 example: 2
         
@@ -270,9 +262,7 @@
                     courseCategoryId:
                       type: integer
                       example: 1
-                    courseInstructorId:
-                      type: integer
-                      example: 1
+                      
       404:
         description: Course not found
         content:
@@ -295,7 +285,3 @@
                   example: 'Error fetching course'
                 error:
                   type: string
-
-
-
-

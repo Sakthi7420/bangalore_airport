@@ -30,39 +30,20 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    createdBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Users', // Referencing the Users table
-        key: 'id',
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-    },
-    updatedBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Users', // Referencing the Users table
-        key: 'id',
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: literal('CURRENT_TIMESTAMP'),
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-    },
+    createdBy: { type: DataTypes.INTEGER, allowNull: true },
+    updatedBy: { type: DataTypes.INTEGER, allowNull: true },
+    createdAt: { type: DataTypes.DATE, allowNull: false },
+    updatedAt: { type: DataTypes.DATE, allowNull: false }
   });
+
+  await queryInterface.sequelize.query(
+    `ALTER TABLE Modules
+    MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;`
+  )
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
+  //drop table 
   await queryInterface.dropTable('Modules');
 }

@@ -20,9 +20,12 @@
                   batchName:
                     type: string
                     example: 'Batch001'
-                  shiftTime:
-                    type: string
-                    example: '10.00AM to 12.00PM'
+                  courseId:
+                    type: integer
+                    example: 1
+                  traineeId:
+                    type: integer
+                    example: 1
                   startDate:
                     type: string
                     format: date
@@ -70,9 +73,12 @@
               batchName:
                 type: string
                 example: 'Batch001'
-              shiftTime:
-                type: string
-                example: '10.00AM to 12.00PM'
+              courseId:
+                type: integer
+                example: 1
+              traineeId: 
+                type: integer
+                example: 1
               startDate:
                 type: string
                 format: date
@@ -142,9 +148,12 @@
               batchName:
                 type: string
                 example: 'Updated Batch001'
-              shiftTime:
-                type: string
-                example: '10.00AM to 12.00PM'
+              courseId:
+                type: integer
+                example: 1
+              traineeId:
+                type: integer
+                example: 1
               startDate:
                 type: string
                 format: date
@@ -258,9 +267,12 @@
                 batchName:
                   type: string
                   example: 'Batch001'
-                shiftTime:
-                  type: string
-                  example: '10.00AM to 12.00PM'
+                courseId:
+                  type: integer
+                  example: 1
+                traineeId:
+                  type: integer
+                  example: 1
                 startDate:
                   type: string
                   format: date

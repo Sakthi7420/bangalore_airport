@@ -8,9 +8,10 @@ import {
   COURSE_CREATION_ERROR,
   COURSE_UPDATE_ERROR,
   COURSE_DELETION_ERROR,
-  COURSE_GET_ERROR
+  COURSE_GET_ERROR,
+  CATEGORY_NOT_FOUND
 } from './course.const';
-import { Course, CourseCategory, User, Audit } from 'db';
+import { Course, CourseCategory, Audit } from 'db';
 import { Response } from 'express';
 
 export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
@@ -20,26 +21,22 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
   try {
 
     const course = await Course.findAll({
-      include: [
-        {
-          model: CourseCategory, 
-          attributes: ['courseCategory','id'] // Select permission attributes
-        },
-        {
-          model: User,
-          attributes: ['firstName','lastName','id']
-        }
-        ]
-    });
+        include: [
+          {
+            model: CourseCategory, as: 'category',
+            attributes: ['id','courseCategory'] 
+          }
+          ]
+      });
 
     if (course.length === 0) {
-      res.status(404).json({ message: COURSE_NOT_FOUND });
+      res.status(404).json({ message: COURSE_NOT_FOUND }); 
       return;
     }
 
-    res.status(200).json({ course: course });
+    res.status(200).json({ course });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', data: error });
+    res.status(500).json({ message: COURSE_GET_ERROR, error });
   }
 }
 
@@ -51,19 +48,13 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
 ): Promise<void> => {
 
   const { user } = req;
-  const { courseName, courseDesc, courseCategoryId, courseInstructorId } = req.body;
+  const { courseName, courseDesc, courseCategoryId } = req.body;
   try {
 
     const category = await CourseCategory.findByPk(courseCategoryId);
 
     if (!category) {
-      res.status(404).json({ message: 'Course category not found' });
-      return;
-    }
-
-    const instructor = await User.findByPk(courseInstructorId);
-    if (!instructor) {
-      res.status(404).json({ message: 'Instructor not found' });
+      res.status(404).json({ message: CATEGORY_NOT_FOUND});
       return;
     }
 
@@ -71,8 +62,7 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
     const newCourse = await Course.create({
       courseName,
       courseDesc,
-      courseCategoryId,
-      courseInstructorId
+      courseCategoryId
     });
 
     await Audit.create({
@@ -100,16 +90,15 @@ export const getCourseByIdHandler: EndpointHandler<EndpointAuthType> = async (
     const course = await Course.findByPk(id, {
       include: [
         { model: CourseCategory, as: 'category' },
-        { model: User, as: 'instructor' }
       ]
     });
 
     if (!course) {
-      res.status(404).json({ message: 'Course not found' });
+      res.status(404).json({ message: COURSE_NOT_FOUND });
       return;
     }
 
-    res.status(200).json({ course: course });
+    res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ message: COURSE_GET_ERROR, error });
   }
@@ -123,7 +112,7 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
 
   const { id } = req.params;
   const { user } = req;
-  const { courseName, courseDesc, courseCategoryId, courseInstructorId } = req.body;
+  const { courseName, courseDesc, courseCategoryId } = req.body;
 
   try {
 
@@ -136,30 +125,21 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
 
     const category = await CourseCategory.findByPk(courseCategoryId);
     if (!category) {
-      res.status(404).json({ message: 'Course category not found' });
-      return;
-    }
-
-    const instructor = await User.findByPk(courseInstructorId);
-    if (!instructor) {
-      res.status(404).json({ message: 'Instructor not found' });
+      res.status(404).json({ message: CATEGORY_NOT_FOUND });
       return;
     }
 
     const previousData = {
       courseName: updateCourse.courseName,
       courseDesc: updateCourse.courseDesc,
-      courseCategoryId: updateCourse.courseCategoryId,
-      courseInstructorId: updateCourse.courseInstructorId
+      courseCategoryId: updateCourse.courseCategoryId
     }
+    
     updateCourse.set({
       courseName: courseName,
       courseDesc: courseDesc,
-      courseCategoryId: courseCategoryId,
-      courseInstructorId: courseInstructorId
+      courseCategoryId: courseCategoryId
     });
-
-    await updateCourse.save();
 
     await Audit.create({
       entityType: 'Course',
@@ -169,6 +149,8 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
       newData: updateCourse,
       performedBy: user?.id
     });
+
+    await updateCourse.save();
 
     res.status(200).json({ message: 'Course updated successfully', updateCourse });
   } catch (error) {
@@ -189,7 +171,7 @@ export const deleteCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
     const deleteCourse = await Course.findByPk(id);
 
     if (!deleteCourse) {
-      res.status(404).json({ message: 'Course not found' });
+      res.status(404).json({ message: COURSE_NOT_FOUND });
       return;
     }
 

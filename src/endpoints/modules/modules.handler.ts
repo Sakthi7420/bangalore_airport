@@ -2,176 +2,218 @@ import {
     EndpointAuthType,
     EndpointHandler,
     EndpointRequestType,
-  } from 'node-server-engine';
-  import { Module, Course, User, Audit } from 'db';
-  import { Response } from 'express';
-  import {
+} from 'node-server-engine';
+import { Module, Course, Audit } from 'db';
+import { Response } from 'express';
+import {
     MODULE_NOT_FOUND,
     MODULE_CREATION_ERROR,
     MODULE_UPDATE_ERROR,
     MODULE_DELETION_ERROR,
     MODULE_GET_ERROR,
-  } from './modules.const';
-  
-  export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
+    COURSE_NOT_FOUND
+} from './modules.const';
+
+export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
     res: Response
-  ): Promise<void> => {
+): Promise<void> => {
     try {
-      const modules = await Module.findAll({
-        include: [
-          { model: Course, attributes: ['id', 'courseName'] },
-          { model: User, as: 'creator', attributes: ['id', 'firstName', 'lastName'] },
-          { model: User, as: 'updater', attributes: ['id', 'firstName', 'lastName'] },
-        ],
-      });
-  
-      if (!modules.length) {
-        res.status(404).json({ message: MODULE_NOT_FOUND });
-        return;
-      }
-  
-      res.status(200).json({ modules });
+        const modules = await Module.findAll({
+            include: [
+                {
+                    model: Course, as: 'course',
+                    attributes:['id', 'courseName']
+                }
+            ]
+        });
+
+        res.status(200).json({ modules });
     } catch (error) {
-      res.status(500).json({ message: MODULE_GET_ERROR, error });
+        res.status(500).json({ message: MODULE_GET_ERROR, error });
     }
-  };
-  
-  export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+};
+
+// export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+//     req: EndpointRequestType[EndpointAuthType.JWT],
+//     res: Response
+// ): Promise<void> => {
+
+//     const { user } = req;
+//     const { courseId, moduleName, moduleDescription, sequence } = req.body;
+
+
+//     try {
+
+//         const newModule = await Module.create({
+//             courseId,
+//             moduleName,
+//             moduleDescription,
+//             sequence,
+//         });
+
+//         // Log the action in the audit table
+//         await Audit.create({
+//             entityType: 'module',
+//             entityId: newModule.id,
+//             action: 'CREATE',
+//             newData: newModule,
+//             performedBy: user?.id,
+//         });
+
+//         res.status(201).json({ message: 'Module created successfully', newModule });
+//     } catch(error) {
+//         res.status(500).json({ message: MODULE_CREATION_ERROR, error });
+//     }
+// };
+
+export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
   ): Promise<void> => {
-    const { courseId, moduleName, moduleDescription } = req.body;
+    const { user } = req;
+    const { courseId, moduleName, moduleDescription } = req.body; // Removed sequence from the payload
   
     try {
-      if (!courseId || !moduleName || !moduleDescription) {
-        // Return a 400 error if any required fields are missing
-        res.status(400).json({
-          errorCode: 'invalid-request',
-          message: 'Missing required fields',
-        });
-        return;
-      }
+      // Get the highest sequence number for the given courseId
+      const maxSequence = await Module.max('sequence', { where: { courseId } });
   
-      const course = await Course.findByPk(courseId);
-      if (!course) {
-        // Return a 404 error if the course does not exist
-        res.status(404).json({ message: 'Course not found' });
-        return;
-      }
+      // If no modules exist for this courseId, start from 1
+      const nextSequence = (typeof maxSequence === 'number' ? maxSequence : 0) + 1;
   
-      const lastModule = await Module.findOne({
-        where: { courseId },
-        order: [['sequence', 'DESC']],
-      });
-      
-      let finalSequence = 1; // Default value
-      
-      if (lastModule) {
-        const lastSequence = lastModule.sequence;
-        if (Number.isInteger(lastSequence)) {
-          finalSequence = lastSequence + 1;
-        }
-      }
-      
-      console.log('Next sequence:', finalSequence);      
-  
-      // Create the new module
       const newModule = await Module.create({
         courseId,
         moduleName,
         moduleDescription,
-        sequence: finalSequence, // Use the calculated sequence
+        sequence: nextSequence,
       });
   
-      // Log the new module to check its values
-      console.log('New module created:', newModule);
-  
-      // Log the creation in the Audit table
+      // Log the action in the audit table
       await Audit.create({
-        entityType: 'Module',
+        entityType: 'module',
         entityId: newModule.id,
         action: 'CREATE',
         newData: newModule,
-        performedBy: req.user?.id,
+        performedBy: user?.id,
       });
   
-      // Send a success response with the newly created module
       res.status(201).json({ message: 'Module created successfully', newModule });
     } catch (error) {
-      // Log any errors and send a 500 response
-      console.error(error); // Log the error for better debugging
+      console.error("Module creation error:", error);
       res.status(500).json({ message: MODULE_CREATION_ERROR, error });
     }
   };
   
-  
+//get by id
+export const getModuleByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
+    res: Response
+): Promise<void> => {
 
-  export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    const { id } = req.params;
+
+    try {
+
+        const module = await Module.findByPk(id, {
+            include: [
+                {
+                    model: Course, as: 'course',
+                    attributes: ['id', 'courseName']
+                }
+            ]
+        });
+
+        if (!module) {
+            res.status(404).json({ message: MODULE_NOT_FOUND })
+            return;
+        }
+
+        res.status(200).json({ module });
+    } catch (error) {
+        res.status(500).json({ message: MODULE_GET_ERROR })
+    }
+};
+
+//update module
+export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
-  ): Promise<void> => {
+): Promise<void> => {
+
     const { id } = req.params;
-    const { moduleName, moduleDescription, updatedBy } = req.body;
-  
+    const { user } = req;
+    const { courseId, moduleName, moduleDescription, sequence } = req.body;
+
     try {
-      const module = await Module.findByPk(id);
-      if (!module) {
-        res.status(404).json({ message: MODULE_NOT_FOUND });
-        return;
-      }
-  
-      const previousData = { ...module.toJSON() };
-  
-      module.set({
-        moduleName,
-        moduleDescription,
-        updatedBy,
-      });
-  
-      await module.save();
-  
-      await Audit.create({
-        entityType: 'Module',
-        entityId: module.id,
-        action: 'UPDATE',
-        oldData: previousData,
-        newData: module,
-        performedBy: req.user?.id,
-      });
-  
-      res.status(200).json({ message: 'Module updated successfully', module });
+        const updateModule = await Module.findByPk(id);
+        if (!updateModule) {
+            res.status(404).json({ message: MODULE_NOT_FOUND });
+            return;
+        }
+
+        if (!courseId) {
+            res.status(404).json({ message: COURSE_NOT_FOUND });
+            return;
+        }
+
+        const previousData = { 
+            courseId: updateModule.courseId,
+            moduleName: updateModule.moduleName,
+            moduleDescription: updateModule.moduleDescription,
+            sequence: updateModule.sequence,
+        };
+
+        updateModule.set({
+            courseId: courseId,
+            moduleName: moduleName,
+            moduleDescription: moduleDescription,
+            sequence: sequence ?? updateModule.sequence
+        });
+
+        await Audit.create({
+            entityType: 'Module',
+            entityId: updateModule.id,
+            action: 'UPDATE',
+            oldData: previousData,
+            newData: updateModule,
+            performedBy: user?.id,
+        });
+
+        await updateModule.save();
+
+        res.status(200).json({ message: 'Module updated successfully', updateModule });
     } catch (error) {
-      res.status(500).json({ message: MODULE_UPDATE_ERROR, error });
+        res.status(500).json({ message: MODULE_UPDATE_ERROR, error });
     }
-  };
-  
-  export const deleteModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+};
+
+export const deleteModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
-  ): Promise<void> => {
+): Promise<void> => {
+
+    const { user } = req;
     const { id } = req.params;
-  
+
     try {
-      const module = await Module.findByPk(id);
-      if (!module) {
-        res.status(404).json({ message: MODULE_NOT_FOUND });
-        return;
-      }
-  
-      await Audit.create({
-        entityType: 'Module',
-        entityId: module.id,
-        action: 'DELETE',
-        oldData: module,
-        performedBy: req.user?.id,
-      });
-  
-      await module.destroy();
-  
-      res.status(200).json({ message: 'Module deleted successfully' });
+        const deleteModule = await Module.findByPk(id);
+        if (!deleteModule) {
+            res.status(404).json({ message: MODULE_NOT_FOUND });
+            return;
+        }
+
+        await Audit.create({
+            entityType: 'Module',
+            entityId: deleteModule.id,
+            action: 'DELETE',
+            oldData: deleteModule,
+            performedBy: user?.id,
+        });
+
+        await deleteModule.destroy();
+
+        res.status(200).json({ message: 'Module deleted successfully' });
     } catch (error) {
-      res.status(500).json({ message: MODULE_DELETION_ERROR, error });
+        res.status(500).json({ message: MODULE_DELETION_ERROR, error });
     }
-  };
-  
+};
