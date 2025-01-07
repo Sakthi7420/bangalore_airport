@@ -20,3 +20,7 @@ export * from './modules';
 
 export * from './batch';
 
+export * from './courseAssignments';
+
+export * from './assignmentCompletion';
+

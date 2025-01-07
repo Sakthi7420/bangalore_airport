@@ -15,3 +15,6 @@ export * from './Audit';
 export * from './Batch';
 export * from './Modules';
 export * from './BatchModuleSchedule';
+export * from './CourseAssignment';
+export * from './AssignmentCompletion';
+export * from './BatchTrainee';

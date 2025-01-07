@@ -5,11 +5,15 @@ import {
   DataType,
   ForeignKey,
   HasMany,
-  BelongsTo
+  BelongsTo,
+  BelongsToMany
 } from 'sequelize-typescript';
 
 import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path to EnrolledCourse model
 import { Role } from './Role';
+import { CourseAssignment } from './CourseAssignment';
+import { Batch } from './Batch';
+import { BatchTrainee } from './BatchTrainee';
 
 @Table
 export class User extends Model {
@@ -39,7 +43,7 @@ export class User extends Model {
 
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   profilePic?: string;
-  
+
   @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })
   dateOfJoining?: Date;
 
@@ -68,5 +72,11 @@ export class User extends Model {
 
   @HasMany(() => EnrolledCourse)
   enrolledCourses!: EnrolledCourse[];
+
+  @HasMany(() => CourseAssignment)
+  courseAssignment!: CourseAssignment[];
+
+  @BelongsToMany(() => Batch, () => BatchTrainee)
+    batches!: Batch[];
 
 }

@@ -25,7 +25,7 @@ export const getAllCourseEndPoint = new Endpoint({
     handler: getCourseHandler,
     authType: EndpointAuthType.NONE,
     validator: {},
-    // middleware: [checkPermission('GetCourse')]
+    middleware: [checkPermission('GetCourse')]
 });
 
 export const getCourseByIdEndPoint = new Endpoint({

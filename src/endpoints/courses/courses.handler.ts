@@ -79,6 +79,7 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
   }
 };
 
+
 // Get a course by ID
 export const getCourseByIdHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],

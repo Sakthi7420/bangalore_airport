@@ -28,25 +28,25 @@ export const batchModuleScheduleValidator: Schema = {
             errorMessage: 'Trainer ID must be an integer',
         }
     },
-    scheduleDateTime: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Schedule Date is required',
-        },
-        isDate: {
-            errorMessage: 'Schedule Date must be a valid date',
-        },
-        custom: {
-            options: (value) => {
-                // Manually validate the format of "YYYY-MM-DD HH:mm:ss"
-                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-                if (!regex.test(value)) {
-                    throw new Error('Schedule Date must be in the format YYYY-MM-DD HH:mm:ss');
-                }
-                return true;
-            }
-        }
-    },
+    // scheduleDateTime: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Schedule Date is required',
+    //     },
+    //     // isDate: {
+    //     //     errorMessage: 'Schedule Date must be a valid date',
+    //     // },
+    //     custom: {
+    //         options: (value) => {
+    //             // Manually validate the format of "YYYY-MM-DD HH:mm:ss"
+    //             const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+    //             if (!regex.test(value)) {
+    //                 throw new Error('Schedule Date must be in the format YYYY-MM-DD HH:mm:ss');
+    //             }
+    //             return true;
+    //         }
+    //     }
+    // },
     duration: {
         in: 'body',
         exists: {
@@ -100,19 +100,21 @@ export const updateBatchModuleScheduleValidator: Schema = {
         exists: {
             errorMessage: 'Schedule Date is required',
         },
-        isDate: {
-            errorMessage: 'Schedule Date must be a valid date',
-        },
-        custom: {
-            options: (value) => {
-                // Manually validate the format of "YYYY-MM-DD HH:mm:ss"
-                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-                if (!regex.test(value)) {
-                    throw new Error('Schedule Date must be in the format YYYY-MM-DD HH:mm:ss');
-                }
-                return true;
-            }
-        }
+        // isDate: {
+        //     errorMessage: 'Schedule Date must be a valid date',
+        // },
+
+        // custom: {// Manually validate the format of "YYYY-MM-DD HH:mm:s 2024-01-21 12:00:00"
+        //     options: (value) => {
+        //         // Manually validate the format of "YYYY-MM-DD HH:mm:ss"
+        //         const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+        //         if (!regex.test(value)) {
+        //             throw new Error('Schedule Date must be in the format YYYY-MM-DD HH:mm:ss');
+        //         }
+        //         return true;
+        //     }
+        // }
+        
     },
     duration: {
         in: 'body',

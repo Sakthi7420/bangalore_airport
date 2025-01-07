@@ -1,42 +1,46 @@
 import {
-    Table,
-    Column,
-    Model,
-    DataType,
-    ForeignKey,
-    BelongsTo,
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+  HasMany
 } from 'sequelize-typescript';
 import { Batch } from './Batch';
 import { User } from './User';
 import { Module } from './Modules';
+import { CourseAssignment } from './CourseAssignment';
 
 @Table
 export class BatchModuleSchedules extends Model {
+  @ForeignKey(() => Batch)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  batchId!: number;
 
-    @ForeignKey(() => Batch)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    batchId!: number;
+  @ForeignKey(() => Module)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  moduleId!: number;
 
-    @ForeignKey(() => Module)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    moduleId!: number;
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  trainerId!: number;
 
-    @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    trainerId!: number;
+  @Column({ type: DataType.DATE, allowNull: false })
+  scheduleDateTime!: Date;
 
-    @Column({ type: DataType.DATE, allowNull: false })
-    scheduleDateTime!: Date;
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  duration!: number;
 
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    duration!: number;
+  @BelongsTo(() => User)
+  trainer!: User;
 
-    @BelongsTo(() => User)
-    trainer!: User;
+  @BelongsTo(() => Batch)
+  batch!: Batch;
 
-    @BelongsTo(() => Batch)
-    batch!: Batch;
+  @BelongsTo(() => Module)
+  module!: Module;
 
-    @BelongsTo(() => Module)
-    module!: Module;
+  @HasMany(() => CourseAssignment)
+  courseAssignment!: CourseAssignment[];
 }

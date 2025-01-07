@@ -3,7 +3,6 @@ import { CourseCategory } from './CourseCategory';
 import { Batch } from './Batch';
 import { EnrolledCourse } from './EnrolledCourses';
 import { Module } from './Modules'
-import { User } from './User';
 
 @Table
 export class Course extends Model {

@@ -51,7 +51,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;
 `)
-}
+}  
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
   // Drop the 'Courses' table

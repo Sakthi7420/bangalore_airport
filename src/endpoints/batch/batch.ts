@@ -1,12 +1,12 @@
 import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
-import { batchValidator, updateBatchValidator, deleteBatchValidator } from "./batch.validator";
+import { createBatchValidator, updateBatchValidator, deleteBatchValidator } from "./batch.validator";
 import {
     getBatchHandler,
     createBatchHandler,
-    getBatchByIdHandler,
+    getBatchDetailsHandler,
     updateBatchHandler,
     deleteBatchHandler
-} from "./batch.handler";
+} from "./Batch.handler";
 import { checkPermission } from "middleware";
 
 export const createBatchEndpoint = new Endpoint({
@@ -14,14 +14,14 @@ export const createBatchEndpoint = new Endpoint({
     method: EndpointMethod.POST,
     handler: createBatchHandler,
     authType: EndpointAuthType.JWT,
-    validator: batchValidator,
+    validator: createBatchValidator,
     middleware: [checkPermission('CreateBatch')]
 });
 
 export const getBatchByIdEndpoint = new Endpoint({
     path: '/batch/:id',
     method: EndpointMethod.GET,
-    handler: getBatchByIdHandler,
+    handler: getBatchDetailsHandler,
     authType: EndpointAuthType.JWT,
     validator: {},
     middleware: [checkPermission('GetBatch')]

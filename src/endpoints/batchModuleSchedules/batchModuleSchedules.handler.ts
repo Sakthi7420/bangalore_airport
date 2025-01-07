@@ -132,7 +132,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
 ): Promise<void> => {
 
     const { id } = req.params;
-    const { batchId, moduleId, trainerId, scheduleDateTime, Duration } = req.body;
+    const { batchId, moduleId, trainerId, scheduleDateTime, duration } = req.body;
     const user = req.user;
 
     try {
@@ -177,8 +177,8 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             batchId: batchId,
             moduleId: moduleId,
             trainerId: trainerId,
-            scheduleDate: scheduleDateTime,
-            Duration: Duration
+            scheduleDateTime: scheduleDateTime,
+            duration: duration
         });
 
         await updateBatchModuleSchedule.save();
@@ -192,7 +192,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             performedBy: user?.id
         });
 
-        res.status(200).json({ message: 'Batch ModuleSchedule updated successfully' });
+        res.status(200).json({ message: 'Batch ModuleSchedule updated successfully',  });
     } catch (error) {
         res.status(500).json({ message: BATCHMODULESCHEDULES_UPDATE_ERROR })
     }

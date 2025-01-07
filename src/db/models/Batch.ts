@@ -6,20 +6,22 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { User } from './User';
 import { Course } from './Courses';
 import { EnrolledCourse } from './EnrolledCourses';
 import { BatchModuleSchedules } from './BatchModuleSchedule';
+import { CourseAssignment } from './CourseAssignment';
+import { BatchTrainee } from './BatchTrainee'; // Ensure this model exists and is properly defined
 
 @Table
 export class Batch extends Model {
-
   @ForeignKey(() => Course)
   @Column({ type: DataType.INTEGER, allowNull: false })
-  courseId!:number;
+  courseId!: number;
 
-  @Column({ type: DataType.STRING, allowNull: false, unique: true, })
+  @Column({ type: DataType.STRING, allowNull: false, unique: true })
   batchName!: string;
 
   @Column({ type: DataType.DATE, allowNull: false })
@@ -28,19 +30,27 @@ export class Batch extends Model {
   @Column({ type: DataType.DATE, allowNull: true })
   endDate!: Date;
 
-  @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  traineeId!: number;
+  // Many-to-Many relationship with User via BatchTrainee
+  @BelongsToMany(() => User, () => BatchTrainee)
+  trainees!: User[];
 
-  @BelongsTo(() => User, { as: 'trainee'})
-  trainee!: User;
+  // Optional direct relationship with BatchTrainee for querying join table
+  @HasMany(() => BatchTrainee)
+  batchTrainees!: BatchTrainee[];
 
-  @BelongsTo(() => Course, { as: 'course'})
+  // Define the course relationship
+  @BelongsTo(() => Course)
   course!: Course;
 
+  // Define enrolled courses relationship
   @HasMany(() => EnrolledCourse)
   enrolledCourses!: EnrolledCourse[];
 
+  // Define batch module schedules relationship
   @HasMany(() => BatchModuleSchedules)
   batchModuleSchedules!: BatchModuleSchedules[];
+
+  // Define course assignments relationship
+  @HasMany(() => CourseAssignment)
+  courseAssignments!: CourseAssignment[];
 }
