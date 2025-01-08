@@ -15,18 +15,16 @@ import {
 } from './batch.const';
 
 // Get batch details by id
-export const getBatchDetailsHandler: EndpointHandler<
-  EndpointAuthType.JWT
-> = async (
+export const getBatchDetailsHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
-  const { id } = req.params; // Fetching batch ID from URL params
+  const { id } = req.params;
 
   try {
     // Fetch the batch with associated course and trainees
     const batch = await Batch.findOne({
-      where: { id: id }, // Use the ID from the request parameters
+      where: { id: id },
       attributes: ['id', 'batchName', 'startDate', 'endDate'],
       include: [
         {
@@ -48,33 +46,38 @@ export const getBatchDetailsHandler: EndpointHandler<
       return;
     }
 
-    // Format the batch data
+    // Call .toJSON() to convert the Sequelize instance to a plain object
+    const batchData = batch.toJSON();
+    console.log('BatchData', batchData);
+
+    // Format the batch response
     const formattedBatch = {
-      id: batch.id,
-      name: batch.batchName,
-      startDate: batch.startDate,
-      endDate: batch.endDate,
-      course: batch.course
+      id: batchData.id,
+      name: batchData.batchName,
+      startDate: batchData.startDate,
+      endDate: batchData.endDate,
+      course: batchData.course
         ? {
-            id: batch.course.id,
-            courseName: batch.course.courseName
+            id: batchData.course.id,
+            courseName: batchData.course.courseName
           }
         : null,
-      trainees:
-        batch.trainees?.map((trainee: any) => ({
-          id: trainee.id,
-          firstName: trainee.firstName,
-          lastName: trainee.lastName
-        })) || []
+      trainees: batchData.trainees.map((trainee: any) => ({
+        id: trainee.id,
+        firstName: trainee.firstName,
+        lastName: trainee.lastName
+      }))
     };
 
     // Return the formatted response
     res.status(200).json({ batch: formattedBatch });
   } catch (error) {
-    console.error('Error fetching batch:', error); // Log the error for debugging
+    console.error('Error fetching batch:', error);
     res.status(500).json({ message: 'Error getting Batch', error });
   }
 };
+
+
 
 // Handler to get all batches
 export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
@@ -237,8 +240,8 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   res: Response
 ): Promise<void> => {
   const { id } = req.params; // Batch ID
-  const { batchName, courseId, traineeIds, startDate, endDate } = req.body; // Batch details
-  const { user } = req; // Authenticated user
+  const { batchName, courseId, traineeIds, startDate, endDate } = req.body;
+  const { user } = req;
 
   try {
     // Find the existing batch
@@ -256,9 +259,7 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         }
       ]
     });
-
-    console.log('Existing Batch:', batch);
-
+    
     if (!batch) {
       res.status(404).json({ message: 'Batch not found' });
       return;
@@ -276,19 +277,12 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
     // Update trainees if provided
     if (traineeIds && traineeIds.length > 0) {
-
       // Validate trainee IDs
-      const invalidTrainees = traineeIds.filter(
-        (id: any) => !id || typeof id !== 'number'
-      );
-      if (invalidTrainees.length > 0) {
-        res.status(400).json({
-          message: 'Invalid trainee IDs provided',
-          invalidTrainees
-        });
+      if (!Array.isArray(traineeIds) || traineeIds.some((id) => typeof id !== 'number')) {
+        res.status(400).json({ message: 'Invalid trainee IDs provided' });
         return;
       }
-      
+
       // Fetch trainees by IDs
       const matchedTrainees = await User.findAll({
         where: { id: traineeIds },
@@ -298,7 +292,7 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       // Check for missing trainee IDs
       if (matchedTrainees.length !== traineeIds.length) {
         const missingTrainees = traineeIds.filter(
-          (id: number) => !matchedTrainees.some((trainee) => trainee.id === id)
+          (id) => !matchedTrainees.some((trainee) => trainee.id === id)
         );
         res.status(400).json({
           message: 'Some trainees were not found',
@@ -308,12 +302,12 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       }
 
       // Remove existing trainees from the batch
-    //   await BatchTrainee.destroy({ where: { batchId: batch.id } });
+      await BatchTrainee.destroy({ where: { batchId: batch.id } });
 
       // Map matched trainees to batch trainees
       const batchTrainees = matchedTrainees.map((trainee) => ({
         batchId: batch.id,
-        userId: trainee.id, // Ensure this is the correct column
+        traineeId: trainee.id,
         createdBy: user?.id
       }));
 
@@ -343,13 +337,13 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       performedBy: user?.id
     });
 
-    // Respond with updated batch
     res.status(200).json({ message: 'Batch updated successfully' });
   } catch (error) {
     console.error('Error updating batch:', error);
     res.status(500).json({ message: 'Error updating Batch', error });
   }
 };
+
 
 //Delete a category
 export const deleteBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
