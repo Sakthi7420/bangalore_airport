@@ -52,6 +52,15 @@ export const createUserValidator: Schema = {
             errorMessage: 'Phone number is required'
         }
     },
+    // dateOfBirth: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Date of birth is required'
+    //     },
+    //     isDate: {
+    //         errorMessage: 'Date of birth must be a valid date'
+    //     }
+    // },
     password: {
         in: 'body',
         exists: {
@@ -61,6 +70,11 @@ export const createUserValidator: Schema = {
             options: { min: 8, max: 20 },
             errorMessage: 'Password must be between 8 and 20 characters long',
         }
+        // matches: {
+        //     options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        //     errorMessage:
+        //         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+        // },
     },
     dateOfJoining: {
         in: 'body',
@@ -143,23 +157,30 @@ export const updateUserValidator: Schema = {
               },
         }
     },
+    // dateOfBirth: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Date of birth is required'
+    //     },
+    //     isDate: {
+    //         errorMessage: 'Date of birth must be a valid date'
+    //     }
+    // },
     phoneNumber: {
         in: 'body',
         exists: {
             errorMessage: 'Phone number is required'
         }
     },
-    dateOfJoining: {
-        in: 'body',
-        optional: true,
-        exists: {
-            errorMessage: 'Date of joining is required'
-        },
-        isDate: {
-            errorMessage: 'Invalid date of joining'
-        },
-    },
-    
+    // dateOfJoining: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'Date of joining is required'
+    //     },
+    //     isDate: {
+    //         errorMessage: 'Invalid date of joining'
+    //     },
+    // },
     roleId: {
         in: 'body',
         exists: {

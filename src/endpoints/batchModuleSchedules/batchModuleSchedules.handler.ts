@@ -35,8 +35,8 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
                     attributes: ['id', 'batchName']
                 },
                 {
-                    model: User, as: 'trainee',
-                    attributes: ['id', 'firstName', 'lastName']
+                    model: User, as: 'user',
+                    attributes: ['id','firstName', 'lastName']
                 }
             ]
         });
@@ -132,7 +132,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
 ): Promise<void> => {
 
     const { id } = req.params;
-    const { batchId, moduleId, trainerId, scheduleDateTime, Duration } = req.body;
+    const { batchId, moduleId, trainerIds, scheduleDateTime, duration } = req.body;
     const user = req.user;
 
     try {
@@ -154,15 +154,16 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             return;
         }
 
-        if (!trainerId) {
+        if (!trainerIds) {
             res.status(404).json({ message: TRAINER_NOT_FOUND });
             return;
         }
 
+
         const previousData = {
             batchId: updateBatchModuleSchedule.batchId,
             moduleId: updateBatchModuleSchedule.moduleId,
-            trainerId: updateBatchModuleSchedule.trainerId,
+            trainerIds: updateBatchModuleSchedule.trainerIds,
             scheduleDateTime: updateBatchModuleSchedule.scheduleDateTime,
             duration: updateBatchModuleSchedule.duration
         }
@@ -170,9 +171,9 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
         updateBatchModuleSchedule.set({
             batchId: batchId,
             moduleId: moduleId,
-            trainerId: trainerId,
-            scheduleDate: scheduleDateTime,
-            Duration: Duration
+            trainerIds: trainerIds,
+            scheduleDateTime: scheduleDateTime,
+            duration: duration
         });
 
 
@@ -192,6 +193,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
         res.status(500).json({ message: BATCHMODULESCHEDULES_UPDATE_ERROR, error })
     }
 }
+
 
 //Delete batchModuleSchedules
 export const deleteBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
@@ -225,4 +227,4 @@ export const deleteBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
     } catch (error) {
         res.status(500).json({ message: BATCHMODULESCHEDULES_DELETION_ERROR, error })
     }
-}
+};

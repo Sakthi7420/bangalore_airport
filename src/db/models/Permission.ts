@@ -4,8 +4,6 @@ import {
   Model,
   DataType,
   BelongsToMany,
-  PrimaryKey,
-  Unique
 } from 'sequelize-typescript';
 import { RolePermission } from './RolePermission';
 import { Role } from './Role';

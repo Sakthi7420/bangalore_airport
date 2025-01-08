@@ -23,12 +23,12 @@
                   moduleId:
                     type: integer
                     example: 1
-                  trainerId:
+                  trainerIds:
                     type: integer
                     example: 1
-                  scheduleDate:
+                  scheduleDateTime:
                     type: string
-                    example: '2024-01-02 10:00:00'
+                    example: '02-01-2025 10:00'
                   duration:
                     type: integer
                     example: 60
@@ -72,14 +72,19 @@
             properties:
               batchId:
                 type: integer
+                example: 1
               moduleId:
                 type: integer
-              trainerId:
+                example: 1
+              trainerIds:
                 type: integer
-              scheduleDate:
+                example: 1
+              scheduleDateTime:
                 type: string
+                example: '02-01-2025 10:00'
               duration:
                 type: integer
+                example: 60
         
     responses:
       201:
@@ -144,9 +149,9 @@
                 type: integer
               moduleId:
                 type: integer
-              trainerId:
+              trainerIds:
                 type: integer
-              scheduleDate:
+              scheduleDateTime:
                 type: string
               duration:
                 type: integer

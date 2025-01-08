@@ -28,11 +28,11 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE'
         },
-        trainerId: {
+        trainerIds: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Trainers',
+                model: 'Users',
                 key: 'id'
             },
             onUpdate: 'CASCADE',

@@ -12,9 +12,7 @@ import {
 import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path to EnrolledCourse model
 import { Role } from './Role';
 import { Batch } from './Batch';
-import { Course } from './Courses';
 import { BatchModuleSchedules } from './BatchModuleSchedules';
-import { Module } from './Modules';
 
 @Table
 export class User extends Model {
@@ -42,7 +40,7 @@ export class User extends Model {
   @Column({ type: DataType.STRING, allowNull: true })
   qualification?: string;
 
-  @Column({ type: DataType.STRING, allowNull: true })
+  @Column({ type: DataType.TEXT('long'), allowNull: true })
   profilePic?: string;
 
   @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })

@@ -6,11 +6,9 @@ import {
     ForeignKey,
     BelongsTo,
     HasMany,
-    BelongsToMany
   } from 'sequelize-typescript';
   import { Course } from './Courses'; // Assuming the Course model is in the same directory
 import { BatchModuleSchedules } from './BatchModuleSchedules';
-import { User } from './User';
   
   @Table
   export class Module extends Model {
