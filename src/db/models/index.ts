@@ -18,3 +18,4 @@ export * from './BatchModuleSchedule';
 export * from './CourseAssignment';
 export * from './AssignmentCompletion';
 export * from './BatchTrainee';
+export * from './BatchTrainer';

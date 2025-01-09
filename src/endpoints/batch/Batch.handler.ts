@@ -10,12 +10,13 @@ import {
   BATCH_CREATION_ERROR,
   BATCH_UPDATE_ERROR,
   BATCH_DELETION_ERROR,
-  BATCH_GET_ERROR,
-  USER_NOT_FOUND
+  BATCH_GET_ERROR
 } from './batch.const';
 
 // Get batch details by id
-export const getBatchDetailsHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+export const getBatchDetailsHandler: EndpointHandler<
+  EndpointAuthType.JWT
+> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
@@ -76,8 +77,6 @@ export const getBatchDetailsHandler: EndpointHandler<EndpointAuthType.JWT> = asy
     res.status(500).json({ message: 'Error getting Batch', error });
   }
 };
-
-
 
 // Handler to get all batches
 export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
@@ -203,31 +202,25 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       performedBy: user?.id
     });
 
-    // Format the result to include trainees as an array of objects
-    const formattedBatch = {
-      id: batch.id,
-      batchName: batch.batchName,
-      startDate: batch.startDate,
-      endDate: batch.endDate,
-      course: batch.course
-        ? {
-            id: batch.course.id,
-            courseName: batch.course.courseName
-          }
-        : null,
-      trainees:
-        batch.trainees?.map((trainee: any) => ({
-          id: trainee.id,
-          firstName: trainee.firstName,
-          lastName: trainee.lastName
-        })) || []
-    };
-
-    console.log('Formatted Batch:', formattedBatch); // Check if formatted batch is correct
+    // Fetch the batch with included associations
+    const fullBatch = await Batch.findByPk(batch.id, {
+      include: [
+        {
+          model: Course,
+          as: 'course',
+          attributes: ['id', 'courseName']
+        },
+        {
+          model: User,
+          as: 'trainees',
+          attributes: ['id', 'firstName', 'lastName']
+        }
+      ]
+    });
 
     res
       .status(201)
-      .json({ message: 'Batch created successfully', batch: formattedBatch });
+      .json({ message: 'Batch created successfully', batch: fullBatch });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: BATCH_CREATION_ERROR, error });
@@ -242,7 +235,7 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   const { id } = req.params; // Batch ID
   const { batchName, courseId, traineeIds, startDate, endDate } = req.body;
   const { user } = req;
-
+  
   try {
     // Find the existing batch
     const batch = await Batch.findByPk(id, {
@@ -259,7 +252,7 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         }
       ]
     });
-    
+
     if (!batch) {
       res.status(404).json({ message: 'Batch not found' });
       return;
@@ -278,7 +271,10 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     // Update trainees if provided
     if (traineeIds && traineeIds.length > 0) {
       // Validate trainee IDs
-      if (!Array.isArray(traineeIds) || traineeIds.some((id) => typeof id !== 'number')) {
+      if (
+        !Array.isArray(traineeIds) ||
+        traineeIds.some((id) => typeof id !== 'number')
+      ) {
         res.status(400).json({ message: 'Invalid trainee IDs provided' });
         return;
       }
@@ -340,10 +336,9 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     res.status(200).json({ message: 'Batch updated successfully' });
   } catch (error) {
     console.error('Error updating batch:', error);
-    res.status(500).json({ message: 'Error updating Batch', error });
+    res.status(500).json({ message: BATCH_UPDATE_ERROR, error });
   }
 };
-
 
 //Delete a category
 export const deleteBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (

@@ -14,6 +14,8 @@ import { Role } from './Role';
 import { CourseAssignment } from './CourseAssignment';
 import { Batch } from './Batch';
 import { BatchTrainee } from './BatchTrainee';
+import { BatchModuleSchedules } from './BatchModuleSchedule';
+import { BatchTrainer } from './BatchTrainer';
 
 @Table
 export class User extends Model {
@@ -79,4 +81,7 @@ export class User extends Model {
   @BelongsToMany(() => Batch, () => BatchTrainee)
     batches!: Batch[];
 
+  @BelongsToMany(() => BatchModuleSchedules, () => BatchTrainer)
+  batchModuleSchedules!: BatchModuleSchedules[];
+  
 }

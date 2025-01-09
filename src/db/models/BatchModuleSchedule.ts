@@ -5,12 +5,14 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-  HasMany
+  HasMany,
+  BelongsToMany
 } from 'sequelize-typescript';
 import { Batch } from './Batch';
 import { User } from './User';
 import { Module } from './Modules';
 import { CourseAssignment } from './CourseAssignment';
+import { BatchTrainer } from './BatchTrainer'; // Ensure this model exists and is properly defined
 
 @Table
 export class BatchModuleSchedules extends Model {
@@ -22,18 +24,19 @@ export class BatchModuleSchedules extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   moduleId!: number;
 
-  @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  trainerId!: number;
-
   @Column({ type: DataType.DATE, allowNull: false })
   scheduleDateTime!: Date;
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   duration!: number;
 
-  @BelongsTo(() => User)
-  trainer!: User;
+  // Many-to-Many relationship with User via BatchTrainee
+  @BelongsToMany(() => User, () => BatchTrainer)
+  trainer!: User[];
+
+  // Optional direct relationship with BatchTrainee for querying join table
+  @HasMany(() => BatchTrainer)
+  batchTrainer!: BatchTrainer[];
 
   @BelongsTo(() => Batch)
   batch!: Batch;
