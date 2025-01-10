@@ -6,6 +6,7 @@ import {
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import { User, Audit, Role } from 'db';
+import { User, Audit, Role } from 'db';
 import {
   USER_NOT_FOUND,
   USER_CREATION_ERROR,

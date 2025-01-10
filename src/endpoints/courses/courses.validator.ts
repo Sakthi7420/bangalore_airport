@@ -30,6 +30,18 @@ export const createCourseValidator: Schema = {
             errorMessage: 'CourseCategoryId must be an Integer'
         }
     },
+<<<<<<< HEAD
+=======
+    // courseInstructorId: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'CourseInstructorId is Required'
+    //     },
+    //     isInt: {
+    //         errorMessage: 'CourseInstructorId must be an Integer'
+    //     }
+    // }
+>>>>>>> 51c922ad30af98be46f427517bc237f5862b68aa
 };
 
 
@@ -56,7 +68,18 @@ export const updateCourseValidator: Schema = {
         isInt: {
             errorMessage: 'CourseCategoryId must be an Integer'
         }
+<<<<<<< HEAD
     }
+=======
+    },
+    // courseInstructorId: {
+    //     in: 'body',
+    //     optional: { options: { nullable: true } }, 
+    //     isInt: {
+    //         errorMessage: 'CourseInstructorId must be an Integer'
+    //     }
+    // }
+>>>>>>> 51c922ad30af98be46f427517bc237f5862b68aa
 };
 
 export const deleteCourseValidator: Schema = {

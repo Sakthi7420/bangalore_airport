@@ -19,22 +19,45 @@ export const batchModuleScheduleValidator: Schema = {
             errorMessage: 'Module ID must be an integer',
         }
     },
-    trainerId: {
+    trainerIds: {
         in: 'body',
         exists: {
-            errorMessage: 'Trainer IDS is required',
+            errorMessage: 'Trainer IDs are required',
         },
-        isInt: {
-            errorMessage: 'Trainer IDS must be an integer',
+        isArray: {
+            errorMessage: 'Trainer IDs must be an array',
+        },
+        custom: {
+            options: (value) => {
+                if (!Array.isArray(value)) {
+                    throw new Error('Trainer IDs must be an array');
+                }
+                const isValid = value.every((id) => Number.isInteger(id));
+                if (!isValid) {
+                    throw new Error('Each Trainer ID must be an integer');
+                }
+                return true;
+            }
         }
     },
     scheduleDateTime: {
         in: 'body',
         exists: {
-            errorMessage: 'Schedule Date is required',
+            errorMessage: 'Schedule Date and Time is required',
+        },
+        custom: {
+            options: (value) => {
+                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+                if (!regex.test(value)) {
+                    throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
+                }
+                if (isNaN(new Date(value).getTime())) {
+                    throw new Error('Schedule Date and Time must be a valid date');
+                }
+                return true;
+            }
         }
     },
-    
     duration: {
         in: 'body',
         exists: {
@@ -44,70 +67,84 @@ export const batchModuleScheduleValidator: Schema = {
             errorMessage: 'Duration must be an integer',
         }
     }
-}
+};
 
 export const updateBatchModuleScheduleValidator: Schema = {
     id: {
         in: 'params',
         exists: {
-            errorMessage: 'Batch ID is required',
+            errorMessage: 'Batch Module Schedule ID is required',
         },
         isInt: {
-            errorMessage: 'Batch ID must be an integer',
+            errorMessage: 'Batch Module Schedule ID must be an integer',
         }
     },
     batchId: {
         in: 'body',
-        exists: {
-            errorMessage: 'Batch ID is required',
-        },
+        optional: true,
         isInt: {
             errorMessage: 'Batch ID must be an integer',
         }
     },
     moduleId: {
         in: 'body',
-        exists: {
-            errorMessage: 'Module ID is required',
-        },
+        optional: true,
         isInt: {
             errorMessage: 'Module ID must be an integer',
         }
     },
-    trainerId: {
+    trainerIds: {
         in: 'body',
-        exists: {
-            errorMessage: 'Trainer ID is required',
+        optional: true,
+        isArray: {
+            errorMessage: 'Trainer IDs must be an array',
         },
-        isInt: {
-            errorMessage: 'Trainer ID must be integer',
+        custom: {
+            options: (value) => {
+                if (!Array.isArray(value)) {
+                    throw new Error('Trainer IDs must be an array');
+                }
+                const isValid = value.every((id) => Number.isInteger(id));
+                if (!isValid) {
+                    throw new Error('Each Trainer ID must be an integer');
+                }
+                return true;
+            }
         }
     },
     scheduleDateTime: {
         in: 'body',
-        exists: {
-            errorMessage: 'Schedule Date is required',
+        optional: true,
+        custom: {
+            options: (value) => {
+                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+                if (!regex.test(value)) {
+                    throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
+                }
+                if (isNaN(new Date(value).getTime())) {
+                    throw new Error('Schedule Date and Time must be a valid date');
+                }
+                return true;
+            }
         }
     },
     duration: {
         in: 'body',
-        exists: {
-            errorMessage: 'Duration is required',
-        },
+        optional: true,
         isInt: {
             errorMessage: 'Duration must be an integer',
         }
     }
-}
+};
 
 export const deleteBatchModuleScheduleValidator: Schema = {
     id: {
         in: 'params',
         exists: {
-            errorMessage: 'Batch ID is required',
+            errorMessage: 'Batch Module Schedule ID is required',
         },
         isInt: {
-            errorMessage: 'Batch ID must be an integer',
+            errorMessage: 'Batch Module Schedule ID must be an integer',
         }
     }
-}
+};

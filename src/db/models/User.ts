@@ -11,8 +11,16 @@ import {
 
 import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path to EnrolledCourse model
 import { Role } from './Role';
+<<<<<<< HEAD
 import { Batch } from './Batch';
 import { BatchModuleSchedules } from './BatchModuleSchedules';
+=======
+import { CourseAssignment } from './CourseAssignment';
+import { Batch } from './Batch';
+import { BatchTrainee } from './BatchTrainee';
+import { BatchModuleSchedules } from './BatchModuleSchedule';
+import { BatchTrainer } from './BatchTrainer';
+>>>>>>> 51c922ad30af98be46f427517bc237f5862b68aa
 
 @Table
 export class User extends Model {
@@ -73,9 +81,21 @@ export class User extends Model {
   enrolledCourses!: EnrolledCourse[];
   Role: any;
 
+<<<<<<< HEAD
   @HasMany(() => Batch)
   batches!: Batch[];
 
   @HasMany(() => BatchModuleSchedules)
   batchModuleSchedules!: BatchModuleSchedules[];
+=======
+  @HasMany(() => CourseAssignment)
+  courseAssignment!: CourseAssignment[];
+
+  @BelongsToMany(() => Batch, () => BatchTrainee)
+    batches!: Batch[];
+
+  @BelongsToMany(() => BatchModuleSchedules, () => BatchTrainer)
+  batchModuleSchedules!: BatchModuleSchedules[];
+  
+>>>>>>> 51c922ad30af98be46f427517bc237f5862b68aa
 }

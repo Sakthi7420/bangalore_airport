@@ -1,12 +1,12 @@
-/batch:
+/assignment-completion:
   get:
-    summary: Get all batches
-    description: Retrieves a list of all batches
+    summary: Get all assignment completions
+    description: Retrieves a list of all assignment completions
     tags:
-      - Batch
+      - AssignmentCompletion
     responses:
       200:
-        description: List of batches
+        description: List of assignment completions
         content:
           application/json:
             schema:
@@ -17,25 +17,21 @@
                   id:
                     type: integer
                     example: 1
-                  batchName:
-                    type: string
-                    example: "Batch001"
-                  courseId:
+                  assignmentId:
                     type: integer
-                    example: 1
+                    example: 101
                   traineeId:
                     type: integer
                     example: 1
-                  startDate:
+                  completionDate:
                     type: string
                     format: date
-                    example: "2024-01-01"
-                  endDate:
+                    example: '2024-06-30'
+                  status:
                     type: string
-                    format: date
-                    example: "2024-06-30"
+                    example: 'Completed'
       404:
-        description: No batches found
+        description: No assignment completions found
         content:
           application/json:
             schema:
@@ -43,7 +39,7 @@
               properties:
                 message:
                   type: string
-                  example: "No batches found"
+                  example: 'No assignment completions found'
       500:
         description: Internal server error
         content:
@@ -53,16 +49,16 @@
               properties:
                 message:
                   type: string
-                  example: "Error fetching batches"
+                  example: 'Error fetching assignment completions'
 
   post:
-    summary: Create a new batch
-    description: Creates a new batch with the provided details.
-    operationId: createBatch
+    summary: Create a new assignment completion
+    description: Creates a new assignment completion with the provided details.
+    operationId: createAssignmentCompletion
     security:
       - bearerAuth: []
     tags:
-      - Batch
+      - AssignmentCompletion
     requestBody:
       required: true
       content:
@@ -70,26 +66,22 @@
           schema:
             type: object
             properties:
-              batchName:
-                type: string
-                example: "Batch001"
-              courseId:
+              assignmentId:
                 type: integer
-                example: 1
+                example: 101
               traineeId:
                 type: integer
                 example: 1
-              startDate:
+              completionDate:
                 type: string
                 format: date
-                example: "2024-01-01"
-              endDate:
+                example: '2024-06-30'
+              status:
                 type: string
-                format: date
-                example: "2024-06-30"
+                example: 'Completed'
     responses:
       201:
-        description: Batch created successfully
+        description: Assignment completion created successfully
         content:
           application/json:
             schema:
@@ -97,9 +89,9 @@
               properties:
                 message:
                   type: string
-                  example: "Batch created successfully"
+                  example: 'Assignment completion created successfully'
       500:
-        description: Batch creation error
+        description: Assignment completion creation error
         content:
           application/json:
             schema:
@@ -107,7 +99,7 @@
               properties:
                 message:
                   type: string
-                  example: "Error occurred while creating the batch"
+                  example: 'Error occurred while creating the assignment completion'
                 error:
                   type: string
       401:
@@ -119,22 +111,22 @@
               properties:
                 message:
                   type: string
-                  example: "Unauthorized request"
+                  example: 'Unauthorized request'
 
-/batch/{id}:
+/assignment-completion/{id}:
   put:
-    summary: Update a batch by ID
-    description: Updates the information of a batch by ID.
-    operationId: updateBatch
+    summary: Update an assignment completion by ID
+    description: Updates the information of an assignment completion by ID.
+    operationId: updateAssignmentCompletion
     security:
       - bearerAuth: []
     tags:
-      - Batch
+      - AssignmentCompletion
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the batch to update
+        description: ID of the assignment completion to update
         schema:
           type: integer
           example: 1
@@ -145,26 +137,22 @@
           schema:
             type: object
             properties:
-              batchName:
-                type: string
-                example: "Updated Batch001"
-              courseId:
+              assignmentId:
                 type: integer
-                example: 1
+                example: 101
               traineeId:
                 type: integer
                 example: 1
-              startDate:
+              completionDate:
                 type: string
                 format: date
-                example: "2024-02-01"
-              endDate:
+                example: '2024-06-30'
+              status:
                 type: string
-                format: date
-                example: "2024-07-30"
+                example: 'Completed'
     responses:
       200:
-        description: Batch updated successfully
+        description: Assignment completion updated successfully
         content:
           application/json:
             schema:
@@ -172,9 +160,9 @@
               properties:
                 message:
                   type: string
-                  example: "Batch updated successfully"
+                  example: 'Assignment completion updated successfully'
       404:
-        description: Batch not found
+        description: Assignment completion not found
         content:
           application/json:
             schema:
@@ -182,7 +170,7 @@
               properties:
                 message:
                   type: string
-                  example: "Batch not found"
+                  example: 'Assignment completion not found'
       500:
         description: Internal server error
         content:
@@ -192,29 +180,29 @@
               properties:
                 message:
                   type: string
-                  example: "Error updating batch"
+                  example: 'Error updating assignment completion'
                 error:
                   type: string
 
   delete:
-    summary: Delete a batch by ID
-    description: Deletes a batch by ID.
-    operationId: deleteBatch
+    summary: Delete an assignment completion by ID
+    description: Deletes an assignment completion by ID.
+    operationId: deleteAssignmentCompletion
     security:
       - bearerAuth: []
     tags:
-      - Batch
+      - AssignmentCompletion
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the batch to delete
+        description: ID of the assignment completion to delete
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Batch deleted successfully
+        description: Assignment completion deleted successfully
         content:
           application/json:
             schema:
@@ -222,9 +210,9 @@
               properties:
                 message:
                   type: string
-                  example: "Batch deleted successfully"
+                  example: 'Assignment completion deleted successfully'
       404:
-        description: Batch not found
+        description: Assignment completion not found
         content:
           application/json:
             schema:
@@ -232,7 +220,7 @@
               properties:
                 message:
                   type: string
-                  example: "Batch not found"
+                  example: 'Assignment completion not found'
       500:
         description: Internal server error
         content:
@@ -242,47 +230,43 @@
               properties:
                 message:
                   type: string
-                  example: "Error deleting batch"
+                  example: 'Error deleting assignment completion'
 
   get:
-    summary: Get a batch by ID
+    summary: Get an assignment completion by ID
     tags:
-      - Batch
+      - AssignmentCompletion
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the batch
+        description: ID of the assignment completion
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Batch details
+        description: Assignment completion details
         content:
           application/json:
             schema:
               type: object
               properties:
-                batchName:
-                  type: string
-                  example: "Batch001"
-                courseId:
+                assignmentId:
                   type: integer
-                  example: 1
+                  example: 101
                 traineeId:
                   type: integer
                   example: 1
-                startDate:
+                completionDate:
                   type: string
                   format: date
-                  example: "2024-01-01"
-                endDate:
+                  example: '2024-06-30'
+                status:
                   type: string
-                  format: date
-                  example: "2024-06-30"
+                  example: 'Completed'
       404:
-        description: Batch not found
+        description: Assignment completion not found
         content:
           application/json:
             schema:
@@ -290,7 +274,7 @@
               properties:
                 message:
                   type: string
-                  example: "Batch not found"
+                  example: 'Assignment completion not found'
       500:
         description: Internal server error
         content:
@@ -300,4 +284,4 @@
               properties:
                 message:
                   type: string
-                  example: "Error fetching batch"
+                  example: 'Error fetching assignment completion'

@@ -285,7 +285,3 @@
                   example: 'Error fetching course'
                 error:
                   type: string
-
-
-
-

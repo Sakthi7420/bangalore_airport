@@ -3,7 +3,10 @@ import { CourseCategory } from './CourseCategory';
 import { Batch } from './Batch';
 import { EnrolledCourse } from './EnrolledCourses';
 import { Module } from './Modules'
+<<<<<<< HEAD
 import { User } from './User';
+=======
+>>>>>>> 51c922ad30af98be46f427517bc237f5862b68aa
 
 @Table
 export class Course extends Model {
@@ -29,4 +32,8 @@ export class Course extends Model {
   @HasMany(() => Batch)
   batches!: Batch[]; 
 
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 51c922ad30af98be46f427517bc237f5862b68aa

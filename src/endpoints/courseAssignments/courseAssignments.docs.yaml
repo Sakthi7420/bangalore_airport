@@ -1,12 +1,12 @@
-/batchModuleSchedule:
+/courseAssignment:
   get:
-    summary: Get all batchModuleSchedule
-    description: Retrieves a list of all batchModuleSchedule
+    summary: Get all courseAssignments
+    description: Retrieves a list of all courseAssignments.
     tags:
-      - BatchModuleSchedule
+      - CourseAssignment
     responses:
       200:
-        description: List of batchModuleSchedule
+        description: List of courseAssignments
         content:
           application/json:
             schema:
@@ -20,21 +20,27 @@
                   batchId:
                     type: integer
                     example: 1
-                  moduleId:
+                  batchModuleScheduleId:
                     type: integer
                     example: 1
-                  trainerId:
-                    type: integer
-                    example: 1
-                  scheduleDate:
+                  courseAssignmentQuestionName:
                     type: string
-                    example: '2024-01-02 10:00:00'
-                  duration:
+                    example: "Course Assignment 1"
+                  courseAssignmentQuestionFile:
+                    type: string
+                    example: "https://example.com/file.pdf"
+                  instructorId:
                     type: integer
-                    example: 60
+                    example: 1
+                  createdAt:
+                    type: string
+                    example: '2024-01-02T10:00:00Z'
+                  updatedAt:
+                    type: string
+                    example: '2024-01-02T10:00:00Z'
 
       404:
-        description: No batchModuleSchedule found
+        description: No courseAssignments found
         content:
           application/json:
             schema:
@@ -42,7 +48,7 @@
               properties:
                 message:
                   type: string
-                  example: 'No batchModuleSchedule found'
+                  example: 'No courseAssignments found'
 
       500:
         description: Internal server error
@@ -53,17 +59,17 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching batchModuleSchedule'
+                  example: 'Error fetching courseAssignments'
 
   post:
-    summary: Create a new batchModuleSchedule
-    description: Creates a new batchModuleSchedule with provided details.
-    operationId: createbatchModuleSchedule
+    summary: Create a new courseAssignment
+    description: Creates a new courseAssignment with provided details.
+    operationId: createCourseAssignment
     security:
       - bearerAuth: []
     tags:
-      - BatchModuleSchedule
-    requestBody: 
+      - CourseAssignment
+    requestBody:
       required: true
       content:
         application/json:
@@ -72,18 +78,18 @@
             properties:
               batchId:
                 type: integer
-              moduleId:
+              batchModuleScheduleId:
                 type: integer
-              trainerId:
-                type: integer
-              scheduleDate:
+              courseAssignmentQuestionName:
                 type: string
-              duration:
+              courseAssignmentQuestionFile:
+                type: string
+              instructorId:
                 type: integer
         
     responses:
       201:
-        description: batchModuleSchedule created successfully
+        description: courseAssignment created successfully
         content:
           application/json:
             schema:
@@ -91,9 +97,9 @@
               properties:
                 message:
                   type: string
-                  example: 'batchModuleSchedule created successfully'
+                  example: 'courseAssignment created successfully'
       500:
-        description: BatchModuleSchedule creation error
+        description: CourseAssignment creation error
         content:
           application/json:
             schema:
@@ -101,7 +107,7 @@
               properties:
                 message:
                   type: string
-                  example: "Error occurred while creating the batchModuleSchedule"
+                  example: "Error occurred while creating the courseAssignment"
                 error:
                   type: string
 
@@ -116,20 +122,20 @@
                   type: string
                   example: Unauthorized request
 
-/batchModuleSchedule/{id}:
+/courseAssignment/{id}:
   put:
-    summary: Update a batchModuleSchedule by ID
-    description: Updates the information of a batchModuleSchedule by ID.
-    operationId: updateBatchModuleSchedule
+    summary: Update a courseAssignment by ID
+    description: Updates the information of a courseAssignment by ID.
+    operationId: updateCourseAssignment
     security:
       - bearerAuth: []
     tags:
-      - BatchModuleSchedule
+      - CourseAssignment
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the batchModuleSchedule to update
+        description: ID of the courseAssignment to update
         schema:
           type: integer
           example: 1
@@ -142,18 +148,18 @@
             properties:
               batchId:
                 type: integer
-              moduleId:
+              batchModuleScheduleId:
                 type: integer
-              trainerId:
-                type: integer
-              scheduleDate:
+              courseAssignmentQuestionName:
                 type: string
-              duration:
+              courseAssignmentQuestionFile:
+                type: string
+              instructorId:
                 type: integer
       
     responses:
       200:
-        description: batchModuleSchedule updated successfully
+        description: courseAssignment updated successfully
         content:
           application/json:
             schema:
@@ -161,9 +167,9 @@
               properties:
                 message:
                   type: string
-                  example: 'batchModuleSchedule updated successfully'
+                  example: 'courseAssignment updated successfully'
       404:
-        description: batchModuleSchedule not found
+        description: courseAssignment not found
         content:
           application/json:
             schema:
@@ -171,9 +177,9 @@
               properties:
                 message:
                   type: string
-                  example: 'batchModuleSchedule not found'
+                  example: 'courseAssignment not found'
       500:
-        description: Error updating batchModuleSchedule
+        description: Error updating courseAssignment
         content:
           application/json:
             schema:
@@ -181,29 +187,29 @@
               properties:
                 message:
                   type: string
-                  example: 'Error updating batchModuleSchedule'
+                  example: 'Error updating courseAssignment'
                 error:
                   type: string
 
   delete:
-    summary: Delete a batchModuleSchedule by ID
-    description: Deletes a batchModuleSchedule by ID.
-    operationId: deleteBatchModuleSchedule
+    summary: Delete a courseAssignment by ID
+    description: Deletes a courseAssignment by ID.
+    operationId: deleteCourseAssignment
     security:
       - bearerAuth: []
     tags:
-      - BatchModuleSchedule
+      - CourseAssignment
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the batchModuleSchedule to delete
+        description: ID of the courseAssignment to delete
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: batchModuleSchedule deleted successfully
+        description: courseAssignment deleted successfully
         content:
           application/json:
             schema:
@@ -211,9 +217,9 @@
               properties:
                 message:
                   type: string
-                  example: 'batchModuleSchedule deleted successfully'
+                  example: 'courseAssignment deleted successfully'
       404:
-        description: batchModuleSchedule not found
+        description: courseAssignment not found
         content:
           application/json:
             schema:
@@ -221,9 +227,9 @@
               properties:
                 message:
                   type: string
-                  example: 'batchModuleSchedule not found'
+                  example: 'courseAssignment not found'
       500:
-        description: Error deleting batchModuleSchedule
+        description: Error deleting courseAssignment
         content:
           application/json:
             schema:
@@ -231,6 +237,6 @@
               properties:
                 message:
                   type: string
-                  example: 'Error deleting batchModuleSchedule'
+                  example: 'Error deleting courseAssignment'
                 error:
                   type: string

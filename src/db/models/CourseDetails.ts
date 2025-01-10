@@ -5,6 +5,7 @@ import { CourseCategory } from './CourseCategory';
 
 @Table
 export class CourseDetail extends Model {
+
   @ForeignKey(() => Course)
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseId!: number;
