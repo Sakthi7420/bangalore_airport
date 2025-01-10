@@ -46,7 +46,7 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
             return;
         }
 
-        res.status(200).json({ batchModuleSchedule });
+        res.status(200).json({ data: batchModuleSchedule });
     } catch (error) {
         res.status(500).json({ message: BATCHMODULESCHEDULES_FETCH_ERROR, error });
     }
@@ -132,7 +132,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
 ): Promise<void> => {
 
     const { id } = req.params;
-    const { batchId, moduleId, trainerIds, scheduleDateTime, duration } = req.body;
+    const { batchId, moduleId, trainerId, scheduleDateTime, duration } = req.body;
     const user = req.user;
 
     try {
@@ -154,16 +154,15 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
             return;
         }
 
-        if (!trainerIds) {
+        if (!trainerId) {
             res.status(404).json({ message: TRAINER_NOT_FOUND });
             return;
         }
 
-
         const previousData = {
             batchId: updateBatchModuleSchedule.batchId,
             moduleId: updateBatchModuleSchedule.moduleId,
-            trainerIds: updateBatchModuleSchedule.trainerIds,
+            trainerId: updateBatchModuleSchedule.trainerId,
             scheduleDateTime: updateBatchModuleSchedule.scheduleDateTime,
             duration: updateBatchModuleSchedule.duration
         }
@@ -171,11 +170,10 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
         updateBatchModuleSchedule.set({
             batchId: batchId,
             moduleId: moduleId,
-            trainerIds: trainerIds,
+            trainerId: trainerId,
             scheduleDateTime: scheduleDateTime,
             duration: duration
         });
-
 
         await Audit.create({
             entityType: 'batchModuleSchedule',
@@ -192,7 +190,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
     } catch (error) {
         res.status(500).json({ message: BATCHMODULESCHEDULES_UPDATE_ERROR, error })
     }
-}
+};
 
 
 //Delete batchModuleSchedules

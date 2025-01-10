@@ -23,7 +23,7 @@ export class BatchModuleSchedules extends Model {
 
     @ForeignKey(() => User)
     @Column({ type: DataType.INTEGER, allowNull: false })
-    trainerIds!: number;
+    trainerId!: number;
 
     @Column({ type: DataType.DATE, allowNull: false })
     scheduleDateTime!: Date;
@@ -34,9 +34,9 @@ export class BatchModuleSchedules extends Model {
     @BelongsTo(() => User, { as: 'user'} )
     user!: User;
 
-    @BelongsTo(() => Batch)
+    @BelongsTo(() => Batch, { as: 'batch'} )
     batch!: Batch;
 
-    @BelongsTo(() => Module)
+    @BelongsTo(() => Module, {as: 'module'})
     module!: Module;
 }

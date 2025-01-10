@@ -19,14 +19,14 @@ export const batchModuleScheduleValidator: Schema = {
             errorMessage: 'Module ID must be an integer',
         }
     },
-    trainerIds: {
+    trainerId: {
         in: 'body',
         exists: {
             errorMessage: 'Trainer IDS is required',
         },
-        // isArray: {
-        //     errorMessage: 'Trainer IDS must be an array',
-        // }
+        isInt: {
+            errorMessage: 'Trainer IDS must be an integer',
+        }
     },
     scheduleDateTime: {
         in: 'body',
@@ -74,13 +74,13 @@ export const updateBatchModuleScheduleValidator: Schema = {
             errorMessage: 'Module ID must be an integer',
         }
     },
-    trainerIds: {
+    trainerId: {
         in: 'body',
         exists: {
             errorMessage: 'Trainer ID is required',
         },
-        isArray: {
-            errorMessage: 'Trainer ID must be an array',
+        isInt: {
+            errorMessage: 'Trainer ID must be integer',
         }
     },
     scheduleDateTime: {

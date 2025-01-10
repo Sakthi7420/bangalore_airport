@@ -23,7 +23,7 @@
                   moduleId:
                     type: integer
                     example: 1
-                  trainerIds:
+                  trainerId:
                     type: integer
                     example: 1
                   scheduleDateTime:
@@ -76,7 +76,7 @@
               moduleId:
                 type: integer
                 example: 1
-              trainerIds:
+              trainerId:
                 type: integer
                 example: 1
               scheduleDateTime:
@@ -149,7 +149,7 @@
                 type: integer
               moduleId:
                 type: integer
-              trainerIds:
+              trainerId:
                 type: integer
               scheduleDateTime:
                 type: string
@@ -269,14 +269,17 @@
                   properties:
                     id:
                       type: integer
-                    userId:
-                      type: integer
                     batchId:
                       type: integer
-                    courseId:
+                    moduleId:
                       type: integer
-                    enrollmentDate:
+                    trainerId:
+                      type: integer
+                    scheduleDateTime:
                       type: string
+                    duration:
+                      type: integer
+                      
       404:
         description: BatchModuleSchedule not found
         content:

@@ -28,7 +28,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE'
         },
-        trainerIds: {
+        trainerId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
