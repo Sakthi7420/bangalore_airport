@@ -6,7 +6,6 @@ import {
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import { User, Audit, Role } from 'db';
-import { User, Audit, Role } from 'db';
 import {
   USER_NOT_FOUND,
   USER_CREATION_ERROR,
@@ -36,17 +35,11 @@ const {
   phoneNumber,
   password,
   dateOfJoining,
-  profilePic,
   roleId
 } = req.body;
 const { user } = req; // Getting the authenticated user
 
 try {
-
-  if (!isValidBase64(profilePic)) {
-    res.status(400).json({ message: 'Invalid base64 image format.' });
-    return;
-}
 
   const roleRecord = await Role.findOne({ where: { id: roleId } });
 
@@ -64,7 +57,6 @@ try {
     phoneNumber,
     password: hashedPassword,
     dateOfJoining,
-    profilePic,
     roleId,
     createdBy: user?.id
   });

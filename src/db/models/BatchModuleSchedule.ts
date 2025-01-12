@@ -38,10 +38,10 @@ export class BatchModuleSchedules extends Model {
   @HasMany(() => BatchTrainer)
   batchTrainer!: BatchTrainer[];
 
-  @BelongsTo(() => Batch)
+  @BelongsTo(() => Batch, { as: 'batch'})
   batch!: Batch;
 
-  @BelongsTo(() => Module)
+  @BelongsTo(() => Module, {as: 'module'})
   module!: Module;
 
   @HasMany(() => CourseAssignment)

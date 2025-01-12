@@ -37,8 +37,4 @@ export class EnrolledCourse extends Model {
   @BelongsTo(() => Batch, { as: 'batch' })
   batch!: Batch;
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 51c922ad30af98be46f427517bc237f5862b68aa

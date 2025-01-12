@@ -57,6 +57,8 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
       // Format the response data
       const formattedData = batchModuleScheduleData.map((schedule) => ({
         id: schedule.id,
+        duration: schedule.duration,
+        scheduleDateTime: schedule.scheduleDateTime,
         module: schedule.module
           ? {
               id: schedule.module.id,

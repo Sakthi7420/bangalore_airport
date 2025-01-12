@@ -26,7 +26,6 @@ export const getBatchDetailsHandler: EndpointHandler<
     // Fetch the batch with associated course and trainees
     const batch = await Batch.findOne({
       where: { id: id },
-      attributes: ['id', 'batchName', 'startDate', 'endDate'],
       include: [
         {
           model: Course,
@@ -54,7 +53,7 @@ export const getBatchDetailsHandler: EndpointHandler<
     // Format the batch response
     const formattedBatch = {
       id: batchData.id,
-      name: batchData.batchName,
+      batchName: batchData.batchName,
       startDate: batchData.startDate,
       endDate: batchData.endDate,
       course: batchData.course
@@ -86,7 +85,6 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   try {
     // Fetch all batches with associated course and trainees
     const batches = await Batch.findAll({
-      attributes: ['id', 'batchName', 'startDate', 'endDate'],
       include: [
         {
           model: Course,
@@ -114,7 +112,7 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       // Format the batch response
       return {
         id: batchData.id,
-        name: batchData.batchName,
+        batchName: batchData.batchName,
         startDate: batchData.startDate,
         endDate: batchData.endDate,
         course: batchData.course
@@ -152,9 +150,7 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       batchName,
       courseId,
       startDate,
-      endDate,
-      createdBy: user?.id,
-      updatedBy: user?.id
+      endDate
     });
 
     console.log('Created Batch:', batch);
@@ -184,8 +180,7 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       // Map the trainee IDs to the batch trainees
       const batchTrainees = matchedTrainees.map((trainee) => ({
         batchId: batch.id,
-        traineeId: trainee.id,
-        createdBy: user?.id
+        traineeId: trainee.id
       }));
 
       // Add the trainees to the join table with `createdBy` using bulkCreate
@@ -304,7 +299,6 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       const batchTrainees = matchedTrainees.map((trainee) => ({
         batchId: batch.id,
         traineeId: trainee.id,
-        createdBy: user?.id
       }));
 
       // Insert new trainees

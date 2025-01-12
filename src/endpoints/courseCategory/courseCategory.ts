@@ -1,5 +1,4 @@
 import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
-import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
 import { courseCategoryValidator, deleteCourseCategoryValidator, updateCourseCategoryValidator } from "./courseCategory.validator";
 import {
     courseCategoryHandler,
