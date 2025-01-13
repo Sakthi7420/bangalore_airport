@@ -38,11 +38,10 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
           },
           {
             model: User,
-            as: 'trainer', // Correct alias here, use 'trainer' for the association
+            as: 'trainers', // Correct alias here, use 'trainer' for the association
             attributes: ['id', 'firstName', 'lastName'],
           },
-        ],
-        logging: console.log, // This will log the generated SQL query for debugging
+        ]
       });
   
       // If no batch module schedules are found
@@ -52,40 +51,38 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
       }
   
       // Call .toJSON() to convert Sequelize instances to plain objects
-      const batchModuleScheduleData = batchModuleSchedule.map((schedule) => schedule.toJSON());
+      const formattedScheduleModule = batchModuleSchedule.map((schedule) => {
+        const scheduleData = schedule.toJSON();
   
       // Format the response data
-      const formattedData = batchModuleScheduleData.map((schedule) => ({
-        id: schedule.id,
-        duration: schedule.duration,
-        scheduleDateTime: schedule.scheduleDateTime,
-        module: schedule.module
+      return {
+        id: scheduleData.id,
+        duration: scheduleData.duration,
+        scheduleDateTime: scheduleData.scheduleDateTime,
+        module: scheduleData.module
           ? {
-              id: schedule.module.id,
-              moduleName: schedule.module.moduleName,
+              id: scheduleData.module.id,
+              moduleName: scheduleData.module.moduleName,
             }
           : null,
-        batch: schedule.batch
+        batch: scheduleData.batch
           ? {
-              id: schedule.batch.id,
-              batchName: schedule.batch.batchName,
+              id: scheduleData.batch.id,
+              batchName: scheduleData.batch.batchName,
             }
           : null,
         // Flatten the trainer array and return it as a list of objects
-        trainer: schedule.trainer?.map((trainer: any) => ({
+        trainers: scheduleData.trainers?.map((trainer: any) => ({
           id: trainer.id,
           firstName: trainer.firstName,
           lastName: trainer.lastName,
         })) || [], // Ensure trainer is an array, even if empty
-      }));
+      }
+    });
   
       // Send the formatted response
-      res.status(200).json({ data: formattedData });
+      res.status(200).json({ data: formattedScheduleModule });
     } catch (error) {
-      // Log the error details
-      console.error('Error fetching batch module schedules:', error);
-  
-      // Send error response with additional error information
       res.status(500).json({
         message: BATCHMODULESCHEDULES_CREATION_ERROR, error
       });
@@ -110,11 +107,27 @@ export const createBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
       });
   
       if (trainerIds && trainerIds.length > 0) {
-        const trainerEntries = trainerIds.map((trainerId: number) => ({
+        const matchedTrainers = await User.findAll({
+          where: {
+            id: trainerIds
+          },
+          attributes: ['id']
+        });
+
+        if (matchedTrainers.length !== trainerIds.length){
+          const missingTrainers = trainerIds.filter((id: number) => !matchedTrainers.some((trainer) => trainer.id === id));
+        res.status(400).json({
+          message: 'Some trainers were not found',
+          missingTrainers
+        })
+        return;
+        }
+
+        const batchTrainers = matchedTrainers.map((trainer) => ({
           batchModuleScheduleId: newBatchModuleSchedule.id,
-          trainerId,
+          trainerId: trainer.id,
         }));
-        await BatchTrainer.bulkCreate(trainerEntries);
+        await BatchTrainer.bulkCreate(batchTrainers);
       }
   
       await Audit.create({
@@ -153,7 +166,7 @@ export const getBatchModuleScheduleByIdHandler: EndpointHandler<EndpointAuthType
                     attributes: ['id', 'batchName']
                 },
                 {
-                    model: User, as: 'trainer',
+                    model: User, as: 'trainers',
                     attributes: ['id', 'firstName', 'lastName']
                 }
             ]
@@ -179,31 +192,81 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
     const user = req.user;
   
     try {
-      const batchModuleSchedule = await BatchModuleSchedules.findByPk(id);
+      const batchModuleSchedule = await BatchModuleSchedules.findByPk(id, {
+        include: [
+          {
+            model: Batch,
+            as: 'batch',
+            attributes: ['id', 'batchName'],
+          },
+          {
+            model: Module,
+            as: 'module',
+            attributes: ['id', 'moduleName'],
+          },
+          {
+            model: User,
+            as: 'trainers',
+            attributes: ['id', 'firstName', 'lastName'],
+          }
+        ]
+      });
   
       if (!batchModuleSchedule) {
         res.status(404).json({ message: BATCHMODULESCHEDULES_NOT_FOUND });
         return;
+      } else if (!batchId) {
+        res.status(404).json({ message: BATCH_NOT_FOUND });
+        return;
+      } else if (!moduleId) {
+        res.status(404).json({ message: MODULES_NOT_FOUND });
+        return;
       }
-  
-      const previousData = batchModuleSchedule.toJSON();
-  
+
       batchModuleSchedule.set({
-        batchId,
-        moduleId,
-        scheduleDateTime,
-        duration,
+        batchId: batchId || batchModuleSchedule.batchId,
+        moduleId: moduleId || batchModuleSchedule.moduleId,
+        scheduleDateTime: scheduleDateTime || batchModuleSchedule.scheduleDateTime,
+        duration: duration || batchModuleSchedule.duration,
+        updatedBy: user?.id,
       });
       await batchModuleSchedule.save();
   
-      if (trainerIds && trainerIds.length > 0) {
-        await BatchTrainer.destroy({ where: { batchModuleScheduleId: id } });
+      const previousData = batchModuleSchedule.toJSON();
   
-        const trainerEntries = trainerIds.map((trainerId: number) => ({
-          batchModuleScheduleId: id,
-          trainerId,
+      if (trainerIds && trainerIds.length > 0) {
+        if (
+          !Array.isArray(trainerIds) ||
+          trainerIds.some((id) => typeof id !== 'number')
+        ) {
+          res.status(400).json({ message: 'Invalid trainer IDs provided' });
+          return;
+        }
+
+        // Fetch trainees by IDs
+      const matchedTrainers = await User.findAll({
+        where: { id: trainerIds },
+        attributes: ['id']
+      });
+      // Check for missing trainee IDs
+      if (matchedTrainers.length !== trainerIds.length) {
+        const missingTrainers = trainerIds.filter(
+          (id) => !matchedTrainers.some((trainer) => trainer.id === id)
+        );
+        res.status(400).json({
+          message: 'Some trainers were not found',
+          missingTrainers
+        });
+        return;
+      }
+
+      await BatchTrainer.destroy({ where: { batchModuleScheduleId: batchModuleSchedule.id } });
+  
+        const batchTrainers = matchedTrainers.map((trainer) => ({
+          batchModuleScheduleId: batchModuleSchedule.id,
+          trainerId: trainer.id,
         }));
-        await BatchTrainer.bulkCreate(trainerEntries);
+        await BatchTrainer.bulkCreate(batchTrainers);
       }
   
       await Audit.create({
@@ -215,7 +278,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
         performedBy: user?.id,
       });
   
-      res.status(200).json({ message: 'Batch Module Schedule updated successfully' });
+      res.status(200).json({ message: 'Batch Module Schedule updated successfully', data: batchModuleSchedule });
     } catch (error) {
       res.status(500).json({ message: BATCHMODULESCHEDULES_UPDATE_ERROR, error });
     }
@@ -238,6 +301,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
       }
   
       await BatchTrainer.destroy({ where: { batchModuleScheduleId: id } });
+      
       await Audit.create({
         entityType: 'batchModuleSchedule',
         entityId: id,

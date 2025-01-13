@@ -153,8 +153,6 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       endDate
     });
 
-    console.log('Created Batch:', batch);
-
     if (traineeIds && traineeIds.length > 0) {
       // Fetch the trainee IDs for the provided trainee IDs
       const matchedTrainees = await User.findAll({
@@ -184,7 +182,6 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       }));
 
       // Add the trainees to the join table with `createdBy` using bulkCreate
-      console.log('Batch Trainees to be added:', batchTrainees);
       await BatchTrainee.bulkCreate(batchTrainees);
     }
 
@@ -329,7 +326,6 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
     res.status(200).json({ message: 'Batch updated successfully' });
   } catch (error) {
-    console.error('Error updating batch:', error);
     res.status(500).json({ message: BATCH_UPDATE_ERROR, error });
   }
 };

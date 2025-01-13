@@ -32,7 +32,7 @@ export class BatchModuleSchedules extends Model {
 
   // Many-to-Many relationship with User via BatchTrainee
   @BelongsToMany(() => User, () => BatchTrainer)
-  trainer!: User[];
+  trainers!: User[];
 
   // Optional direct relationship with BatchTrainee for querying join table
   @HasMany(() => BatchTrainer)

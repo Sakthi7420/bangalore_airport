@@ -21,6 +21,7 @@ export const batchModuleScheduleValidator: Schema = {
     },
     trainerIds: {
         in: 'body',
+        optional: true,
         exists: {
             errorMessage: 'Trainer IDs are required',
         },
@@ -42,21 +43,22 @@ export const batchModuleScheduleValidator: Schema = {
     },
     scheduleDateTime: {
         in: 'body',
+        optional: true,
         exists: {
             errorMessage: 'Schedule Date and Time is required',
         },
-        custom: {
-            options: (value) => {
-                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-                if (!regex.test(value)) {
-                    throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
-                }
-                if (isNaN(new Date(value).getTime())) {
-                    throw new Error('Schedule Date and Time must be a valid date');
-                }
-                return true;
-            }
-        }
+        // custom: {
+        //     options: (value) => {
+        //         const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+        //         if (!regex.test(value)) {
+        //             throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
+        //         }
+        //         if (isNaN(new Date(value).getTime())) {
+        //             throw new Error('Schedule Date and Time must be a valid date');
+        //         }
+        //         return true;
+        //     }
+        // }
     },
     duration: {
         in: 'body',
@@ -115,18 +117,18 @@ export const updateBatchModuleScheduleValidator: Schema = {
     scheduleDateTime: {
         in: 'body',
         optional: true,
-        custom: {
-            options: (value) => {
-                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-                if (!regex.test(value)) {
-                    throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
-                }
-                if (isNaN(new Date(value).getTime())) {
-                    throw new Error('Schedule Date and Time must be a valid date');
-                }
-                return true;
-            }
-        }
+        // custom: {
+        //     options: (value) => {
+        //         const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+        //         if (!regex.test(value)) {
+        //             throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
+        //         }
+        //         if (isNaN(new Date(value).getTime())) {
+        //             throw new Error('Schedule Date and Time must be a valid date');
+        //         }
+        //         return true;
+        //     }
+        // }
     },
     duration: {
         in: 'body',

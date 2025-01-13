@@ -26,7 +26,7 @@
                   trainerId:
                     type: integer
                     example: 1
-                  scheduleDate:
+                  scheduleDateTime:
                     type: string
                     example: '2024-01-02 10:00:00'
                   duration:
@@ -76,7 +76,7 @@
                 type: integer
               trainerId:
                 type: integer
-              scheduleDate:
+              scheduleDateTime:
                 type: string
               duration:
                 type: integer
@@ -146,7 +146,7 @@
                 type: integer
               trainerId:
                 type: integer
-              scheduleDate:
+              scheduleDateTime:
                 type: string
               duration:
                 type: integer
