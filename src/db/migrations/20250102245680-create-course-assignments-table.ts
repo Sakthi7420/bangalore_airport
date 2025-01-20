@@ -18,11 +18,11 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    batchModuleScheduleId: {
+    courseId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'BatchModuleSchedules', // Table name for BatchModuleSchedules
+        model: 'courses',
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -36,7 +36,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.TEXT('long'),
       allowNull: true,
     },
-    instructorId: {
+    trainerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

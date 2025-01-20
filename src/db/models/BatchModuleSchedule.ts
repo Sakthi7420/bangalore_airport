@@ -43,7 +43,4 @@ export class BatchModuleSchedules extends Model {
 
   @BelongsTo(() => Module, {as: 'module'})
   module!: Module;
-
-  @HasMany(() => CourseAssignment)
-  courseAssignment!: CourseAssignment[];
 }

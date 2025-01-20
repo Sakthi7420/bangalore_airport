@@ -60,7 +60,7 @@ export const courseCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
         const newCategory = await CourseCategory.create({
             courseCategory,
             description,
-            courseCategoryImg, // Store base64 string directly in DB
+            courseCategoryImg, 
         });
  
         // Log the action in the audit table
@@ -110,6 +110,12 @@ export const updateCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = asyn
     const { id } = req.params;
     const { user } = req;
     const { courseCategory, description, courseCategoryImg } = req.body;
+
+    // Validate base64 image format
+    if (!isValidBase64(courseCategoryImg)) {
+        res.status(400).json({ message: 'Invalid base64 image format.' });
+        return;
+    }
     
     try {
 

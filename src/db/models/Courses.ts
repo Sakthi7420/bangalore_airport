@@ -3,6 +3,7 @@ import { CourseCategory } from './CourseCategory';
 import { Batch } from './Batch';
 import { EnrolledCourse } from './EnrolledCourses';
 import { Module } from './Modules'
+import { CourseAssignment } from './CourseAssignment';
 
 
 @Table
@@ -28,5 +29,8 @@ export class Course extends Model {
 
   @HasMany(() => Batch)
   batches!: Batch[]; 
+
+  @HasMany(() => CourseAssignment)
+  courseAssignment!: CourseAssignment[];
 
 };

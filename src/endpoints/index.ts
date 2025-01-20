@@ -19,3 +19,5 @@ export * from './batchModuleSchedules';
 export * from './modules';
 
 export * from './batch';
+
+export * from './courseAssignments';

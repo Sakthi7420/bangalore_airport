@@ -11,7 +11,6 @@ import {
     updateCourseAssignmentHandler,
     deleteCourseAssignmentHandler
 } from './courseAssignments.handler';
-
 import { checkPermission } from "middleware";
 
 export const createCourseAssignmentEndpoint = new Endpoint({

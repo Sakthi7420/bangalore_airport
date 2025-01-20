@@ -10,13 +10,13 @@ export const createCourseAssignmentValidator: Schema = {
             errorMessage: 'Batch ID must be an integer',
         }
     },
-    batchModuleScheduleId: {
+    courseId: {
         in: 'body',
         exists: {
-            errorMessage: 'Batch Module Schedule ID is required',
+            errorMessage: 'course ID is required',
         },
         isInt: {
-            errorMessage: 'Batch Module Schedule ID must be an integer',
+            errorMessage: 'course ID must be an integer',
         }
     },
     courseAssignmentQuestionName: {
@@ -24,30 +24,34 @@ export const createCourseAssignmentValidator: Schema = {
         exists: {
             errorMessage: 'Course Assignment Question Name is required',
         },
-        isString: {
-            errorMessage: 'Course Assignment Question Name must be a string',
-        },
-        isLength: {
-            options: { min: 1 },
-            errorMessage: 'Course Assignment Question Name cannot be empty',
-        }
+        // isString: {
+        //     errorMessage: 'Course Assignment Question Name must be a string',
+        // },
+        // isLength: {
+        //     options: { min: 1 },
+        //     errorMessage: 'Course Assignment Question Name cannot be empty',
+        // }
     },
     courseAssignmentQuestionFile: {
         in: 'body',
+        exists: {
+            errorMessage: 'Course Assignment Question File is required',
+        },
         optional: true,
         isString: {
             errorMessage: 'Course Assignment Question File must be a string',
         }
     },
-    instructorId: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Instructor ID is required',
-        },
-        isInt: {
-            errorMessage: 'Instructor ID must be an integer',
-        }
-    }
+    // trainerId: {
+    //     in: 'body',
+    //     exists: {
+    //         errorMessage: 'trainer ID is required',
+    //     },
+    //     isInt: {
+    //         errorMessage: 'trainer ID must be an integer',
+    //     },
+    //     toInt: true,
+    // }
 };
 
 export const updateCourseAssignmentValidator: Schema = {
@@ -69,13 +73,13 @@ export const updateCourseAssignmentValidator: Schema = {
             errorMessage: 'Batch ID must be an integer',
         }
     },
-    batchModuleScheduleId: {
+    courseId: {
         in: 'body',
         exists: {
-            errorMessage: 'Batch Module Schedule ID is required',
+            errorMessage: 'course ID is required',
         },
         isInt: {
-            errorMessage: 'Batch Module Schedule ID must be an integer',
+            errorMessage: ' course ID must be an integer',
         }
     },
     courseAssignmentQuestionName: {
@@ -96,13 +100,13 @@ export const updateCourseAssignmentValidator: Schema = {
             errorMessage: 'Course Assignment Question File must be a string',
         }
     },
-    instructorId: {
+    trainerId: {
         in: 'body',
         exists: {
-            errorMessage: 'Instructor ID is required',
+            errorMessage: 'trainer ID is required',
         },
         isInt: {
-            errorMessage: 'Instructor ID must be an integer',
+            errorMessage: 'trainer ID must be an integer',
         }
     }
 };
