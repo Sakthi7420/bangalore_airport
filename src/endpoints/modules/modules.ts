@@ -4,6 +4,7 @@ import {
   getModulesHandler,
   updateModuleHandler,
   deleteModuleHandler,
+  getModulesByCourseIdHandler,
 } from './modules.handler';
 import {
   createModuleValidator,
@@ -39,6 +40,16 @@ export const getModulesByIdEndpoint = new Endpoint({
   validator: {},
   middleware: [checkPermission('GetModule')]
 });
+
+export const getModulesByCourseIdEndpoint = new Endpoint({
+  path: '/coursemodule/:id',
+  method: EndpointMethod.GET,
+  handler: getModulesByCourseIdHandler,
+  authType: EndpointAuthType.JWT,
+  validator: {},
+  middleware: [checkPermission('GetModule')]
+});
+
 
 export const updateModuleEndpoint = new Endpoint({
   path: '/module/:id',

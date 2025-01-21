@@ -1,3 +1,4 @@
+
 export * from './auth';
 
 export * from './courses';
@@ -24,3 +25,4 @@ export * from './courseAssignments';
 
 export * from './assignmentCompletion';
 
+export * from './batchTrainees';

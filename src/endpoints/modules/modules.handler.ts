@@ -134,6 +134,42 @@ export const getModuleByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async
     }
 };
 
+// Get modules by courseId
+export const getModulesByCourseIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
+    res: Response
+): Promise<void> => {
+    const { id } = req.params; // Extract courseId from request parameters
+    console.log('CourseId', id);
+
+    try {
+        // Find all modules associated with the given courseId
+        const modules = await Module.findAll({
+            where: { courseId: id }, // Filter by courseId
+            include: [
+                {
+                    model: Course,
+                    as: 'course',
+                    attributes: ['id', 'courseName'], // Include course details
+                },
+            ],
+        });
+
+        // If no modules are found, return a 404 response
+        if (!modules || modules.length === 0) {
+            res.status(404).json({ message: MODULE_NOT_FOUND });
+            return;
+        }
+
+        // Respond with the retrieved modules
+        res.status(200).json({ modules });
+    } catch (error) {
+        // Handle errors and respond with a 500 status
+        res.status(500).json({ message: MODULE_GET_ERROR, error});
+    }
+};
+
+
 //update module
 export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
