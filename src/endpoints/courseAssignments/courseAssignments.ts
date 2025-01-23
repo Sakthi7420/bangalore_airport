@@ -9,7 +9,8 @@ import {
     getCourseAssignmentByIdHandler,
     createCourseAssignmentHandler,
     updateCourseAssignmentHandler,
-    deleteCourseAssignmentHandler
+    deleteCourseAssignmentHandler,
+    getCourseAssignmentRecordsByBatchIdHandler
 } from './courseAssignments.handler';
 
 import { checkPermission } from "middleware";
@@ -27,6 +28,15 @@ export const getCourseAssignmentsEndpoint = new Endpoint({
     path: '/courseAssignment',
     method: EndpointMethod.GET,
     handler: getCourseAssignmentsHandler,
+    authType: EndpointAuthType.JWT,
+    validator: {},
+    middleware: [checkPermission('GetCourseAssignment')]
+});
+
+export const getCourseAssignmentRecordsByBatchIdEndpoint = new Endpoint({
+    path: '/courseAssignmentRecords/:id',
+    method: EndpointMethod.GET,
+    handler: getCourseAssignmentRecordsByBatchIdHandler,
     authType: EndpointAuthType.JWT,
     validator: {},
     middleware: [checkPermission('GetCourseAssignment')]

@@ -26,12 +26,11 @@ export const getBatchDetailsHandler: EndpointHandler<
     // Fetch the batch with associated course and trainees
     const batch = await Batch.findOne({
       where: { id: id },
-      attributes: ['id', 'batchName', 'startDate', 'endDate'],
       include: [
         {
           model: Course,
           as: 'course', // Ensure this matches the alias in the model association
-          attributes: ['id', 'courseName']
+          attributes: ['id', 'courseName', 'courseImg', 'courseLink']
         },
         {
           model: User,
@@ -54,13 +53,16 @@ export const getBatchDetailsHandler: EndpointHandler<
     // Format the batch response
     const formattedBatch = {
       id: batchData.id,
-      name: batchData.batchName,
+      batchName: batchData.batchName,
       startDate: batchData.startDate,
       endDate: batchData.endDate,
       course: batchData.course
         ? {
             id: batchData.course.id,
-            courseName: batchData.course.courseName
+            courseName: batchData.course.courseName,
+            courseImg: batchData.course.courseImg,
+            courseLink: batchData.course.courseLink,
+            
           }
         : null,
       trainees: batchData.trainees.map((trainee: any) => ({
@@ -86,12 +88,11 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   try {
     // Fetch all batches with associated course and trainees
     const batches = await Batch.findAll({
-      attributes: ['id', 'batchName', 'startDate', 'endDate'],
       include: [
         {
           model: Course,
           as: 'course', // Ensure this matches the alias in the model association
-          attributes: ['id', 'courseName']
+          attributes: ['id', 'courseName', 'courseImg', 'courseLink']
         },
         {
           model: User,
@@ -114,13 +115,15 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       // Format the batch response
       return {
         id: batchData.id,
-        name: batchData.batchName,
+        batchName: batchData.batchName,
         startDate: batchData.startDate,
         endDate: batchData.endDate,
         course: batchData.course
           ? {
               id: batchData.course.id,
-              courseName: batchData.course.courseName
+              courseName: batchData.course.courseName,
+              courseImg: batchData.course.courseImg,
+              courseLink: batchData.course.courseLink,
             }
           : null,
         trainees:
@@ -152,12 +155,8 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       batchName,
       courseId,
       startDate,
-      endDate,
-      createdBy: user?.id,
-      updatedBy: user?.id
+      endDate
     });
-
-    console.log('Created Batch:', batch);
 
     if (traineeIds && traineeIds.length > 0) {
       // Fetch the trainee IDs for the provided trainee IDs
@@ -184,12 +183,10 @@ export const createBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       // Map the trainee IDs to the batch trainees
       const batchTrainees = matchedTrainees.map((trainee) => ({
         batchId: batch.id,
-        traineeId: trainee.id,
-        createdBy: user?.id
+        traineeId: trainee.id
       }));
 
       // Add the trainees to the join table with `createdBy` using bulkCreate
-      console.log('Batch Trainees to be added:', batchTrainees);
       await BatchTrainee.bulkCreate(batchTrainees);
     }
 
@@ -304,7 +301,6 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       const batchTrainees = matchedTrainees.map((trainee) => ({
         batchId: batch.id,
         traineeId: trainee.id,
-        createdBy: user?.id
       }));
 
       // Insert new trainees
@@ -333,9 +329,8 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       performedBy: user?.id
     });
 
-    res.status(200).json({ message: 'Batch updated successfully' });
+    res.status(200).json({ message: 'Batch updated successfully', batch });
   } catch (error) {
-    console.error('Error updating batch:', error);
     res.status(500).json({ message: BATCH_UPDATE_ERROR, error });
   }
 };

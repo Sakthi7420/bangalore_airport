@@ -24,26 +24,35 @@ export class BatchModuleSchedules extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   moduleId!: number;
 
-  @Column({ type: DataType.DATE, allowNull: false })
-  scheduleDateTime!: Date;
+  @Column({ type: DataType.DATEONLY, allowNull: false })
+  startDate!: Date;
+
+  @Column({ type: DataType.TIME, allowNull: false })
+  startTime!: Date;
+
+  @Column({ type: DataType.DATEONLY, allowNull: false })
+  endDate!: Date;
+
+  @Column({ type: DataType.TIME, allowNull: false })
+  endTime!: Date;
+
+  @Column({ type: DataType.STRING, allowNull: false })
+  meetingLink!: string;
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   duration!: number;
 
   // Many-to-Many relationship with User via BatchTrainee
   @BelongsToMany(() => User, () => BatchTrainer)
-  trainer!: User[];
+  trainers!: User[];
 
   // Optional direct relationship with BatchTrainee for querying join table
   @HasMany(() => BatchTrainer)
   batchTrainer!: BatchTrainer[];
 
-  @BelongsTo(() => Batch)
+  @BelongsTo(() => Batch, { as: 'batch'})
   batch!: Batch;
 
-  @BelongsTo(() => Module)
+  @BelongsTo(() => Module, {as: 'module'})
   module!: Module;
-
-  @HasMany(() => CourseAssignment)
-  courseAssignment!: CourseAssignment[];
 }

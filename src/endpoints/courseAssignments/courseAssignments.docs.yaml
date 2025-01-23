@@ -20,7 +20,7 @@
                   batchId:
                     type: integer
                     example: 1
-                  batchModuleScheduleId:
+                  courseId:
                     type: integer
                     example: 1
                   courseAssignmentQuestionName:
@@ -29,7 +29,7 @@
                   courseAssignmentQuestionFile:
                     type: string
                     example: "https://example.com/file.pdf"
-                  instructorId:
+                  trainerId:
                     type: integer
                     example: 1
                   createdAt:
@@ -78,13 +78,13 @@
             properties:
               batchId:
                 type: integer
-              batchModuleScheduleId:
+              courseId:
                 type: integer
               courseAssignmentQuestionName:
                 type: string
               courseAssignmentQuestionFile:
                 type: string
-              instructorId:
+              trainerId:
                 type: integer
         
     responses:
@@ -148,13 +148,13 @@
             properties:
               batchId:
                 type: integer
-              batchModuleScheduleId:
+              courseId:
                 type: integer
               courseAssignmentQuestionName:
                 type: string
               courseAssignmentQuestionFile:
                 type: string
-              instructorId:
+              trainerId:
                 type: integer
       
     responses:

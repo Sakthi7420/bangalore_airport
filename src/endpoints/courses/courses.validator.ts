@@ -30,22 +30,30 @@ export const createCourseValidator: Schema = {
             errorMessage: 'CourseCategoryId must be an Integer'
         }
     },
-    // courseInstructorId: {
-    //     in: 'body',
-    //     exists: {
-    //         errorMessage: 'CourseInstructorId is Required'
-    //     },
-    //     isInt: {
-    //         errorMessage: 'CourseInstructorId must be an Integer'
-    //     }
-    // }
+    courseImg: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Course Image is Required'
+        },
+        isString: {
+            errorMessage: 'Course Image must be a String'
+        }
+    },
+    courseLink: {
+        in: 'body',
+        optional: true, 
+        isLength: {
+            errorMessage: 'Course Link must be at least 5 characters long',
+            options: { min: 5 }
+        }
+    },
 };
 
 
 export const updateCourseValidator: Schema = {
     courseName: {
         in: 'body',
-        optional: { options: { nullable: true } }, 
+        optional: true, 
         isLength: {
             errorMessage: 'Course Name must be at least 5 characters long',
             options: { min: 5 }
@@ -53,7 +61,7 @@ export const updateCourseValidator: Schema = {
     },
     courseDesc: {
         in: 'body',
-        optional: { options: { nullable: true } }, 
+        optional: true, 
         isLength: {
             errorMessage: 'Course Description must be at least 20 characters long',
             options: { min: 20 }
@@ -61,18 +69,28 @@ export const updateCourseValidator: Schema = {
     },
     courseCategoryId: {
         in: 'body',
-        optional: { options: { nullable: true } }, 
+        optional: true, 
         isInt: {
             errorMessage: 'CourseCategoryId must be an Integer'
         }
     },
-    // courseInstructorId: {
-    //     in: 'body',
-    //     optional: { options: { nullable: true } }, 
-    //     isInt: {
-    //         errorMessage: 'CourseInstructorId must be an Integer'
-    //     }
-    // }
+    courseImg: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Course Image is Required'
+        },
+        isString: {
+            errorMessage: 'Course Image must be a String'
+        }
+    },
+    courseLink: {
+        in: 'body',
+        optional: true, 
+        isLength: {
+            errorMessage: 'Course Link must be at least 5 characters long',
+            options: { min: 5 }
+        }
+    },
 };
 
 export const deleteCourseValidator: Schema = {
@@ -86,5 +104,3 @@ export const deleteCourseValidator: Schema = {
         }
     }
 }
-
-

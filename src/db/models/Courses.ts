@@ -3,6 +3,8 @@ import { CourseCategory } from './CourseCategory';
 import { Batch } from './Batch';
 import { EnrolledCourse } from './EnrolledCourses';
 import { Module } from './Modules'
+import { CourseAssignment } from './CourseAssignment';
+
 
 @Table
 export class Course extends Model {
@@ -12,9 +14,15 @@ export class Course extends Model {
   @Column({ type: DataType.STRING, allowNull: false})
   courseDesc!: string;
 
+  @Column({ type: DataType.STRING, allowNull: false})
+  courseLink!: string;
+
   @ForeignKey(() => CourseCategory)
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseCategoryId!: number;
+
+  @Column({ type: DataType.TEXT('long'), allowNull: false })
+  courseImg!: string;
 
   @BelongsTo(() => CourseCategory, { as: 'category', foreignKey: 'courseCategoryId' })
   category!: CourseCategory;
@@ -27,5 +35,8 @@ export class Course extends Model {
 
   @HasMany(() => Batch)
   batches!: Batch[]; 
+
+  @HasMany(() => CourseAssignment)
+  courseAssignment!: CourseAssignment[];
 
 };

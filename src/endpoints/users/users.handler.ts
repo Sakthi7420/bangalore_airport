@@ -42,10 +42,10 @@ export const createUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
 
   try {
 
-    if (!isValidBase64(profilePic)) {
-      res.status(400).json({ message: 'Invalid base64 image format.' });
-      return;
-  }
+  //   if (!isValidBase64(profilePic)) {
+  //     res.status(400).json({ message: 'Invalid base64 image format.' });
+  //     return;
+  // }
 
     const roleRecord = await Role.findOne({ where: { id: roleId } });
 

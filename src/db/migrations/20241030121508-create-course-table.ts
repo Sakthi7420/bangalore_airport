@@ -1,4 +1,4 @@
-import { QueryInterface, DataTypes, literal } from 'sequelize';
+import { QueryInterface, DataTypes } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
   // Create the 'Courses' table
@@ -16,6 +16,10 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    courseLink: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     courseCategoryId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -26,16 +30,10 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    // courseInstructorId: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: false,
-    //   references: {
-    //     model: 'User', // Referencing the 'Users' table (instructor)
-    //     key: 'id', 
-    //   },
-    //   onUpdate: 'CASCADE',
-    //   onDelete: 'CASCADE',
-    // },
+    courseImg: {
+      type: DataTypes.TEXT('long'),
+      allowNull: false,
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,

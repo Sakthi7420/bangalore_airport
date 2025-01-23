@@ -8,26 +8,87 @@ import {
     COURSEASSIGNMENTS_NOT_FOUND,
     COURSEASSIGNMENTS_UPDATE_ERROR,
     COURSEASSIGNMENTS_DELETION_ERROR,
-    COURSEASSIGNMENTS_FETCH_ERROR
+    COURSEASSIGNMENTS_FETCH_ERROR,
+    COURSE_NOT_FOUND,
+    USER_NOT_FOUND,
+    BATCH_NOT_FOUND
 } from './courseAssignments.const';
 
-import { Audit, Batch, BatchModuleSchedules, CourseAssignment, User } from 'db';
+import { Audit, Batch, Course, CourseAssignment, User } from 'db';
 import { Response } from 'express';
 
- // Utility function to check if the user is a trainer
-// const isTrainer = (user: any): boolean => user?.role === 'trainer';
+
+function isValidBase64Pdf(base64String: string): boolean {
+    // Regular expression to match base64 strings for PDF MIME type
+    const base64Regex = /^data:application\/pdf;base64,/;
+    return base64Regex.test(base64String);
+  }
+  
+
+// Get CourseAssignment Id by Batch Id
+
+export const getCourseAssignmentRecordsByBatchIdHandler: EndpointHandler<
+EndpointAuthType.JWT
+> = async (
+req: EndpointRequestType[EndpointAuthType.JWT],
+res: Response
+): Promise<void> => {
+try {
+    // Log request params for debugging
+    console.log('Request Params:', req.params);
+    const { id } = req.params;
+      console.log('Batch Id:', id);
+
+      // Validate trainee ID
+      if (!id) {
+        res.status(400).json({ message: 'Batch ID is required' });
+        return;
+      }
+
+      // Fetch all batch IDs for the given trainee ID
+      const courseAssignmentRecords = await CourseAssignment.findAll({
+            where: { batchId: id },
+              attributes: ['id','courseAssignmentQuestionName','courseAssignmentQuestionFile','trainerId'] // Ensure only batchId is retrieved
+        });
+
+        // Log the retrieved records
+      console.log('CourseAssignmentId:', courseAssignmentRecords);
+
+       
+      // If no records are found
+      if (!courseAssignmentRecords || courseAssignmentRecords.length === 0) {
+        res.status(404).json({ message: 'No courseAssignmentRecords found for the given Batch ID' });
+        return;
+      }
+  
+      // Extract courseAssignmentRecords from the records, filtering out null values
+   
+      const records = courseAssignmentRecords.map(record => record.dataValues);
+
+
+      // Log extracted courseAssignmentRecords
+      console.log('Extracted courseAssignmentRecords:', records);
+  
+      // If all courseAssignmentRecords are null
+      if (records.length === 0) {
+        res.status(404).json({ message: 'No valid courseAssignmentRecords found for the given Batch ID' });
+        return;
+      }
+  
+      // Return the list of courseAssignmentRecords
+      res.status(200).json({ records });
+    } catch (error) {
+      console.error('Error fetching records:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+  
 
 // Get all CourseAssignments
 export const getCourseAssignmentsHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
-    const { user } = req;
-
-    // if (!isTrainer(user)) {
-    //     res.status(403).json({ message: 'Access denied. Only trainers can perform this action.' });
-    //     return;
-    // }
 
     try {
         const courseAssignments = await CourseAssignment.findAll({
@@ -38,13 +99,13 @@ export const getCourseAssignmentsHandler: EndpointHandler<EndpointAuthType.JWT> 
                     attributes: ['id', 'batchName']
                 },
                 {
-                    model: BatchModuleSchedules,
-                    as: 'batchmoduleschedule',
-                    attributes: ['id', 'scheduleDateTime']
+                    model: Course,
+                    as: 'course',
+                    attributes: ['id', 'courseName']
                 },
                 {
                     model: User,
-                    as: 'user',
+                    as: 'trainer',
                     attributes: ['id', 'firstName', 'lastName']
                 }
             ]
@@ -67,27 +128,39 @@ export const createCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
     res: Response
 ): Promise<void> => {
     const { user } = req;
-
-    // if (!isTrainer(user)) {
-    //     res.status(403).json({ message: 'Access denied. Only trainers can perform this action.' });
-    //     return;
-    // }
-
     const {
         batchId,
-        batchModuleScheduleId,
+        courseId,
         courseAssignmentQuestionName,
         courseAssignmentQuestionFile,
-        instructorId
+        trainerId
     } = req.body;
 
+    if (!isValidBase64Pdf(courseAssignmentQuestionFile)) {
+        res.status(400).json({ message: 'Invalid base64 documents format.' });
+        return;
+    }
+
+    if (!batchId) {
+        res.status(404).json({ message: BATCH_NOT_FOUND})
+        return;
+    }
+    if (!courseId) {
+        res.status(404).json({ message: COURSE_NOT_FOUND})
+        return;
+    }
+    if (!trainerId) {
+        res.status(404).json({ message: USER_NOT_FOUND})
+        return;
+    }
+    
     try {
         const newCourseAssignment = await CourseAssignment.create({
             batchId,
-            batchModuleScheduleId,
+            courseId,
             courseAssignmentQuestionName,
             courseAssignmentQuestionFile,
-            instructorId
+            trainerId
         });
 
         await Audit.create({
@@ -109,7 +182,6 @@ export const getCourseAssignmentByIdHandler: EndpointHandler<EndpointAuthType.JW
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
-    const { user } = req;
     const { id } = req.params;
 
     // if (!isTrainer(user)) {
@@ -126,9 +198,9 @@ export const getCourseAssignmentByIdHandler: EndpointHandler<EndpointAuthType.JW
                     attributes: ['id', 'batchName']
                 },
                 {
-                    model: BatchModuleSchedules,
-                    as: 'batchmoduleschedule',
-                    attributes: ['id', 'scheduleDateTime']
+                    model: Course,
+                    as: 'course',
+                    attributes: ['id', 'courseName']
                 },
                 {
                     model: User,
@@ -158,10 +230,10 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
     const { id } = req.params;
     const {
         batchId,
-        batchModuleScheduleId,
+        courseId,
         courseAssignmentQuestionName,
         courseAssignmentQuestionFile,
-        instructorId
+        trainerId
     } = req.body;
 
     // if (!isTrainer(user)) {
@@ -181,10 +253,10 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
 
         courseAssignment.set({
             batchId,
-            batchModuleScheduleId,
+            courseId,
             courseAssignmentQuestionName,
             courseAssignmentQuestionFile,
-            instructorId
+            trainerId
         });
 
         await courseAssignment.save();

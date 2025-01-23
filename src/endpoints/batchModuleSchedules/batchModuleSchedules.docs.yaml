@@ -16,22 +16,24 @@
                 properties:
                   id:
                     type: integer
-                    example: 1
                   batchId:
                     type: integer
-                    example: 1
                   moduleId:
                     type: integer
-                    example: 1
                   trainerId:
                     type: integer
-                    example: 1
-                  scheduleDate:
+                  startDate:
                     type: string
-                    example: '2024-01-02 10:00:00'
+                  startTime:
+                    type: string
+                  endDate:
+                    type: string
+                  endTime:
+                    type: string
+                  meetingLink:
+                    type: string
                   duration:
                     type: integer
-                    example: 60
 
       404:
         description: No batchModuleSchedule found
@@ -76,7 +78,15 @@
                 type: integer
               trainerId:
                 type: integer
-              scheduleDate:
+              startDate:
+                type: string
+              startTime:
+                type: string
+              endDate:
+                type: string
+              endTime:
+                type: string
+              meetingLink:
                 type: string
               duration:
                 type: integer
@@ -146,7 +156,15 @@
                 type: integer
               trainerId:
                 type: integer
-              scheduleDate:
+              startDate:
+                type: string
+              startTime:
+                type: string
+              endDate:
+                type: string
+              endTime:
+                type: string
+              meetingLink:
                 type: string
               duration:
                 type: integer

@@ -14,6 +14,12 @@ import {
 import { Course, CourseCategory, Audit } from 'db';
 import { Response } from 'express';
 
+function isValidBase64(base64String: string): boolean {
+  // Regular expression to check if the string is a valid base64 image string (with a data URI scheme)
+  const base64Regex = /^data:image\/(png|jpeg|jpg|gif|avif);base64,/;
+  return base64Regex.test(base64String);
+}
+
 export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
   res: Response
@@ -48,7 +54,14 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
 ): Promise<void> => {
 
   const { user } = req;
-  const { courseName, courseDesc, courseCategoryId } = req.body;
+  const { courseName, courseDesc, courseCategoryId, courseImg, courseLink } = req.body;
+
+   // Validate base64 image format
+   if (!isValidBase64(courseImg)) {
+    res.status(400).json({ message: 'Invalid base64 image format.' });
+    return;
+}
+
   try {
 
     const category = await CourseCategory.findByPk(courseCategoryId);
@@ -62,7 +75,9 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
     const newCourse = await Course.create({
       courseName,
       courseDesc,
-      courseCategoryId
+      courseCategoryId,
+      courseImg,
+      courseLink
     });
 
     await Audit.create({
@@ -113,7 +128,13 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
 
   const { id } = req.params;
   const { user } = req;
-  const { courseName, courseDesc, courseCategoryId } = req.body;
+  const { courseName, courseDesc, courseCategoryId, courseImg, courseLink } = req.body;
+
+   // Validate base64 image format
+   if (!isValidBase64(courseImg)) {
+    res.status(400).json({ message: 'Invalid base64 image format.' });
+    return;
+}
 
   try {
 
@@ -133,13 +154,17 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
     const previousData = {
       courseName: updateCourse.courseName,
       courseDesc: updateCourse.courseDesc,
-      courseCategoryId: updateCourse.courseCategoryId
+      courseCategoryId: updateCourse.courseCategoryId,
+      courseImg: updateCourse.courseImg,
+      courseLink: updateCourse.courseLink
     }
     
     updateCourse.set({
       courseName: courseName,
       courseDesc: courseDesc,
-      courseCategoryId: courseCategoryId
+      courseCategoryId: courseCategoryId,
+      courseImg: courseImg,
+      courseLink: courseLink
     });
 
     await Audit.create({

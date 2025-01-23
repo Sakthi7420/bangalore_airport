@@ -21,6 +21,7 @@ export const batchModuleScheduleValidator: Schema = {
     },
     trainerIds: {
         in: 'body',
+        optional: true,
         exists: {
             errorMessage: 'Trainer IDs are required',
         },
@@ -40,22 +41,53 @@ export const batchModuleScheduleValidator: Schema = {
             }
         }
     },
-    scheduleDateTime: {
+    startDate: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'StartDate is required',
+        },
+        isDate: {
+            errorMessage: 'StartDate must be a date',
+        }
+    },
+    endDate: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'EndDate is required',
+        },
+        isDate: {
+            errorMessage: 'EndDate must be a valid date',
+        }
+    },
+    startTime: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'StartTime is required',
+        },
+        // isTime: {
+        //     errorMessage: 'StartTime must be a time',
+        // }
+    },
+    endTime: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'EndTime is required',
+        },
+        // isTime: {
+        //     errorMessage: 'EndTime must be a time',
+        // }
+    },
+    meetingLink: {
         in: 'body',
         exists: {
-            errorMessage: 'Schedule Date and Time is required',
+            errorMessage: 'MeetingLink is required',
         },
-        custom: {
-            options: (value) => {
-                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-                if (!regex.test(value)) {
-                    throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
-                }
-                if (isNaN(new Date(value).getTime())) {
-                    throw new Error('Schedule Date and Time must be a valid date');
-                }
-                return true;
-            }
+        isString: {
+            errorMessage: 'MeetingLink must be a string',
         }
     },
     duration: {
@@ -112,20 +144,54 @@ export const updateBatchModuleScheduleValidator: Schema = {
             }
         }
     },
-    scheduleDateTime: {
+    startDate: {
         in: 'body',
         optional: true,
-        custom: {
-            options: (value) => {
-                const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-                if (!regex.test(value)) {
-                    throw new Error('Schedule Date and Time must be in the format YYYY-MM-DD HH:mm:ss');
-                }
-                if (isNaN(new Date(value).getTime())) {
-                    throw new Error('Schedule Date and Time must be a valid date');
-                }
-                return true;
-            }
+        exists: {
+            errorMessage: 'StartDate is required',
+        },
+        isDate: {
+            errorMessage: 'StartDate must be a date',
+        }
+    },
+    endDate: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'EndDate is required',
+        },
+        isDate: {
+            errorMessage: 'EndDate must be a valid date',
+        }
+    },
+    startTime: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'StartTime is required',
+        },
+        // isTime: {
+        //     errorMessage: 'StartTime must be a time',
+        // }
+    },
+    endTime: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'EndTime is required',
+        },
+        // isTime: {
+        //     errorMessage: 'EndTime must be a time',
+        // }
+    },
+    meetingLink: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'MeetingLink is required',
+        },
+        isString: {
+            errorMessage: 'MeetingLink must be a string',
         }
     },
     duration: {
