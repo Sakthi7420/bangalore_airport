@@ -6,5 +6,5 @@ export const COURSEASSIGNMENTS_NOT_FOUND = 'course assignments not found';
 
 export const COURSE_NOT_FOUND = 'course not found';
 export const USER_NOT_FOUND = 'user not found';
-export const BATCH_NOT_FOUND = 'batch not found'
+export const BATCH_NOT_FOUND = 'batch not found';
 

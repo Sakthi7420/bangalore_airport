@@ -19,13 +19,14 @@
                     properties:
                       courseName:
                         type: string
-                        example: 'Basic of Python'
                       courseDesc:
                         type: string
-                        example: 'The course provides basics of Python'
                       courseCategoryId:
                         type: integer
-                        example: 1
+                      courseImg:
+                        type: string
+                      courseLink:
+                        type: string
         
       404:
         description: No courses found
@@ -72,6 +73,10 @@
               courseCategoryId:
                 type: integer
                 example: 1
+              courseImg:
+                type: string
+              courseLink:
+                type: string
     
     responses:
       201:
@@ -142,6 +147,10 @@
               courseCategoryId:
                 type: integer
                 example: 2
+              courseImg:
+                type: string
+              courseLink:
+                type: string
         
     responses:
       200:
@@ -262,6 +271,10 @@
                     courseCategoryId:
                       type: integer
                       example: 1
+                    courseImg:
+                      type: string
+                    courseLink:
+                      type: string
                       
       404:
         description: Course not found

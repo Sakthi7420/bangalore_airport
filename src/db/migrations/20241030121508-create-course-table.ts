@@ -26,6 +26,14 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
+    courseImg: {
+      type: DataTypes.TEXT('long'),
+      allowNull: false,
+    },
+    courseLink: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,

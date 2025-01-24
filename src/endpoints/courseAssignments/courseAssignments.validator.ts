@@ -24,13 +24,13 @@ export const createCourseAssignmentValidator: Schema = {
         exists: {
             errorMessage: 'Course Assignment Question Name is required',
         },
-        // isString: {
-        //     errorMessage: 'Course Assignment Question Name must be a string',
-        // },
-        // isLength: {
-        //     options: { min: 1 },
-        //     errorMessage: 'Course Assignment Question Name cannot be empty',
-        // }
+        isString: {
+            errorMessage: 'Course Assignment Question Name must be a string',
+        },
+        isLength: {
+            options: { min: 1 },
+            errorMessage: 'Course Assignment Question Name cannot be empty',
+        }
     },
     courseAssignmentQuestionFile: {
         in: 'body',
@@ -42,16 +42,16 @@ export const createCourseAssignmentValidator: Schema = {
             errorMessage: 'Course Assignment Question File must be a string',
         }
     },
-    // trainerId: {
-    //     in: 'body',
-    //     exists: {
-    //         errorMessage: 'trainer ID is required',
-    //     },
-    //     isInt: {
-    //         errorMessage: 'trainer ID must be an integer',
-    //     },
-    //     toInt: true,
-    // }
+    trainerId: {
+        in: 'body',
+        exists: {
+            errorMessage: 'trainer ID is required',
+        },
+        isInt: {
+            errorMessage: 'trainer ID must be an integer',
+        },
+        toInt: true,
+    }
 };
 
 export const updateCourseAssignmentValidator: Schema = {

@@ -30,6 +30,24 @@ export const createCourseValidator: Schema = {
             errorMessage: 'CourseCategoryId must be an Integer'
         }
     },
+    courseImg: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Course Image is Required'
+        },
+        isString: {
+            errorMessage: 'Course Image must be a String'
+        }
+    },
+    courseLink: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Course Link is Required'
+        },
+        isString: {
+            errorMessage: 'Course Link must be a String'
+        }
+    }
 };
 
 
@@ -55,6 +73,26 @@ export const updateCourseValidator: Schema = {
         optional: true, 
         isInt: {
             errorMessage: 'CourseCategoryId must be an Integer'
+        }
+    },
+    courseImg: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'Course Image is Required'
+        },
+        isString: {
+            errorMessage: 'Course Image must be a String'
+        }
+    },
+    courseLink: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'Course Link is Required'
+        },
+        isString: {
+            errorMessage: 'Course Link must be a String'
         }
     }
 };

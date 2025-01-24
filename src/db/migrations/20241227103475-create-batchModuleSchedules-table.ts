@@ -38,10 +38,22 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE'
         },
-        scheduleDateTime: {
-            type: DataTypes.DATE,
+        startDate: {
+            type: DataTypes.DATEONLY,
             allowNull: false
         },
+        startTime: {
+            type: DataTypes.TIME,
+            allowNull: false
+        },
+        endDate: {
+            type: DataTypes.DATEONLY,
+            allowNull: false
+        }, 
+        endTime: {
+            type: DataTypes.TIME,
+            allowNull: false
+        },   
         duration: {
             type: DataTypes.INTEGER,
             allowNull: false

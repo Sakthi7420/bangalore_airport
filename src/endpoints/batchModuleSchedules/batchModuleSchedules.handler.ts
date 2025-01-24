@@ -58,7 +58,11 @@ export const getBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT
       return {
         id: scheduleData.id,
         duration: scheduleData.duration,
-        scheduleDateTime: scheduleData.scheduleDateTime,
+        startDate: scheduleData.startDate,
+        startTime: scheduleData.startTime,
+        endDate: scheduleData.endDate,
+        endTime: scheduleData.endTime,
+        meetingLink: scheduleData.meetingLink,
         module: scheduleData.module
           ? {
               id: scheduleData.module.id,
@@ -96,13 +100,17 @@ export const createBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
     res: Response
   ): Promise<void> => {
     const { user } = req;
-    const { batchId, moduleId, trainerIds, scheduleDateTime, duration } = req.body;
+    const { batchId, moduleId, trainerIds, startDate, startTime, endDate, endTime, meetingLink, duration } = req.body;
   
     try {
       const newBatchModuleSchedule = await BatchModuleSchedules.create({
         batchId,
         moduleId,
-        scheduleDateTime,
+        startDate,
+        startTime,
+        endDate,
+        endTime,
+        meetingLink,
         duration,
       });
   
@@ -188,7 +196,7 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
     res: Response
   ): Promise<void> => {
     const { id } = req.params;
-    const { batchId, moduleId, trainerIds, scheduleDateTime, duration } = req.body;
+    const { batchId, moduleId, trainerIds, startDate, startTime, endDate, endTime, meetingLink, duration } = req.body;
     const user = req.user;
   
     try {
@@ -226,8 +234,12 @@ export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.
       batchModuleSchedule.set({
         batchId: batchId || batchModuleSchedule.batchId,
         moduleId: moduleId || batchModuleSchedule.moduleId,
-        scheduleDateTime: scheduleDateTime || batchModuleSchedule.scheduleDateTime,
+        startDate: startDate || batchModuleSchedule.startDate,
+        startTime: startTime || batchModuleSchedule.startTime,
+        endDate: endDate || batchModuleSchedule.endDate,
+        endTime: endTime || batchModuleSchedule.endTime,
         duration: duration || batchModuleSchedule.duration,
+        meetingLink: meetingLink || batchModuleSchedule.meetingLink,
         updatedBy: user?.id,
       });
       await batchModuleSchedule.save();

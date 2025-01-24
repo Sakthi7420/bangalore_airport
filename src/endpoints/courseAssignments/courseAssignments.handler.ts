@@ -18,9 +18,9 @@ import { Audit, Batch, Course, CourseAssignment, User } from 'db';
 import { Response } from 'express';
 
 
-function isValidBase64Pdf(base64String: string): boolean {
-    // Regular expression to match base64 strings for PDF MIME type
-    const base64Regex = /^data:application\/pdf;base64,/;
+function isValidBase64File(base64String: string): boolean {
+    // Regular expression to match base64 strings for allowed MIME types
+    const base64Regex = /^data:(application\/pdf|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet|application\/vnd\.ms-excel);base64,/;
     return base64Regex.test(base64String);
   }
   
@@ -77,7 +77,7 @@ export const createCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
         trainerId
     } = req.body;
 
-    if (!isValidBase64Pdf(courseAssignmentQuestionFile)) {
+    if (!isValidBase64File(courseAssignmentQuestionFile)) {
         res.status(400).json({ message: 'Invalid base64 documents format.' });
         return;
     }
@@ -177,11 +177,11 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
         trainerId
     } = req.body;
 
-    // if (!isTrainer(user)) {
-    //     res.status(403).json({ message: 'Access denied. Only trainers can perform this action.' });
-    //     return;
-    // }
-
+    if (!isValidBase64File(courseAssignmentQuestionFile)) {
+        res.status(400).json({ message: 'Invalid base64 documents format.' });
+        return;
+    }
+    
     try {
         const courseAssignment = await CourseAssignment.findByPk(id);
 

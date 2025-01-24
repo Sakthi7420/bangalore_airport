@@ -18,6 +18,12 @@ export class Course extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseCategoryId!: number;
 
+  @Column({ type: DataType.TEXT('long'), allowNull: false })
+  courseImg!: string;
+
+  @Column({ type: DataType.STRING, allowNull: false})
+  courseLink!: string;
+
   @BelongsTo(() => CourseCategory, { as: 'category', foreignKey: 'courseCategoryId' })
   category!: CourseCategory;
 
