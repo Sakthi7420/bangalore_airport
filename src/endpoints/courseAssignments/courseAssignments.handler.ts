@@ -25,7 +25,7 @@ function isValidBase64Pdf(base64String: string): boolean {
   }
   
 
-// Get CourseAssignment Id by Batch Id
+// Get CourseAssignment Record by Batch Id
 
 export const getCourseAssignmentRecordsByBatchIdHandler: EndpointHandler<
 EndpointAuthType.JWT
