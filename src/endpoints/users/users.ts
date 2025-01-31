@@ -1,7 +1,8 @@
 import { Endpoint, EndpointAuthType, EndpointMethod } from 'node-server-engine';
 import {
     createUserValidator, 
-    updateUserValidator
+    updateUserValidator,
+    deleteUserValidator
   } from './users.validator';
 
   import { 
@@ -56,6 +57,6 @@ export const deleteUserEndpoint = new Endpoint({
     method: EndpointMethod.DELETE,
     handler: deleteUserHandler,
     authType: EndpointAuthType.JWT,
-    validator: {},
+    validator: deleteUserValidator,
     middleware: [checkPermission('DeleteUser')]
 });

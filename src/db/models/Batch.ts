@@ -40,6 +40,7 @@ export class Batch extends Model {
  
   // Define the course relationship
   @BelongsTo(() => Course, { as: 'course'})
+  @BelongsTo(() => Course, { as: 'course'})
   course!: Course;
  
   // Define enrolled courses relationship

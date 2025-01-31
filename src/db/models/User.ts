@@ -13,6 +13,7 @@ import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path t
 import { Role } from './Role';
 import { CourseAssignment } from './CourseAssignment';
 import { Batch } from './Batch';
+import { Course } from './Courses';
 import { BatchTrainee } from './BatchTrainee';
 import { BatchModuleSchedules } from './BatchModuleSchedule';
 import { BatchTrainer } from './BatchTrainer';
@@ -79,12 +80,20 @@ export class User extends Model {
 
   @HasMany(() => EnrolledCourse)
   enrolledCourses!: EnrolledCourse[];
+  Role: any;
 
   @HasMany(() => CourseAssignment)
   courseAssignment!: CourseAssignment[];
 
   @BelongsToMany(() => Batch, () => BatchTrainee)
   batches!: Batch[];
+  batches!: Batch[];
+
+  @HasMany(() => Course, { foreignKey: 'createdBy' })
+  courses!: Course[];
+
+  @HasMany(() => Module, { foreignKey: 'createdBy' })
+  module!: Module[];
 
   @HasMany(() => Course, { foreignKey: 'createdBy' })
   courses!: Course[];

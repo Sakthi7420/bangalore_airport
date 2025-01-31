@@ -85,13 +85,13 @@
             properties:
               firstName:
                 type: string
-                example: Sakthi
+                example: Admin
               lastName:
                 type: string
                 example: M
               email:
                 type: string
-                example: Sakthi.M@example.com
+                example: admin@gwcdata.ai
               phoneNumber:
                 type: string
                 example: "1234567890"
@@ -106,7 +106,7 @@
                 type: integer
                 example: 1
     responses:
-      200:
+      201:
         description: User created successfully
         content:
           application/json:
@@ -190,7 +190,7 @@
               phoneNumber:
                 type: string
                 example: "0987654321"
-              dataOfBirth:
+              dateOfBirth:
                 type: string
                 format: date
               address:
@@ -211,7 +211,7 @@
                 example: 2
               accountStatus:
                 type: string
-                example: "active"
+                example: "active"          
     responses:
       200:
         description: User updated successfully

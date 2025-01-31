@@ -29,15 +29,15 @@ export const createEnrollCourse: Schema = {
             errorMessage: 'Course ID must be an integer',
         }
     },
-    // enrollmentDate: {
-    //     in: 'body',
-    //     exists: {
-    //         errorMessage: 'Enrollment Date is required',
-    //     },
-    //     isDate: {
-    //         errorMessage: 'Enrollment Date must be a date',
-    //     }
-    // }
+    enrollmentDate: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Enrollment Date is required',
+        },
+        isDate: {
+            errorMessage: 'Enrollment Date must be a date',
+        }
+    }
 }
 
 export const updateEnrollCourse: Schema = {
@@ -77,15 +77,15 @@ export const updateEnrollCourse: Schema = {
             errorMessage: 'Course ID must be an integer',
         }
     },
-    // enrollmentDate: {
-    //     in: 'body',
-    //     exists: {
-    //         errorMessage: 'Enrollment Date is required',
-    //     },
-    //     isDate: {
-    //         errorMessage: 'Enrollment Date must be a date',
-    //     }
-    // }
+    enrollmentDate: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Enrollment Date is required',
+        },
+        isDate: {
+            errorMessage: 'Enrollment Date must be a date',
+        }
+    }
 }
 
 export const deleteEnrollCourse: Schema = {

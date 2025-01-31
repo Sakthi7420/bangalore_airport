@@ -6,7 +6,6 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
-  BelongsToMany
 } from 'sequelize-typescript';
 import { Course } from './Courses'; // Assuming the Course model is in the same directory
 import { BatchModuleSchedules } from './BatchModuleSchedule';
@@ -18,6 +17,10 @@ export class Module extends Model {
   @ForeignKey(() => Course)
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseId!: number;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number; // User who created the Module
 
   @Column({ type: DataType.STRING, allowNull: false })
   moduleName!: string;
@@ -40,6 +43,9 @@ export class Module extends Model {
 
   @BelongsTo(() => Course)
   course!: Course;
+
+  @BelongsTo(() => User, { as: 'user', foreignKey: 'createdBy' })
+  user!: User;
 
   @HasMany(() => BatchModuleSchedules)
   batchModuleSchedules!: BatchModuleSchedules[];

@@ -12,8 +12,13 @@ import {
     COURSE_NOT_FOUND,
     USER_NOT_FOUND,
     BATCH_NOT_FOUND
+    COURSEASSIGNMENTS_FETCH_ERROR,
+    COURSE_NOT_FOUND,
+    USER_NOT_FOUND,
+    BATCH_NOT_FOUND
 } from './courseAssignments.const';
 
+import { Audit, Batch, Course, CourseAssignment, User } from 'db';
 import { Audit, Batch, Course, CourseAssignment, User } from 'db';
 import { Response } from 'express';
   
@@ -101,9 +106,13 @@ export const getCourseAssignmentsHandler: EndpointHandler<EndpointAuthType.JWT> 
                     model: Course,
                     as: 'course',
                     attributes: ['id', 'courseName']
+                    model: Course,
+                    as: 'course',
+                    attributes: ['id', 'courseName']
                 },
                 {
                     model: User,
+                    as: 'trainer',
                     as: 'trainer',
                     attributes: ['id', 'firstName', 'lastName']
                 }
@@ -129,6 +138,7 @@ export const createCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
     const { user } = req;
     const {
         batchId,
+        courseId,
         courseId,
         courseAssignmentQuestionName,
         courseAssignmentQuestionFile,
@@ -156,9 +166,29 @@ export const createCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
         return;
     }
     
+
+    if (!isValidBase64File(courseAssignmentQuestionFile)) {
+        res.status(400).json({ message: 'Invalid base64 documents format.' });
+        return;
+    }
+
+    if (!batchId) {
+        res.status(404).json({ message: BATCH_NOT_FOUND})
+        return;
+    }
+    if (!courseId) {
+        res.status(404).json({ message: COURSE_NOT_FOUND})
+        return;
+    }
+    if (!trainerId) {
+        res.status(404).json({ message: USER_NOT_FOUND})
+        return;
+    }
+    
     try {
         const newCourseAssignment = await CourseAssignment.create({
             batchId,
+            courseId,
             courseId,
             courseAssignmentQuestionName,
             courseAssignmentQuestionFile,
@@ -206,6 +236,9 @@ export const getCourseAssignmentByIdHandler: EndpointHandler<EndpointAuthType.JW
                     model: Course,
                     as: 'course',
                     attributes: ['id', 'courseName']
+                    model: Course,
+                    as: 'course',
+                    attributes: ['id', 'courseName']
                 },
                 {
                     model: User,
@@ -236,6 +269,7 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
     const {
         batchId,
         courseId,
+        courseId,
         courseAssignmentQuestionName,
         courseAssignmentQuestionFile,
         trainerId,
@@ -244,6 +278,11 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
         assignEndDate
     } = req.body;
 
+    if (!isValidBase64File(courseAssignmentQuestionFile)) {
+        res.status(400).json({ message: 'Invalid base64 documents format.' });
+        return;
+    }
+    
     if (!isValidBase64File(courseAssignmentQuestionFile)) {
         res.status(400).json({ message: 'Invalid base64 documents format.' });
         return;
@@ -261,6 +300,7 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
 
         courseAssignment.set({
             batchId,
+            courseId,
             courseId,
             courseAssignmentQuestionName,
             courseAssignmentQuestionFile,

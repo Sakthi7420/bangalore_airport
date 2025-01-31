@@ -6,6 +6,9 @@ import { Module } from './Modules'
 import { CourseAssignment } from './CourseAssignment';
 import { User } from './User';
 
+import { CourseAssignment } from './CourseAssignment';
+import { User } from './User';
+
 
 @Table
 export class Course extends Model {
@@ -32,6 +35,9 @@ export class Course extends Model {
   @BelongsTo(() => CourseCategory, { as: 'category', foreignKey: 'courseCategoryId' })
   category!: CourseCategory;
 
+  @BelongsTo(() => User, { as: 'user', foreignKey: 'createdBy' })
+  user!: User;
+
   @HasMany(() => Module)
   module!: Module[];
 
@@ -40,6 +46,9 @@ export class Course extends Model {
 
   @HasMany(() => Batch)
   batches!: Batch[]; 
+
+  @HasMany(() => CourseAssignment)
+  courseAssignment!: CourseAssignment[];
 
   @HasMany(() => CourseAssignment)
   courseAssignment!: CourseAssignment[];

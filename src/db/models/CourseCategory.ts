@@ -1,5 +1,4 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
-
 import { Course } from './Courses'; 
 
 @Table

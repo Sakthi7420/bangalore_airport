@@ -18,16 +18,25 @@ export const courseCategoryValidator: Schema = {
     courseCategoryImg: {
         in: 'body',
         exists: {
-            errorMessage: 'CourseCategoryImage is Required'
+            errorMessage: 'CourseCategoryImage is required',
         },
         isString: {
-            errorMessage: 'CourseCategoryImage must be a string'
+            errorMessage: 'CourseCategoryImage must be a string',
         },
-    }
-};
+    },
+};    
 
 
 export const updateCourseCategoryValidator: Schema = {
+    id: {
+        in: 'params',
+        exists: {
+            errorMessage: 'CourseCategory ID is required',
+        },
+        isInt: {
+            errorMessage: 'CourseCategory ID must be an integer',
+        }
+    },
     courseCategory: {
         in: 'body',
         exists: {
@@ -45,12 +54,12 @@ export const updateCourseCategoryValidator: Schema = {
     courseCategoryImg: {
         in: 'body',
         exists: {
-            errorMessage: 'CourseCategoryImage is Required'
+            errorMessage: 'CourseCategoryImage is required',
         },
         isString: {
-            errorMessage: 'CourseCategoryImage must be a string'
+            errorMessage: 'CourseCategoryImage must be a string',
         },
-    }
+    },
 };
 
 
