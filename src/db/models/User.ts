@@ -17,6 +17,9 @@ import { BatchTrainee } from './BatchTrainee';
 import { BatchModuleSchedules } from './BatchModuleSchedule';
 import { BatchTrainer } from './BatchTrainer';
 
+import { JobBoard } from './JobBoard';
+import { UserSavedJobs } from './UserSavedJobs';
+
 @Table
 export class User extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
@@ -79,9 +82,14 @@ export class User extends Model {
   courseAssignment!: CourseAssignment[];
 
   @BelongsToMany(() => Batch, () => BatchTrainee)
-    batches!: Batch[];
+  batches!: Batch[];
 
   @BelongsToMany(() => BatchModuleSchedules, () => BatchTrainer)
   batchModuleSchedules!: BatchModuleSchedules[];
-  
+
+  @BelongsToMany(() => JobBoard, () => UserSavedJobs)
+  jobBoards!: JobBoard[];
+
+  @HasMany(() => UserSavedJobs)
+  userSavedJobs!: UserSavedJobs[];
 }

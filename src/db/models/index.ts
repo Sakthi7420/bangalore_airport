@@ -19,3 +19,6 @@ export * from './CourseAssignment';
 export * from './AssignmentCompletion';
 export * from './BatchTrainee';
 export * from './BatchTrainer';
+export * from './JobBoard'; 
+export * from './CompanyInfo';
+export * from './UserSavedJobs';

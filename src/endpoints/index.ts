@@ -26,3 +26,8 @@ export * from './courseAssignments';
 export * from './assignmentCompletion';
 
 export * from './batchTrainees';
+
+export * from './companyInfo';
+
+export * from './jobBoard';
+

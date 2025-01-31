@@ -28,6 +28,12 @@ export class Module extends Model {
   @Column({ type: DataType.INTEGER, allowNull: true })
   sequence!: number;
 
+  @Column({ type: DataType.STRING, allowNull: true })
+  recordedLink!: string;
+
+  @Column({ type: DataType.TEXT('long'), allowNull: true })
+  materialForModule!: string;
+
   @BelongsTo(() => Course)
   course!: Course;
 

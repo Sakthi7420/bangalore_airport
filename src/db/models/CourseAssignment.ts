@@ -29,6 +29,15 @@ export class CourseAssignment extends Model {
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })
   trainerId!: number;
+
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  totalMarks!: number;
+
+  @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })
+  assignStartDate?: Date;
+
+  @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })
+  assignEndDate?: Date;
  
   @BelongsTo(() => Batch, { as: 'batch', foreignKey: 'batchId' })
   batch!: Batch;

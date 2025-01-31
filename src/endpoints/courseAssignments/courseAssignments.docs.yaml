@@ -32,13 +32,23 @@
                   trainerId:
                     type: integer
                     example: 1
+                  totalMarks:
+                    type: integer
+                    example: 100
+                  assignStartDate:
+                    type: string
+                    format: date
+                    example: "2024-01-01"
+                  assignEndDate:
+                    type: string
+                    format: date
+                    example: "2024-01-15"
                   createdAt:
                     type: string
                     example: '2024-01-02T10:00:00Z'
                   updatedAt:
                     type: string
                     example: '2024-01-02T10:00:00Z'
-
       404:
         description: No courseAssignments found
         content:
@@ -49,7 +59,6 @@
                 message:
                   type: string
                   example: 'No courseAssignments found'
-
       500:
         description: Internal server error
         content:
@@ -86,10 +95,17 @@
                 type: string
               trainerId:
                 type: integer
-        
+              totalMarks:
+                type: integer
+              assignStartDate:
+                type: string
+                format: date
+              assignEndDate:
+                type: string
+                format: date
     responses:
       201:
-        description: courseAssignment created successfully
+        description: CourseAssignment created successfully
         content:
           application/json:
             schema:
@@ -97,7 +113,7 @@
               properties:
                 message:
                   type: string
-                  example: 'courseAssignment created successfully'
+                  example: 'CourseAssignment created successfully'
       500:
         description: CourseAssignment creation error
         content:
@@ -110,7 +126,6 @@
                   example: "Error occurred while creating the courseAssignment"
                 error:
                   type: string
-
       401:
         description: Unauthorized
         content:
@@ -156,10 +171,17 @@
                 type: string
               trainerId:
                 type: integer
-      
+              totalMarks:
+                type: integer
+              assignStartDate:
+                type: string
+                format: date
+              assignEndDate:
+                type: string
+                format: date
     responses:
       200:
-        description: courseAssignment updated successfully
+        description: CourseAssignment updated successfully
         content:
           application/json:
             schema:
@@ -167,9 +189,9 @@
               properties:
                 message:
                   type: string
-                  example: 'courseAssignment updated successfully'
+                  example: 'CourseAssignment updated successfully'
       404:
-        description: courseAssignment not found
+        description: CourseAssignment not found
         content:
           application/json:
             schema:
@@ -177,9 +199,9 @@
               properties:
                 message:
                   type: string
-                  example: 'courseAssignment not found'
+                  example: 'CourseAssignment not found'
       500:
-        description: Error updating courseAssignment
+        description: Error updating CourseAssignment
         content:
           application/json:
             schema:
@@ -187,7 +209,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Error updating courseAssignment'
+                  example: 'Error updating CourseAssignment'
                 error:
                   type: string
 
@@ -209,7 +231,7 @@
           example: 1
     responses:
       200:
-        description: courseAssignment deleted successfully
+        description: CourseAssignment deleted successfully
         content:
           application/json:
             schema:
@@ -217,9 +239,9 @@
               properties:
                 message:
                   type: string
-                  example: 'courseAssignment deleted successfully'
+                  example: 'CourseAssignment deleted successfully'
       404:
-        description: courseAssignment not found
+        description: CourseAssignment not found
         content:
           application/json:
             schema:
@@ -227,9 +249,9 @@
               properties:
                 message:
                   type: string
-                  example: 'courseAssignment not found'
+                  example: 'CourseAssignment not found'
       500:
-        description: Error deleting courseAssignment
+        description: Error deleting CourseAssignment
         content:
           application/json:
             schema:
@@ -237,6 +259,6 @@
               properties:
                 message:
                   type: string
-                  example: 'Error deleting courseAssignment'
+                  example: 'Error deleting CourseAssignment'
                 error:
                   type: string

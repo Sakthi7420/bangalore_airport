@@ -1,12 +1,12 @@
-/assignment-completion:
+/companyinfo:
   get:
-    summary: Get all assignment completions
-    description: Retrieves a list of all assignment completions
+    summary: Get all company info
+    description: Retrieves a list of all companies
     tags:
-      - AssignmentCompletion
+      - CompanyInfo
     responses:
       200:
-        description: List of assignment completions
+        description: List of company info
         content:
           application/json:
             schema:
@@ -17,21 +17,14 @@
                   id:
                     type: integer
                     example: 1
-                  courseAssignId:
-                    type: integer
-                    example: 101
-                  traineeId:
-                    type: integer
-                    example: 1
-                  obtainedMarks:
-                    type: number
-                    format: float
-                    example: 85.5
-                  courseAssignmentAnswerFile:
+                  companyName:
                     type: string
-                    example: 'https://example.com/file.pdf'
+                    example: 'TechCorp'
+                  companyImg:
+                    type: string
+                    example: "https://example.com/company-logo.jpg"
       404:
-        description: No assignment completions found
+        description: No company info found
         content:
           application/json:
             schema:
@@ -39,7 +32,7 @@
               properties:
                 message:
                   type: string
-                  example: 'No assignment completions found'
+                  example: 'No company info found'
       500:
         description: Internal server error
         content:
@@ -49,16 +42,16 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching assignment completions'
+                  example: 'Error fetching company info'
 
   post:
-    summary: Create a new assignment completion
-    description: Creates a new assignment completion with the provided details.
-    operationId: createAssignmentCompletion
+    summary: Create a new company info entry
+    description: Creates a new company info with provided details.
+    operationId: createCompanyInfo
     security:
       - bearerAuth: []
     tags:
-      - AssignmentCompletion
+      - CompanyInfo
     requestBody:
       required: true
       content:
@@ -66,22 +59,16 @@
           schema:
             type: object
             properties:
-              courseAssignId:
-                type: integer
-                example: 101
-              traineeId:
-                type: integer
-                example: 1
-              obtainedMarks:
-                type: number
-                format: float
-                example: 85.5
-              courseAssignmentAnswerFile:
+              companyName:
                 type: string
-                example: 'https://example.com/file.pdf'
+                minLength: 3
+                example: "TechCorp"
+              companyImg:
+                type: string
+                example: "https://example.com/company-logo.jpg"
     responses:
       201:
-        description: Assignment completion created successfully
+        description: Company info created successfully
         content:
           application/json:
             schema:
@@ -89,9 +76,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Assignment completion created successfully'
+                  example: 'Company info created successfully'
       500:
-        description: Assignment completion creation error
+        description: Company info creation error
         content:
           application/json:
             schema:
@@ -99,7 +86,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Error occurred while creating the assignment completion'
+                  example: "Error occurred while creating the company info"
                 error:
                   type: string
       401:
@@ -111,22 +98,22 @@
               properties:
                 message:
                   type: string
-                  example: 'Unauthorized request'
+                  example: Unauthorized request
 
-/assignment-completion/{id}:
+/companyinfo/{id}:
   put:
-    summary: Update an assignment completion by ID
-    description: Updates the information of an assignment completion by ID.
-    operationId: updateAssignmentCompletion
+    summary: Update a company info by ID
+    description: Updates the information of a company by ID.
+    operationId: updateCompanyInfo
     security:
       - bearerAuth: []
     tags:
-      - AssignmentCompletion
+      - CompanyInfo
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the assignment completion to update
+        description: ID of the company to update
         schema:
           type: integer
           example: 1
@@ -137,22 +124,15 @@
           schema:
             type: object
             properties:
-              courseAssignId:
-                type: integer
-                example: 101
-              traineeId:
-                type: integer
-                example: 1
-              obtainedMarks:
-                type: number
-                format: float
-                example: 85.5
-              courseAssignmentAnswerFile:
+              companyName:
                 type: string
-                example: 'https://example.com/file.pdf'
+                example: 'Updated TechCorp'
+              companyImg:
+                type: string
+                example: "https://example.com/company-logo.jpg"
     responses:
       200:
-        description: Assignment completion updated successfully
+        description: Company info updated successfully
         content:
           application/json:
             schema:
@@ -160,9 +140,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Assignment completion updated successfully'
+                  example: 'Company info updated successfully'
       404:
-        description: Assignment completion not found
+        description: Company info not found
         content:
           application/json:
             schema:
@@ -170,7 +150,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Assignment completion not found'
+                  example: 'Company info not found'
       500:
         description: Internal server error
         content:
@@ -180,29 +160,29 @@
               properties:
                 message:
                   type: string
-                  example: 'Error updating assignment completion'
+                  example: 'Error updating company info'
                 error:
                   type: string
 
   delete:
-    summary: Delete an assignment completion by ID
-    description: Deletes an assignment completion by ID.
-    operationId: deleteAssignmentCompletion
+    summary: Delete a company info by ID
+    description: Deletes a company info by ID.
+    operationId: deleteCompanyInfo
     security:
       - bearerAuth: []
     tags:
-      - AssignmentCompletion
+      - CompanyInfo
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the assignment completion to delete
+        description: ID of the company info to delete
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Assignment completion deleted successfully
+        description: Company info deleted successfully
         content:
           application/json:
             schema:
@@ -210,9 +190,9 @@
               properties:
                 message:
                   type: string
-                  example: 'Assignment completion deleted successfully'
+                  example: 'Company info deleted successfully'
       404:
-        description: Assignment completion not found
+        description: Company info not found
         content:
           application/json:
             schema:
@@ -220,7 +200,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Assignment completion not found'
+                  example: 'Company info not found'
       500:
         description: Internal server error
         content:
@@ -230,43 +210,36 @@
               properties:
                 message:
                   type: string
-                  example: 'Error deleting assignment completion'
+                  example: 'Error deleting company info'
 
   get:
-    summary: Get an assignment completion by ID
+    summary: Get a company info by ID
     tags:
-      - AssignmentCompletion
+      - CompanyInfo
     parameters:
       - name: id
         in: path
         required: true
-        description: ID of the assignment completion
+        description: ID of the company info
         schema:
           type: integer
           example: 1
     responses:
       200:
-        description: Assignment completion details
+        description: Company info details
         content:
           application/json:
             schema:
               type: object
               properties:
-                courseAssignId:
-                  type: integer
-                  example: 101
-                traineeId:
-                  type: integer
-                  example: 1
-                obtainedMarks:
-                  type: number
-                  format: float
-                  example: 85.5
-                courseAssignmentAnswerFile:
+                companyName:
                   type: string
-                  example: 'https://example.com/file.pdf'
+                  example: 'TechCorp'
+                companyImg:
+                  type: string
+                  example: "https://example.com/company-logo.jpg"
       404:
-        description: Assignment completion not found
+        description: Company info not found
         content:
           application/json:
             schema:
@@ -274,7 +247,7 @@
               properties:
                 message:
                   type: string
-                  example: 'Assignment completion not found'
+                  example: 'Company info not found'
       500:
         description: Internal server error
         content:
@@ -284,4 +257,4 @@
               properties:
                 message:
                   type: string
-                  example: 'Error fetching assignment completion'
+                  example: 'Error fetching company info'

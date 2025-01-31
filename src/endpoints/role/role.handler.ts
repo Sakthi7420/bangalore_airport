@@ -370,7 +370,7 @@ export const getPermissionsHandler: EndpointHandler<
 ): Promise<void> => {
   try {
     const permissions = await Permission.findAll({
-      attributes: ['action', 'groupName', 'description'], // Specify the fields to return
+      attributes: ['action', 'groupName', 'description'] // Specify the fields to return
     });
     res.status(200).json({ permissions });
   } catch (error) {

@@ -20,17 +20,8 @@ export class AssignmentCompletion extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   traineeId!: number;
 
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  totalMarks!: number;
-
   @Column({ type: DataType.FLOAT, allowNull: false })
   obtainedMarks!: number;
-
-  @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })
-  assignStartDate?: Date;
-
-  @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })
-  assignEndDate?: Date;
 
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseAssignmentAnswerFile!: string;

@@ -51,16 +51,13 @@ export const createAssignmentCompletionHandler: EndpointHandler<EndpointAuthType
 ): Promise<void> => {
 
     const { user } = req;
-    const { courseAssignId, traineeId, totalMarks, obtainedMarks, assignStartDate, assignEndDate, courseAssignmentAnswerFile } = req.body;
+    const { courseAssignId, traineeId, obtainedMarks, courseAssignmentAnswerFile } = req.body;
 
     try {
         const newAssignmentCompletion = await AssignmentCompletion.create({
             courseAssignId,
             traineeId,
-            totalMarks,
             obtainedMarks,
-            assignStartDate,
-            assignEndDate,
             courseAssignmentAnswerFile
         });
 
@@ -124,7 +121,7 @@ export const updateAssignmentCompletionHandler: EndpointHandler<EndpointAuthType
 
     const { id } = req.params;
     const { user } = req;
-    const { courseAssignId, traineeId, totalMarks, obtainedMarks, assignStartDate, assignEndDate, courseAssignmentAnswerFile } = req.body;
+    const { courseAssignId, traineeId, obtainedMarks, courseAssignmentAnswerFile } = req.body;
 
     try {
         const updateAssignmentCompletion = await AssignmentCompletion.findByPk(id);
@@ -137,20 +134,14 @@ export const updateAssignmentCompletionHandler: EndpointHandler<EndpointAuthType
         const previousData = {
             courseAssignId: updateAssignmentCompletion.courseAssignId,
             traineeId: updateAssignmentCompletion.traineeId,
-            totalMarks: updateAssignmentCompletion.totalMarks,
             obtainedMarks: updateAssignmentCompletion.obtainedMarks,
-            assignStartDate: updateAssignmentCompletion.assignStartDate,
-            assignEndDate: updateAssignmentCompletion.assignEndDate,
             courseAssignmentAnswerFile: updateAssignmentCompletion.courseAssignmentAnswerFile
         };
 
         updateAssignmentCompletion.set({
             courseAssignId,
             traineeId,
-            totalMarks,
             obtainedMarks,
-            assignStartDate,
-            assignEndDate,
             courseAssignmentAnswerFile
         });
 

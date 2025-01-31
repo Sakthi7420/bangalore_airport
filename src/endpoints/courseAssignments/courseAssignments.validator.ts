@@ -51,7 +51,35 @@ export const createCourseAssignmentValidator: Schema = {
             errorMessage: 'trainer ID must be an integer',
         },
         toInt: true,
-    }
+    },
+    totalMarks: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Total Marks is required'
+        },
+        isInt: {
+            errorMessage: 'Total Marks must be an integer'
+        }
+    },
+
+    assignStartDate: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Assignment Start Date is required'
+        },
+        isString: {
+            errorMessage: 'Assignment Start Date must be a string'
+        }
+    },
+    assignEndDate: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Assignment End Date is required'
+        },
+        isString: {
+            errorMessage: 'Assignment End Date must be a string'
+        }
+    },
 };
 
 export const updateCourseAssignmentValidator: Schema = {
@@ -108,7 +136,35 @@ export const updateCourseAssignmentValidator: Schema = {
         isInt: {
             errorMessage: 'trainer ID must be an integer',
         }
-    }
+    },
+    totalMarks: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Total Marks is required'
+        },
+        isInt: {
+            errorMessage: 'Total Marks must be an integer'
+        }
+    },
+
+    assignStartDate: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Assignment Start Date is required'
+        },
+        isString: {
+            errorMessage: 'Assignment Start Date must be a string'
+        }
+    },
+    assignEndDate: {
+        in: 'body',
+        exists: {
+            errorMessage: 'Assignment End Date is required'
+        },
+        isString: {
+            errorMessage: 'Assignment End Date must be a string'
+        }
+    },
 };
 
 export const deleteCourseAssignmentValidator: Schema = {

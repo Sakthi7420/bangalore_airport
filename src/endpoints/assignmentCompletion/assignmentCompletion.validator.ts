@@ -20,42 +20,6 @@ export const assignmentCompletionValidator: Schema = {
             errorMessage: 'Trainee ID must be an integer'
         }
     },
-    totalMarks: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Total Marks is required'
-        },
-        isInt: {
-            errorMessage: 'Total Marks must be an integer'
-        }
-    },
-    obtainedMarks: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Obtained Marks is required'
-        },
-        isFloat: {
-            errorMessage: 'Obtained Marks must be a float'
-        }
-    },
-    assignStartDate: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Assignment Start Date is required'
-        },
-        isString: {
-            errorMessage: 'Assignment Start Date must be a string'
-        }
-    },
-    assignEndDate: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Assignment End Date is required'
-        },
-        isString: {
-            errorMessage: 'Assignment End Date must be a string'
-        }
-    },
     courseAssignmentAnswerFile: {
         in: 'body',
         exists: {
@@ -94,42 +58,6 @@ export const updateAssignmentCompletionValidator: Schema = {
         },
         isInt: {
             errorMessage: 'Trainee ID must be an integer'
-        }
-    },
-    totalMarks: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Total Marks is required'
-        },
-        isInt: {
-            errorMessage: 'Total Marks must be an integer'
-        }
-    },
-    obtainedMarks: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Obtained Marks is required'
-        },
-        isFloat: {
-            errorMessage: 'Obtained Marks must be a float'
-        }
-    },
-    assignStartDate: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Assignment Start Date is required'
-        },
-        isString: {
-            errorMessage: 'Assignment Start Date must be a string'
-        }
-    },
-    assignEndDate: {
-        in: 'body',
-        exists: {
-            errorMessage: 'Assignment End Date is required'
-        },
-        isString: {
-            errorMessage: 'Assignment End Date must be a string'
         }
     },
     courseAssignmentAnswerFile: {

@@ -28,23 +28,10 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    totalMarks: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
+
     obtainedMarks: {
       type: DataTypes.FLOAT,
       allowNull: false
-    },
-    assignStartDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: DataTypes.NOW
-    },
-    assignEndDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: DataTypes.NOW
     },
     courseAssignmentAnswerFile: {
       type: DataTypes.TEXT('long'),

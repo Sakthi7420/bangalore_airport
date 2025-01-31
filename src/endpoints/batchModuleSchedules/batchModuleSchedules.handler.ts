@@ -191,6 +191,53 @@ export const getBatchModuleScheduleByIdHandler: EndpointHandler<EndpointAuthType
   }
 };
 
+export const getBatchModuleScheduleByBatchIdHandler: EndpointHandler<EndpointAuthType> = async (
+  req: EndpointRequestType[EndpointAuthType],
+  res: Response
+): Promise<void> => {
+  const { id } = req.params; // Expect a single batchId from the request params
+
+  try {
+    // Validate if batchId is provided
+    if (!id) {
+      res.status(400).json({ message: 'batchId is required' });
+      return;
+    }
+
+    // Fetch the batch module schedule for the provided batchId
+    const batchModuleSchedule = await BatchModuleSchedules.findAll({
+      where: { batchId: id }, // Match the specific batchId
+      include: [
+        {
+          model: Module,
+          as: 'module',
+          attributes: ['id', 'moduleName'],
+        },
+        {
+          model: Batch,
+          as: 'batch',
+          attributes: ['id', 'batchName'],
+        },
+        {
+          model: User,
+          as: 'trainers',
+          attributes: ['id', 'firstName', 'lastName'],
+        },
+      ],
+    });
+
+    if (!batchModuleSchedule) {
+      res.status(404).json({ message: 'BatchModuleSchedule not found for the given Batch ID' });
+      return;
+    }
+
+    res.status(200).json({ batchModuleSchedule });
+  } catch (error) {
+    console.error('Error fetching BatchModuleSchedule:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 export const updateBatchModuleScheduleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response

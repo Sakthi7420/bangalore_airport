@@ -9,7 +9,8 @@ import {
     getBatchModuleScheduleByIdHandler,
     createBatchModuleScheduleHandler,
     updateBatchModuleScheduleHandler,
-    deleteBatchModuleScheduleHandler
+    deleteBatchModuleScheduleHandler,
+    getBatchModuleScheduleByBatchIdHandler
 } from './batchModuleSchedules.handler';
 import { checkPermission } from "middleware";
 
@@ -40,6 +41,14 @@ export const getBatchModuleScheduleByIdEndpoint = new Endpoint({
     middleware: [checkPermission('GetBatchSchedule')]
 });
 
+export const getBatchModuleScheduleByBatchIdEndpoint = new Endpoint({
+    path: '/batchModuleSchedulebybatch/:id',
+    method: EndpointMethod.GET,
+    handler: getBatchModuleScheduleByBatchIdHandler,
+    authType: EndpointAuthType.JWT,
+    validator: {},
+    middleware: [checkPermission('GetBatchSchedule')]
+})
 
 export const updateBatchModuleScheduleEndpoint = new Endpoint({
     path: '/batchModuleSchedule/:id',
