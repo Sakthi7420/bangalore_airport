@@ -3,7 +3,7 @@ import {
   EndpointHandler,
   EndpointRequestType
 } from 'node-server-engine';
-import { Module, Course, Audit } from 'db';
+import { Module, Course, Audit, User } from 'db';
 import { Response } from 'express';
 import {
   MODULE_NOT_FOUND,
@@ -32,6 +32,10 @@ export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
           model: Course,
           as: 'course',
           attributes: ['id', 'courseName']
+        },
+        {
+            model: User, as: 'user',
+            attributes: ["id", "firstName", "lastName"]
         }
       ]
     });
@@ -72,7 +76,8 @@ export const createModuleHandler: EndpointHandler<
       moduleDescription,
       sequence: nextSequence,
       recordedLink,
-      materialForModule
+      materialForModule,
+      createdBy: user?.id
     });
 
     // Log the action in the audit table
@@ -107,6 +112,10 @@ export const getModuleByIdHandler: EndpointHandler<
           model: Course,
           as: 'course',
           attributes: ['id', 'courseName']
+        },
+        {
+            model: User, as: 'user',
+            attributes: ["id", "firstName", "lastName"]
         }
       ]
     });

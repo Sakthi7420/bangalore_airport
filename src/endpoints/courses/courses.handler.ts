@@ -11,7 +11,7 @@ import {
   COURSE_GET_ERROR,
   CATEGORY_NOT_FOUND
 } from './course.const';
-import { Course, CourseCategory, Audit } from 'db';
+import { Course, CourseCategory, Audit, User } from 'db';
 import { Response } from 'express';
 
 function isValidBase64(base64String: string): boolean {
@@ -31,6 +31,10 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
           {
             model: CourseCategory, as: 'category',
             attributes: ['id','courseCategory'] 
+          },
+          {
+            model: User, as: 'user',
+            attributes: ['id','firstName', 'lastName']
           }
           ]
       });
@@ -77,7 +81,8 @@ export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
       courseDesc,
       courseCategoryId,
       courseImg,
-      courseLink
+      courseLink,
+      createdBy: user?.id
     });
 
     await Audit.create({
@@ -106,6 +111,10 @@ export const getCourseByIdHandler: EndpointHandler<EndpointAuthType> = async (
     const course = await Course.findByPk(id, {
       include: [
         { model: CourseCategory, as: 'category' },
+        {
+          model: User, as: 'user',
+          attributes:['id', 'firstName', 'lastName']
+        }
       ]
     });
 

@@ -19,6 +19,8 @@ import { BatchTrainer } from './BatchTrainer';
 
 import { JobBoard } from './JobBoard';
 import { UserSavedJobs } from './UserSavedJobs';
+import { Module } from './Modules';
+import { Course } from './Courses';
 
 @Table
 export class User extends Model {
@@ -83,6 +85,12 @@ export class User extends Model {
 
   @BelongsToMany(() => Batch, () => BatchTrainee)
   batches!: Batch[];
+
+  @HasMany(() => Course, { foreignKey: 'createdBy' })
+  courses!: Course[];
+
+  @HasMany(() => Module, { foreignKey: 'createdBy' })
+  module!: Module[];
 
   @BelongsToMany(() => BatchModuleSchedules, () => BatchTrainer)
   batchModuleSchedules!: BatchModuleSchedules[];

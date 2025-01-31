@@ -34,6 +34,10 @@ export class Module extends Model {
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   materialForModule!: string;
 
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number; // User who created the Module
+
   @BelongsTo(() => Course)
   course!: Course;
 

@@ -4,6 +4,7 @@ import { Batch } from './Batch';
 import { EnrolledCourse } from './EnrolledCourses';
 import { Module } from './Modules'
 import { CourseAssignment } from './CourseAssignment';
+import { User } from './User';
 
 
 @Table
@@ -23,6 +24,10 @@ export class Course extends Model {
 
   @Column({ type: DataType.TEXT('long'), allowNull: false })
   courseImg!: string;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number; // User who created the course
 
   @BelongsTo(() => CourseCategory, { as: 'category', foreignKey: 'courseCategoryId' })
   category!: CourseCategory;
