@@ -14,33 +14,12 @@ import {
   COURSE_NOT_FOUND
 } from './modules.const';
 
-<<<<<<< HEAD
 // function isValidBase64File(base64String: string): boolean {
 //   // Regular expression to match base64 strings for allowed MIME types
 //   const base64Regex =
 //     /^data:(application\/pdf|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet|application\/vnd\.ms-excel);base64,/;
 //   return base64Regex.test(base64String);
 // }
-=======
-
-export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
-    res: Response
-): Promise<void> => {
-    try {
-        const modules = await Module.findAll({
-            include: [
-                {
-                    model: Course, as: 'course',
-                    attributes:['id', 'courseName']
-                },
-                {
-                    model: User, as: 'user',
-                    attributes: ["id", "firstName", "lastName"]
-                }
-            ]
-        });
->>>>>>> 8bb082f967e4427660c740e5f2a151fe68bf2770
 
 export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
@@ -67,56 +46,11 @@ export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
   }
 };
 
-<<<<<<< HEAD
 export const createModuleHandler: EndpointHandler<
   EndpointAuthType.JWT
 > = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
-=======
-export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-    req: EndpointRequestType[EndpointAuthType.JWT],
-    res: Response
-  ): Promise<void> => {
-    const { user } = req;
-    const { courseId, moduleName, moduleDescription } = req.body; // Removed sequence from the payload
-  
-    try {
-      // Get the highest sequence number for the given courseId
-      const maxSequence = await Module.max('sequence', { where: { courseId } });
-  
-      // If no modules exist for this courseId, start from 1
-      const nextSequence = (typeof maxSequence === 'number' ? maxSequence : 0) + 1;
-  
-      const newModule = await Module.create({
-        courseId,
-        moduleName,
-        moduleDescription,
-        sequence: nextSequence,
-        createdBy: user?.id
-      });
-  
-      // Log the action in the audit table
-      await Audit.create({
-        entityType: 'module',
-        entityId: newModule.id,
-        action: 'CREATE',
-        newData: newModule,
-        performedBy: user?.id,
-      });
-  
-      res.status(201).json({ message: 'Module created successfully', newModule });
-    } catch (error) {
-      console.error("Module creation error:", error);
-      res.status(500).json({ message: MODULE_CREATION_ERROR, error });
-    }
-  };
-  
-//get by id
-export const getModuleByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-    req: EndpointRequestType[EndpointAuthType.JWT],
-    res: Response
->>>>>>> 8bb082f967e4427660c740e5f2a151fe68bf2770
 ): Promise<void> => {
   const { user } = req;
   const {
@@ -132,24 +66,9 @@ export const getModuleByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async
     // Get the highest sequence number for the given courseId
     const maxSequence = await Module.max('sequence', { where: { courseId } });
 
-<<<<<<< HEAD
     // If no modules exist for this courseId, start from 1
     const nextSequence =
       (typeof maxSequence === 'number' ? maxSequence : 0) + 1;
-=======
-        const module = await Module.findByPk(id, {
-            include: [
-                {
-                    model: Course, as: 'course',
-                    attributes: ['id', 'courseName']
-                },
-                {
-                    model: User, as: 'user',
-                    attributes: ["id", "firstName", "lastName"]
-                }
-            ]
-        });
->>>>>>> 8bb082f967e4427660c740e5f2a151fe68bf2770
 
     const newModule = await Module.create({
       courseId,
@@ -336,7 +255,6 @@ export const deleteModuleHandler: EndpointHandler<
       res.status(404).json({ message: MODULE_NOT_FOUND });
       return;
     }
-<<<<<<< HEAD
 
     await Audit.create({
       entityType: 'Module',
@@ -352,6 +270,4 @@ export const deleteModuleHandler: EndpointHandler<
   } catch (error) {
     res.status(500).json({ message: MODULE_DELETION_ERROR, error });
   }
-=======
->>>>>>> 8bb082f967e4427660c740e5f2a151fe68bf2770
 };

@@ -6,7 +6,7 @@ import {
     getBatchDetailsHandler,
     updateBatchHandler,
     deleteBatchHandler
-} from "./Batch.handler";
+} from "./batch.handler";
 import { checkPermission } from "middleware";
 
 export const createBatchEndpoint = new Endpoint({

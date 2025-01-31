@@ -6,10 +6,6 @@ import { Module } from './Modules'
 import { CourseAssignment } from './CourseAssignment';
 import { User } from './User';
 
-import { CourseAssignment } from './CourseAssignment';
-import { User } from './User';
-
-
 @Table
 export class Course extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
@@ -46,9 +42,6 @@ export class Course extends Model {
 
   @HasMany(() => Batch)
   batches!: Batch[]; 
-
-  @HasMany(() => CourseAssignment)
-  courseAssignment!: CourseAssignment[];
 
   @HasMany(() => CourseAssignment)
   courseAssignment!: CourseAssignment[];

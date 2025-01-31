@@ -11,16 +11,12 @@ export const createCourseAssignmentValidator: Schema = {
         }
     },
     courseId: {
-    courseId: {
         in: 'body',
         exists: {
             errorMessage: 'course ID is required',
-            errorMessage: 'course ID is required',
         },
         isInt: {
-            errorMessage: 'course ID must be an integer',
-            errorMessage: 'course ID must be an integer',
-        }
+            errorMessage: 'course ID must be an integer'        }
     },
     courseAssignmentQuestionName: {
         in: 'body',
@@ -37,9 +33,6 @@ export const createCourseAssignmentValidator: Schema = {
     },
     courseAssignmentQuestionFile: {
         in: 'body',
-        exists: {
-            errorMessage: 'Course Assignment Question File is required',
-        },
         exists: {
             errorMessage: 'Course Assignment Question File is required',
         },
@@ -107,15 +100,12 @@ export const updateCourseAssignmentValidator: Schema = {
             errorMessage: 'Batch ID must be an integer',
         }
     },
-    courseId: {
-    courseId: {
+        courseId: {
         in: 'body',
         exists: {
             errorMessage: 'course ID is required',
-            errorMessage: 'course ID is required',
         },
         isInt: {
-            errorMessage: ' course ID must be an integer',
             errorMessage: ' course ID must be an integer',
         }
     },

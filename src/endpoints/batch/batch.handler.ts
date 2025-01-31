@@ -30,7 +30,7 @@ export const getBatchDetailsHandler: EndpointHandler<
         {
           model: Course,
           as: 'course', // Ensure this matches the alias in the model association
-          attributes: ['id', 'courseName']
+          attributes: ['id', 'courseName', 'courseImg', 'courseLink']
         },
         {
           model: User,
@@ -59,7 +59,10 @@ export const getBatchDetailsHandler: EndpointHandler<
       course: batchData.course
         ? {
             id: batchData.course.id,
-            courseName: batchData.course.courseName
+            courseName: batchData.course.courseName,
+            courseImg: batchData.course.courseImg,
+            courseLink: batchData.course.courseLink,
+            
           }
         : null,
       trainees: batchData.trainees.map((trainee: any) => ({
@@ -89,7 +92,7 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         {
           model: Course,
           as: 'course', // Ensure this matches the alias in the model association
-          attributes: ['id', 'courseName']
+          attributes: ['id', 'courseName', 'courseImg', 'courseLink']
         },
         {
           model: User,
@@ -118,7 +121,9 @@ export const getBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
         course: batchData.course
           ? {
               id: batchData.course.id,
-              courseName: batchData.course.courseName
+              courseName: batchData.course.courseName,
+              courseImg: batchData.course.courseImg,
+              courseLink: batchData.course.courseLink,
             }
           : null,
         trainees:
@@ -324,7 +329,7 @@ export const updateBatchHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       performedBy: user?.id
     });
 
-    res.status(200).json({ message: 'Batch updated successfully' });
+    res.status(200).json({ message: 'Batch updated successfully', batch });
   } catch (error) {
     res.status(500).json({ message: BATCH_UPDATE_ERROR, error });
   }

@@ -54,7 +54,6 @@ export const updateCourseValidator: Schema = {
     courseName: {
         in: 'body',
         optional: true, 
-        optional: true, 
         isLength: {
             errorMessage: 'Course Name must be at least 5 characters long',
             options: { min: 5 }
@@ -63,7 +62,6 @@ export const updateCourseValidator: Schema = {
     courseDesc: {
         in: 'body',
         optional: true, 
-        optional: true, 
         isLength: {
             errorMessage: 'Course Description must be at least 20 characters long',
             options: { min: 20 }
@@ -71,7 +69,6 @@ export const updateCourseValidator: Schema = {
     },
     courseCategoryId: {
         in: 'body',
-        optional: true, 
         optional: true, 
         isInt: {
             errorMessage: 'CourseCategoryId must be an Integer'

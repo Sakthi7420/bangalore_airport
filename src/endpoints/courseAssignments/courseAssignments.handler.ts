@@ -12,13 +12,8 @@ import {
     COURSE_NOT_FOUND,
     USER_NOT_FOUND,
     BATCH_NOT_FOUND
-    COURSEASSIGNMENTS_FETCH_ERROR,
-    COURSE_NOT_FOUND,
-    USER_NOT_FOUND,
-    BATCH_NOT_FOUND
 } from './courseAssignments.const';
 
-import { Audit, Batch, Course, CourseAssignment, User } from 'db';
 import { Audit, Batch, Course, CourseAssignment, User } from 'db';
 import { Response } from 'express';
   
@@ -106,13 +101,9 @@ export const getCourseAssignmentsHandler: EndpointHandler<EndpointAuthType.JWT> 
                     model: Course,
                     as: 'course',
                     attributes: ['id', 'courseName']
-                    model: Course,
-                    as: 'course',
-                    attributes: ['id', 'courseName']
                 },
                 {
                     model: User,
-                    as: 'trainer',
                     as: 'trainer',
                     attributes: ['id', 'firstName', 'lastName']
                 }
@@ -138,7 +129,6 @@ export const createCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
     const { user } = req;
     const {
         batchId,
-        courseId,
         courseId,
         courseAssignmentQuestionName,
         courseAssignmentQuestionFile,
@@ -189,7 +179,6 @@ export const createCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
         const newCourseAssignment = await CourseAssignment.create({
             batchId,
             courseId,
-            courseId,
             courseAssignmentQuestionName,
             courseAssignmentQuestionFile,
             trainerId,
@@ -236,9 +225,6 @@ export const getCourseAssignmentByIdHandler: EndpointHandler<EndpointAuthType.JW
                     model: Course,
                     as: 'course',
                     attributes: ['id', 'courseName']
-                    model: Course,
-                    as: 'course',
-                    attributes: ['id', 'courseName']
                 },
                 {
                     model: User,
@@ -268,7 +254,6 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
     const { id } = req.params;
     const {
         batchId,
-        courseId,
         courseId,
         courseAssignmentQuestionName,
         courseAssignmentQuestionFile,
@@ -300,7 +285,6 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
 
         courseAssignment.set({
             batchId,
-            courseId,
             courseId,
             courseAssignmentQuestionName,
             courseAssignmentQuestionFile,
