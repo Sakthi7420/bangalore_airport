@@ -1,0 +1,264 @@
+/courseAssignment:
+  get:
+    summary: Get all courseAssignments
+    description: Retrieves a list of all courseAssignments.
+    tags:
+      - CourseAssignment
+    responses:
+      200:
+        description: List of courseAssignments
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  batchId:
+                    type: integer
+                    example: 1
+                  courseId:
+                    type: integer
+                    example: 1
+                  courseAssignmentQuestionName:
+                    type: string
+                    example: "Course Assignment 1"
+                  courseAssignmentQuestionFile:
+                    type: string
+                    example: "https://example.com/file.pdf"
+                  trainerId:
+                    type: integer
+                    example: 1
+                  totalMarks:
+                    type: integer
+                    example: 100
+                  assignStartDate:
+                    type: string
+                    format: date
+                    example: "2024-01-01"
+                  assignEndDate:
+                    type: string
+                    format: date
+                    example: "2024-01-15"
+                  createdAt:
+                    type: string
+                    example: '2024-01-02T10:00:00Z'
+                  updatedAt:
+                    type: string
+                    example: '2024-01-02T10:00:00Z'
+      404:
+        description: No courseAssignments found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'No courseAssignments found'
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error fetching courseAssignments'
+
+  post:
+    summary: Create a new courseAssignment
+    description: Creates a new courseAssignment with provided details.
+    operationId: createCourseAssignment
+    security:
+      - bearerAuth: []
+    tags:
+      - CourseAssignment
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              batchId:
+                type: integer
+              courseId:
+                type: integer
+              courseAssignmentQuestionName:
+                type: string
+              courseAssignmentQuestionFile:
+                type: string
+              trainerId:
+                type: integer
+              totalMarks:
+                type: integer
+              assignStartDate:
+                type: string
+                format: date
+              assignEndDate:
+                type: string
+                format: date
+    responses:
+      201:
+        description: CourseAssignment created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'CourseAssignment created successfully'
+      500:
+        description: CourseAssignment creation error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error occurred while creating the courseAssignment"
+                error:
+                  type: string
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Unauthorized request
+
+/courseAssignment/{id}:
+  put:
+    summary: Update a courseAssignment by ID
+    description: Updates the information of a courseAssignment by ID.
+    operationId: updateCourseAssignment
+    security:
+      - bearerAuth: []
+    tags:
+      - CourseAssignment
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the courseAssignment to update
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              batchId:
+                type: integer
+              courseId:
+                type: integer
+              courseAssignmentQuestionName:
+                type: string
+              courseAssignmentQuestionFile:
+                type: string
+              trainerId:
+                type: integer
+              totalMarks:
+                type: integer
+              assignStartDate:
+                type: string
+                format: date
+              assignEndDate:
+                type: string
+                format: date
+    responses:
+      200:
+        description: CourseAssignment updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'CourseAssignment updated successfully'
+      404:
+        description: CourseAssignment not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'CourseAssignment not found'
+      500:
+        description: Error updating CourseAssignment
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error updating CourseAssignment'
+                error:
+                  type: string
+
+  delete:
+    summary: Delete a courseAssignment by ID
+    description: Deletes a courseAssignment by ID.
+    operationId: deleteCourseAssignment
+    security:
+      - bearerAuth: []
+    tags:
+      - CourseAssignment
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the courseAssignment to delete
+        schema:
+          type: integer
+          example: 1
+    responses:
+      200:
+        description: CourseAssignment deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'CourseAssignment deleted successfully'
+      404:
+        description: CourseAssignment not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'CourseAssignment not found'
+      500:
+        description: Error deleting CourseAssignment
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error deleting CourseAssignment'
+                error:
+                  type: string

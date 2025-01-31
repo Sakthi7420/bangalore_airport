@@ -1,5 +1,5 @@
-import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server-engine";
-import { courseCategoryValidator } from "./courseCategory.validator";
+import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
+import { courseCategoryValidator, deleteCourseCategoryValidator, updateCourseCategoryValidator } from "./courseCategory.validator";
 import {
     courseCategoryHandler,
     getCategoryByIdHandler,
@@ -7,43 +7,49 @@ import {
     updateCategoryHandler,
     deleteCategoryHandler
 } from './courseCategory.handler';
+import { checkPermission } from "middleware";
 
 export const createCategoryEndpoint = new Endpoint({
-    path: '/auth/createcourse-category',
+    path: '/coursecategory',
     method: EndpointMethod.POST,
     handler: courseCategoryHandler,
     authType: EndpointAuthType.JWT,
-    validator: courseCategoryValidator
+    validator: courseCategoryValidator,
+    // middleware: [checkPermission('CreateCategory')]
 });
 
 export const getCategoryByIdEndpoint = new Endpoint({
-    path: '/auth/getcategory/:id',
+    path: '/coursecategory/:id',
     method: EndpointMethod.GET,
     handler: getCategoryByIdHandler,
     authType: EndpointAuthType.NONE,
-    validator: {}
+    validator: {},
+    // middleware: [checkPermission('GetCategory')]
 });
 
 export const getCategoryEndpoint = new Endpoint({
-    path: '/auth/getcategory',
+    path: '/coursecategory',
     method: EndpointMethod.GET,
     handler: getCategoriesHandler,
     authType: EndpointAuthType.NONE,
-    validator: {}
+    validator: {},
+    // middleware: [checkPermission('GetCategory')]
 });
 
 export const updateCategoryEndpoint = new Endpoint({
-    path: '/auth/updatecategory/:id',
+    path: '/coursecategory/:id',
     method: EndpointMethod.PUT,
     handler: updateCategoryHandler,
     authType: EndpointAuthType.JWT,
-    validator: courseCategoryValidator
+    validator: updateCourseCategoryValidator,
+    middleware: [checkPermission('UpdateCategory')]
 });
 
 export const deleteCategoryHandlerEndpoint = new Endpoint({
-    path: '/auth/deletecategory/:id',
+    path: '/coursecategory/:id',
     method: EndpointMethod.DELETE,
     handler: deleteCategoryHandler,
     authType: EndpointAuthType.JWT,
-    validator: {}
+    validator: deleteCourseCategoryValidator,
+    middleware: [checkPermission('DeleteCategory')]
 })

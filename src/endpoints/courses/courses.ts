@@ -1,5 +1,5 @@
-import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server-engine";
-import { courseValidator } from "./courses.validator";
+import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
+import { createCourseValidator, updateCourseValidator, deleteCourseValidator } from "./courses.validator";
 import {
     createCourseHandler,
     getCourseByIdHandler,
@@ -7,44 +7,50 @@ import {
     updateCourseHandler,
     deleteCourseHandler
 } from './courses.handler';
+import { checkPermission } from 'middleware';
 
 
 export const createCourseEndpoint = new Endpoint({
-    path: '/auth/createcourse',
+    path: '/course',
     method: EndpointMethod.POST,
     handler: createCourseHandler,
     authType: EndpointAuthType.JWT,
-    validator: courseValidator
+    validator: createCourseValidator,
+    middleware: [checkPermission('CreateCourse')]
 });
 
 export const getAllCourseEndPoint = new Endpoint({
-    path: '/auth/getallcourse',
+    path: '/course',
     method: EndpointMethod.GET,
     handler: getCourseHandler,
     authType: EndpointAuthType.NONE,
-    validator: {}
+    validator: {},
+    // middleware: [checkPermission('GetCourse')]
 });
 
 export const getCourseByIdEndPoint = new Endpoint({
-    path: '/auth/getcourse/:id',
+    path: '/course/:id',
     method: EndpointMethod.GET,
     handler: getCourseByIdHandler,
     authType: EndpointAuthType.NONE,
-    validator: {}
+    validator: {},
+    // middleware: [checkPermission('GetCourse')]
 });
 
 export const updateCourseEndpoint = new Endpoint({
-    path: '/auth/updatecourse/:id',
+    path: '/course/:id',
     method: EndpointMethod.PUT,
     handler: updateCourseHandler,
     authType: EndpointAuthType.JWT,
-    validator: courseValidator
+    validator: updateCourseValidator,
+    middleware: [checkPermission('UpdateCourse')]
 });
 
 export const deleteCourseHandlerEndpoint = new Endpoint({
-    path: '/auth/deletecourse/:id',
+    path: '/course/:id',
     method: EndpointMethod.DELETE,
     handler: deleteCourseHandler,
     authType: EndpointAuthType.JWT,
-    validator: {}
+    validator: deleteCourseValidator,
+    middleware: [checkPermission('DeleteCourse')]
 });

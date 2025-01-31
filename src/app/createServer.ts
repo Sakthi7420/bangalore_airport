@@ -1,4 +1,4 @@
-import {Server, reportDebug, middleware} from '@gwcdata/node-server-engine';
+import {Server, reportDebug, middleware} from 'node-server-engine';
 import * as endpoints from 'endpoints';
 
 

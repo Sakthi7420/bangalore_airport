@@ -8,4 +8,3 @@ export const PERMISSION_NOT_FOUND = 'Permission not found';
 export const PERMISSION_CREATION_ERROR = 'Error creating permission';
 export const PERMISSION_UPDATE_ERROR = 'Error updating permission';
 export const PERMISSION_DELETE_ERROR = 'Error deleting permission';
-

@@ -1,4 +1,4 @@
-import { Endpoint, EndpointMethod, EndpointAuthType } from "@gwcdata/node-server-engine";
+import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
 import { courseDetailsValidator } from "./courseDetails.validator";
 import {
     createCourseDetailsHandler,
@@ -10,7 +10,7 @@ import {
 
 
 export const createCourseDetailsEndpoint = new Endpoint({
-    path: '/auth/create-coursedetails',
+    path: '/coursedetails',
     method: EndpointMethod.POST,
     handler: createCourseDetailsHandler,
     authType: EndpointAuthType.JWT,
@@ -18,7 +18,7 @@ export const createCourseDetailsEndpoint = new Endpoint({
 });
 
 export const getAllCourseDetailsEndpoint = new Endpoint({
-    path: '/auth/get-coursedetails',
+    path: '/coursedetails',
     method: EndpointMethod.GET,
     handler: getCourseDetailsHandler,
     authType: EndpointAuthType.NONE,
@@ -26,7 +26,7 @@ export const getAllCourseDetailsEndpoint = new Endpoint({
 });
 
 export const getCourseDetailsByIdEndpoint = new Endpoint({
-    path: '/auth/get-coursedetails/:id',
+    path: '/coursedetails/:id',
     method: EndpointMethod.GET,
     handler: getCourseDetailsByIdHandler,
     authType: EndpointAuthType.NONE,
@@ -35,7 +35,7 @@ export const getCourseDetailsByIdEndpoint = new Endpoint({
 
 
 export const updateCourseDetailsEndpoint = new Endpoint({
-    path: '/auth/update-courseDetails/:id',
+    path: '/coursedetails/:id',
     method: EndpointMethod.PUT,
     handler: updateCourseDetailsHandler,
     authType: EndpointAuthType.JWT,
@@ -44,7 +44,7 @@ export const updateCourseDetailsEndpoint = new Endpoint({
 
 
 export const deleteCourseDetailsEndpoint = new Endpoint({
-    path: '/auth/delete-courseDetails/:id',
+    path: '/coursedetails/:id',
     method: EndpointMethod.DELETE,
     handler: deleteCourseDetailsHandler,
     authType: EndpointAuthType.JWT,

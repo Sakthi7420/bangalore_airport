@@ -5,11 +5,22 @@ import {
   DataType,
   ForeignKey,
   HasMany,
-  BelongsTo
+  BelongsTo,
+  BelongsToMany
 } from 'sequelize-typescript';
 
 import { EnrolledCourse } from './EnrolledCourses'; // Ensure the correct path to EnrolledCourse model
 import { Role } from './Role';
+import { CourseAssignment } from './CourseAssignment';
+import { Batch } from './Batch';
+import { BatchTrainee } from './BatchTrainee';
+import { BatchModuleSchedules } from './BatchModuleSchedule';
+import { BatchTrainer } from './BatchTrainer';
+
+import { JobBoard } from './JobBoard';
+import { UserSavedJobs } from './UserSavedJobs';
+import { Module } from './Modules';
+import { Course } from './Courses';
 
 @Table
 export class User extends Model {
@@ -37,10 +48,10 @@ export class User extends Model {
   @Column({ type: DataType.STRING, allowNull: true })
   qualification?: string;
 
-  @Column({ type: DataType.BLOB, allowNull: true })
-  profilePic!: Buffer;
+  @Column({ type: DataType.TEXT('long'), allowNull: true })
+  profilePic?: string;
 
-  @Column({ type: DataType.DATE, allowNull: true })
+  @Column({ type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW })
   dateOfJoining?: Date;
 
   @Column({
@@ -68,4 +79,25 @@ export class User extends Model {
 
   @HasMany(() => EnrolledCourse)
   enrolledCourses!: EnrolledCourse[];
+
+  @HasMany(() => CourseAssignment)
+  courseAssignment!: CourseAssignment[];
+
+  @BelongsToMany(() => Batch, () => BatchTrainee)
+  batches!: Batch[];
+
+  @HasMany(() => Course, { foreignKey: 'createdBy' })
+  courses!: Course[];
+
+  @HasMany(() => Module, { foreignKey: 'createdBy' })
+  module!: Module[];
+
+  @BelongsToMany(() => BatchModuleSchedules, () => BatchTrainer)
+  batchModuleSchedules!: BatchModuleSchedules[];
+
+  @BelongsToMany(() => JobBoard, () => UserSavedJobs)
+  jobBoards!: JobBoard[];
+
+  @HasMany(() => UserSavedJobs)
+  userSavedJobs!: UserSavedJobs[];
 }

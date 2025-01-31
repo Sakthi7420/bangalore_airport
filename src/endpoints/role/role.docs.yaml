@@ -27,7 +27,12 @@
                   permissions:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        action:
+                          type: string
+                        groupName:
+                          type: string
       '500':
         description: Internal server error
 
@@ -240,6 +245,10 @@
             type: object
             properties:
               action:
+                type: string         
+              description:
+                type: string
+              groupName:
                 type: string
     responses:
       '201':
@@ -285,7 +294,9 @@
           schema:
             type: object
             properties:
-              action:
+              description:
+                type: string
+              groupName:
                 type: string
     responses:
       '200':

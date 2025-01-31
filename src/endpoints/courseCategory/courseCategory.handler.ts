@@ -2,9 +2,23 @@ import {
     EndpointAuthType,
     EndpointHandler,
     EndpointRequestType
-} from '@gwcdata/node-server-engine';
-import { CourseCategory } from 'db';
+} from 'node-server-engine';
+import { CourseCategory, Audit } from 'db';
 import { Response } from 'express';
+import { 
+    COURSECATEGORY_NOT_FOUND,
+    COURSECATEGORY_CREATION_ERROR,
+    COURSECATEGORY_UPDATE_ERROR,
+    COURSECATEGORY_DELETION_ERROR,
+    COURSECATEGORY_GET_ERROR
+} from './courseCategory.const';
+
+
+function isValidBase64(base64String: string): boolean {
+    // Regular expression to check if the string is a valid base64 image string (with a data URI scheme)
+    const base64Regex = /^data:image\/(png|jpeg|jpg|gif);base64,/;
+    return base64Regex.test(base64String);
+}
 
 //Get Categories
 export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
@@ -17,48 +31,51 @@ export const getCategoriesHandler: EndpointHandler<EndpointAuthType> = async (
         const categories = await CourseCategory.findAll();
 
         if (categories.length === 0) {
-            res.status(404).json({ message: 'No categories found' });
+            res.status(404).json({ message: COURSECATEGORY_NOT_FOUND });
             return;
         }
 
-        res.status(200).json({ categories });
-        return;
+        res.status(200).json({ category: categories  });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching categories', data: error });
-        return;
     }
 };
 
-
-//create category
-export const courseCategoryHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
+// create category
+export const courseCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
-
-    const { courseCategory, description, courseCategoryImg, } = req.body;
-
-    if (req.user?.roleId !== 1) {
-        res.status(403).json({ message: 'You don\'t have Permission to create a new category' });
+    const { user } = req;
+    const { courseCategory, description, courseCategoryImg } = req.body;
+ 
+    // Validate base64 image format
+    if (!isValidBase64(courseCategoryImg)) {
+        res.status(400).json({ message: 'Invalid base64 image format.' });
         return;
     }
-
+ 
     try {
+        // Create the new course category with the base64 image string
         const newCategory = await CourseCategory.create({
             courseCategory,
             description,
-            courseCategoryImg
+            courseCategoryImg, // Store base64 string directly in DB
         });
-        res
-            .status(201)
-            .json({ message: 'Course category created successfully', data: newCategory });
-        return;
-    }
-    catch (error) {
-        res
-            .status(500)
-            .json({ message: 'Error creating course category', data: error });
-        return;
+ 
+        // Log the action in the audit table
+        await Audit.create({
+            entityType: 'CourseCategory',
+            entityId: newCategory.id,
+            action: 'CREATE',
+            newData: newCategory,
+            performedBy: user?.id,
+        });
+ 
+        // Respond with success
+        res.status(201).json({ message: 'Course category created successfully', data: newCategory });
+    } catch (error) {
+        res.status(500).json({ message: COURSECATEGORY_CREATION_ERROR, error });
     }
 };
 
@@ -78,80 +95,89 @@ export const getCategoryByIdHandler: EndpointHandler<EndpointAuthType> = async (
             return;
         }
         res.status(200).json({ category });
-        return;
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching category', data: error });
-        return;
+        res.status(500).json({ message: COURSECATEGORY_GET_ERROR, data: error });
     }
 };
 
 //Update a course
-export const updateCategoryHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
+export const updateCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
 
     const { id } = req.params;
+    const { user } = req;
     const { courseCategory, description, courseCategoryImg } = req.body;
-
+    
     try {
 
-        const category = await CourseCategory.findByPk(id);
+        const updateCategory = await CourseCategory.findByPk(id);
 
-        if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have permission to update this category' });
-            return;
-        }
-
-        if (!category) {
+        if (!updateCategory) {
             res.status(404).json({ message: 'Category not found' });
             return;
         }
 
-        category.set({
+        const previousData = {
+            courseCategory: updateCategory.courseCategory,
+            description: updateCategory.description,
+            courseCategoryImg: updateCategory.courseCategoryImg   
+          }
+
+          updateCategory.set({
             courseCategory: courseCategory,
             description: description,
             courseCategoryImg: courseCategoryImg
         });
 
-        await category.save();
+        await updateCategory.save();
 
-        res.status(200).json({ message: 'Category updated successfully', category });
-        return;
+        await Audit.create({
+            entityType: 'CourseCategory',
+            entityId: updateCategory.id,
+            action: 'UPDATE',
+            OldData: previousData,
+            newData: updateCategory,
+            performedBy: user?.id
+          });
+
+        res.status(200).json({ message: 'Category updated successfully', updateCategory });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating category', error });
-        return;
+        res.status(500).json({ message: COURSECATEGORY_UPDATE_ERROR, error });
     }
 };
 
 
 //Delete a category
-export const deleteCategoryHandler: EndpointHandler<EndpointAuthType> = async (
-    req: EndpointRequestType[EndpointAuthType],
+export const deleteCategoryHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+    req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
 
     const { id } = req.params;
+    const { user } = req;
 
     try {
-        const category = await CourseCategory.findByPk(id);
+        const deleteCategory = await CourseCategory.findByPk(id);
 
-        if (req.user?.roleId !== 1) {
-            res.status(403).json({ message: 'You don\'t have Permission to delete this category' });
-            return;
-        }
-
-        if (!category) {
+        if (!deleteCategory) {
             res.status(404).json({ message: 'Category not found' });
             return;
         }
 
-        await category.destroy();
+        await Audit.create({ 
+            entityType: 'CourseCategory',
+            entityId: deleteCategory.id,
+            action: 'DELETE',
+            oldData: deleteCategory, // Old data before deletion
+            performedBy: user?.id
+          });
+
+        await deleteCategory.destroy();
 
         res.status(200).json({ message: 'Category deleted successfully' });
-        return;
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting category', error });
-        return;
+        res.status(500).json({ message: COURSECATEGORY_DELETION_ERROR, error });
     }
 };

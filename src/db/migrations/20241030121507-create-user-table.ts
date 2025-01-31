@@ -16,8 +16,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.STRING,
       allowNull: false
     },
-    email: {
-      type: DataTypes.STRING,
+    email: {      type: DataTypes.STRING,
       allowNull: false,
       unique: true
     },
@@ -42,11 +41,11 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       allowNull: true
     },
     profilePic: {
-      type: DataTypes.BLOB, // Using BLOB for profile pictures
+      type: DataTypes.TEXT('long'),
       allowNull: true
     },
     dateOfJoining: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: true
     },
     roleId: {

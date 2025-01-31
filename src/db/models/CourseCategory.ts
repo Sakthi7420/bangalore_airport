@@ -1,19 +1,6 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 
-import { Course } from './Courses'; // Ensure the path to the Course model is correct
-
-// @Table
-// export class CourseCategory extends Model {
-//   @Column({ type: DataType.STRING, allowNull: false })
-//   courseCategory!: string;
-
-//   @Column({ type: DataType.BLOB, allowNull: true })
-//   courseCategoryImg!: Buffer;
-
-//   @HasMany(() => Course)
-//   courses!: Course[];
-// }
-
+import { Course } from './Courses'; 
 
 @Table
 export class CourseCategory extends Model {
@@ -23,9 +10,10 @@ export class CourseCategory extends Model {
   @Column({ type: DataType.TEXT, allowNull: true })
   description?: string;  // Optional field to add a description for each category
 
-  @Column({ type: DataType.STRING, allowNull: true })
+  @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseCategoryImg!: string;
 
-  @HasMany(() => Course)
+  @HasMany(() => Course, { foreignKey: 'courseCategoryId' })
   courses!: Course[];
+
 }

@@ -4,12 +4,18 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
   await queryInterface.createTable('Permissions', {
     id: {
       type: DataTypes.INTEGER,
-      autoIncrement: true
+      autoIncrement: true,
+      primaryKey: true,
+      allowNull: false
     },
     action: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true // 'action' is the primary key
+      unique: true 
+    },
+    groupName: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     description: {
       type: DataTypes.STRING,

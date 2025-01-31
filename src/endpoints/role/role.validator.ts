@@ -116,6 +116,26 @@ export const createPermissionValidator: Schema = {
       options: { max: 255 },
       errorMessage: 'Action cannot exceed 255 characters'
     }
+  },
+  description: {
+    in: 'body',
+    isLength: {
+      options: { max: 255 },
+      errorMessage: 'Description cannot exceed 255 characters'
+    }
+  },
+  groupName: {
+    in: 'body',
+    exists: {
+      errorMessage: 'Group Name is required'
+    },
+    isString: {
+      errorMessage: 'Group Name  must be a string'
+    },
+    isLength: {
+      options: { max: 255 },
+      errorMessage: 'Group Name  cannot exceed 255 characters'
+    }
   }
 };
 

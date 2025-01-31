@@ -1,3 +1,4 @@
+
 export * from './auth';
 
 export * from './courses';
@@ -9,4 +10,24 @@ export * from './trainingPlans';
 export * from './courseDetails';
 
 export * from './role';
+
+export * from './users';
+
+export * from './enrolledCourses';
+
+export * from './batchModuleSchedules';
+
+export * from './modules';
+
+export * from './batch';
+
+export * from './courseAssignments';
+
+export * from './assignmentCompletion';
+
+export * from './batchTrainees';
+
+export * from './companyInfo';
+
+export * from './jobBoard';
 

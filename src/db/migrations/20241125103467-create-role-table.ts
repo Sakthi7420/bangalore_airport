@@ -6,7 +6,8 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
+      allowNull: false
     },
     name: {
       type: DataTypes.STRING,

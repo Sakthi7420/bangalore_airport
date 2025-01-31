@@ -2,11 +2,6 @@ import { QueryInterface, DataTypes } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
   await queryInterface.createTable('RolePermissions', {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
-    },
     roleId: {
       type: DataTypes.INTEGER,
       references: {
@@ -16,11 +11,11 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     },
-    action: {
-      type: DataTypes.STRING,
+    permissionId: {
+      type: DataTypes.INTEGER,
       references: {
         model: 'Permissions', // Now referencing 'Permissions' by 'action'
-        key: 'action' // Matching the 'action' column as primary key
+        key: 'id' // Matching the 'id' column as primary key
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'

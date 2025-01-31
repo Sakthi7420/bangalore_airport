@@ -18,7 +18,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             allowNull: true
         },
         courseCategoryImg: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT('long'),
             allowNull: true
         },
         createdAt: {

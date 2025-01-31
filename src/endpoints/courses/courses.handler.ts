@@ -2,11 +2,23 @@ import {
   EndpointAuthType,
   EndpointHandler,
   EndpointRequestType
-} from '@gwcdata/node-server-engine';
-import { Course } from 'db';
-import { CourseCategory } from 'db';
-import { User } from 'db';
+} from 'node-server-engine';
+import {
+  COURSE_NOT_FOUND,
+  COURSE_CREATION_ERROR,
+  COURSE_UPDATE_ERROR,
+  COURSE_DELETION_ERROR,
+  COURSE_GET_ERROR,
+  CATEGORY_NOT_FOUND
+} from './course.const';
+import { Course, CourseCategory, Audit, User } from 'db';
 import { Response } from 'express';
+
+function isValidBase64(base64String: string): boolean {
+  // Regular expression to check if the string is a valid base64 image string (with a data URI scheme)
+  const base64Regex = /^data:image\/(png|jpeg|jpg|gif|avif);base64,/;
+  return base64Regex.test(base64String);
+}
 
 export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
   req: EndpointRequestType[EndpointAuthType],
@@ -14,64 +26,79 @@ export const getCourseHandler: EndpointHandler<EndpointAuthType> = async (
 ): Promise<void> => {
   try {
 
-    const course = await Course.findAll();
+    const course = await Course.findAll({
+        include: [
+          {
+            model: CourseCategory, as: 'category',
+            attributes: ['id','courseCategory'] 
+          },
+          {
+            model: User, as: 'user',
+            attributes: ['id','firstName', 'lastName']
+          }
+          ]
+      });
 
     if (course.length === 0) {
-      res.status(404).json({ message: 'No course found' });
+      res.status(404).json({ message: COURSE_NOT_FOUND }); 
       return;
     }
 
-    res.status(200).json({ course: course });
-    return;
-
+    res.status(200).json({ course });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', data: error });
-    return;
+    res.status(500).json({ message: COURSE_GET_ERROR, error });
   }
 }
 
 
 // Create a new course
-export const createCourseHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const createCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
-  const { courseName, courseDesc, courseCategoryId, courseInstructorId } = req.body;
+
+  const { user } = req;
+  const { courseName, courseDesc, courseCategoryId, courseImg, courseLink } = req.body;
+
+   // Validate base64 image format
+   if (!isValidBase64(courseImg)) {
+    res.status(400).json({ message: 'Invalid base64 image format.' });
+    return;
+}
+
   try {
 
     const category = await CourseCategory.findByPk(courseCategoryId);
 
-    if (req.user?.roleId !== 1) {
-      res.status(403).json({ message: 'You don\'t have Permission to create a New course' });
-      return;
-    }
     if (!category) {
-      res.status(404).json({ message: 'Course category not found' });
-      return;
-    }
-
-    const instructor = await User.findByPk(courseInstructorId);
-    if (!instructor) {
-      res.status(404).json({ message: 'Instructor not found' });
+      res.status(404).json({ message: CATEGORY_NOT_FOUND});
       return;
     }
 
     // Create the course
-    const course = await Course.create({
+    const newCourse = await Course.create({
       courseName,
       courseDesc,
       courseCategoryId,
-      courseInstructorId
+      courseImg,
+      courseLink,
+      createdBy: user?.id
     });
 
-    res.status(201).json({ message: 'Course created successfully', course });
-    return;
+    await Audit.create({
+      entityType: 'Course',
+      entityId: newCourse.id,
+      action: 'CREATE',
+      newData: newCourse,
+      performedBy: user?.id
+    });
 
+    res.status(201).json({ message: 'Course created successfully', newCourse });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating course', error });
-    return;
+    res.status(500).json({ message: COURSE_CREATION_ERROR, error });
   }
 };
+
 
 // Get a course by ID
 export const getCourseByIdHandler: EndpointHandler<EndpointAuthType> = async (
@@ -84,105 +111,117 @@ export const getCourseByIdHandler: EndpointHandler<EndpointAuthType> = async (
     const course = await Course.findByPk(id, {
       include: [
         { model: CourseCategory, as: 'category' },
-        { model: User, as: 'instructor' }
+        {
+          model: User, as: 'user',
+          attributes:['id', 'firstName', 'lastName']
+        }
       ]
     });
 
     if (!course) {
-      res.status(404).json({ message: 'Course not found' });
+      res.status(404).json({ message: COURSE_NOT_FOUND });
       return;
     }
 
-    res.status(200).json({ course: course });
-    return;
-
+    res.status(200).json({ course });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching course', error });
-    return;
+    res.status(500).json({ message: COURSE_GET_ERROR, error });
   }
 };
 
 // Update a course
-export const updateCourseHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 
   const { id } = req.params;
-  const { courseName, courseDesc, courseCategoryId, courseInstructorId } = req.body;
+  const { user } = req;
+  const { courseName, courseDesc, courseCategoryId, courseImg, courseLink } = req.body;
+
+   // Validate base64 image format
+   if (!isValidBase64(courseImg)) {
+    res.status(400).json({ message: 'Invalid base64 image format.' });
+    return;
+}
 
   try {
 
-    const course = await Course.findByPk(id);
+    const updateCourse = await Course.findByPk(id);
 
-    if (req.user?.roleId !== 1) {
-      res.status(403).json({ message: 'You don\'t have Permission to update this course' });
-      return;
-    }
-
-    if (!course) {
-      res.status(404).json({ message: 'Course not found' });
+    if (!updateCourse) {
+      res.status(404).json({ message: COURSE_NOT_FOUND });
       return;
     }
 
     const category = await CourseCategory.findByPk(courseCategoryId);
     if (!category) {
-      res.status(404).json({ message: 'Course category not found' });
+      res.status(404).json({ message: CATEGORY_NOT_FOUND });
       return;
     }
 
-    const instructor = await User.findByPk(courseInstructorId);
-    if (!instructor) {
-      res.status(404).json({ message: 'Instructor not found' });
-      return;
+    const previousData = {
+      courseName: updateCourse.courseName,
+      courseDesc: updateCourse.courseDesc,
+      courseCategoryId: updateCourse.courseCategoryId,
+      courseImg: updateCourse.courseImg,
+      courseLink: updateCourse.courseLink
     }
-
-    course.set({
+    
+    updateCourse.set({
       courseName: courseName,
       courseDesc: courseDesc,
       courseCategoryId: courseCategoryId,
-      courseInstructorId: courseInstructorId
+      courseImg: courseImg,
+      courseLink: courseLink
     });
 
-    await course.save();
+    await Audit.create({
+      entityType: 'Course',
+      entityId: updateCourse.id,
+      action: 'UPDATE',
+      OldData: previousData,
+      newData: updateCourse,
+      performedBy: user?.id
+    });
 
-    res.status(200).json({ message: 'Course updated successfully', course });
-    return;
+    await updateCourse.save();
 
+    res.status(200).json({ message: 'Course updated successfully', updateCourse });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating course', error });
-    return;
+    res.status(500).json({ message: COURSE_UPDATE_ERROR, error });
   }
 };
 
 // Delete a course
-export const deleteCourseHandler: EndpointHandler<EndpointAuthType> = async (
-  req: EndpointRequestType[EndpointAuthType],
+export const deleteCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 
   const { id } = req.params;
+  const { user } = req;
 
   try {
-    const course = await Course.findByPk(id);
+    const deleteCourse = await Course.findByPk(id);
 
-    if (req.user?.roleId !== 1) {
-      res.status(403).json({ message: 'You don\'t have Permission to delete this course' });
+    if (!deleteCourse) {
+      res.status(404).json({ message: COURSE_NOT_FOUND });
       return;
     }
 
-    if (!course) {
-      res.status(404).json({ message: 'Course not found' });
-      return;
-    }
+    await Audit.create({ 
+      entityType: 'Course',
+      entityId: deleteCourse.id,
+      action: 'DELETE',
+      oldData: deleteCourse, // Old data before deletion
+      performedBy: user?.id
+    });
 
-    await course.destroy();
+    await deleteCourse.destroy();
 
     res.status(200).json({ message: 'Course deleted successfully' });
-    return;
-    
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting course', error });
-    return;
+    res.status(500).json({ message: COURSE_DELETION_ERROR, error });
   }
 };

@@ -11,6 +11,7 @@ interface Permission {
   id: number;
   action: string;
   description: string;
+  groupName: string;
 }
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
@@ -22,26 +23,79 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     { name: 'trainee', description: 'Trainee role' }
   ]);
 
-  // Insert permissions into the Permissions table
   await queryInterface.bulkInsert('Permissions', [
-    { action: 'CreateRole', description: 'Create a new role' },
-    { action: 'CreatePermission', description: 'Create a new permission' },
-    { action: 'UpdateRole', description: 'Update an existing role' },
-    { action: 'UpdatePermission', description: 'Update an existing permission' },
-    { action: 'DeleteRole', description: 'Delete a role' },
-    { action: 'DeletePermission', description: 'Delete a permission' },
-    { action: 'GetRole', description: 'Get details of a role' },
-    { action: 'GetPermission', description: 'Get details of a permission' }
+    {
+      action: 'CreateRole',
+      description: 'Create a new role',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'CreatePermission',
+      description: 'Create a new permission',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'UpdateRole',
+      description: 'Update an existing role',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'UpdatePermission',
+      description: 'Update an existing permission',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'DeleteRole',
+      description: 'Delete a role',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'DeletePermission',
+      description: 'Delete a permission',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'GetRole',
+      description: 'Get details of a role',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'GetPermission',
+      description: 'Get details of a permission',
+      groupName: 'Role & Permission'
+    },
+    {
+      action: 'CreateUser',
+      description: 'Create a new user',
+      groupName: 'User Management'
+    },
+    {
+      action: 'GetUser',
+      description: 'Get details of a user',
+      groupName: 'User Management'
+    },
+    {
+      action: 'UpdateUser',
+      description: 'update an existing user',
+      groupName: 'User Management'
+    },
+    {
+      action: 'DeleteUser',
+      description: 'update an existing user',
+      groupName: 'User Management'
+    }
   ]);
 
-  // Retrieve all roles and permissions using queryInterface.sequelize.query()
   const roles = await queryInterface.sequelize.query('SELECT * FROM Roles', {
     type: QueryTypes.SELECT
   });
 
-  const permissions = await queryInterface.sequelize.query('SELECT * FROM Permissions', {
-    type: QueryTypes.SELECT
-  });
+  const permissions = await queryInterface.sequelize.query(
+    'SELECT * FROM Permissions',
+    {
+      type: QueryTypes.SELECT
+    }
+  );
 
   // Explicitly type roles and permissions as the correct types
   const typedRoles = roles as Role[];
@@ -55,7 +109,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       if (role.name === 'admin') {
         rolePermissions.push({
           roleId: role.id,
-          action: permission.action,
+          permissionId: permission.id
         });
       }
     }
@@ -63,23 +117,22 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
 
   rolePermissions.push({
     roleId: 2,
-    action: 'GetRole',
+    permissionId: 7
   });
 
   rolePermissions.push({
     roleId: 3,
-    action: 'GetPermission',
+    permissionId: 8
   });
 
   // Insert role-permission mappings into RolePermissions table
   await queryInterface.bulkInsert('RolePermissions', rolePermissions);
 
-  // Insert a default user with the 'admin' role
   await queryInterface.bulkInsert('Users', [
     {
-      firstName: 'GWC',
+      firstName: 'Admin',
       lastName: 'Admin',
-      email: 'admin@gwc.ai',
+      email: 'admin@gwcdata.ai',
       password: '$2b$10$QapWKNNihqtqiFLeLU/eXOhRCD4vpMbULwzf0fV15hze8FnfT8DQ6', // example hashed password
       roleId: 1, // Assuming the admin role has id = 1
       accountStatus: 'active'
