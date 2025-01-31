@@ -31,7 +31,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       allowNull: false,
     },
     createdBy: { type: DataTypes.INTEGER, allowNull: true },
-    updatedBy: { type: DataTypes.INTEGER, allowNull: true },
+    // updatedBy: { type: DataTypes.INTEGER, allowNull: true },
     createdAt: { type: DataTypes.DATE, allowNull: false },
     updatedAt: { type: DataTypes.DATE, allowNull: false }
   });

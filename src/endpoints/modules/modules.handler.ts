@@ -3,7 +3,7 @@ import {
     EndpointHandler,
     EndpointRequestType,
 } from 'node-server-engine';
-import { Module, Course, Audit } from 'db';
+import { Module, Course, Audit, User } from 'db';
 import { Response } from 'express';
 import {
     MODULE_NOT_FOUND,
@@ -13,6 +13,7 @@ import {
     MODULE_GET_ERROR,
     COURSE_NOT_FOUND
 } from './modules.const';
+
 
 export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
     req: EndpointRequestType[EndpointAuthType],
@@ -24,6 +25,10 @@ export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
                 {
                     model: Course, as: 'course',
                     attributes:['id', 'courseName']
+                },
+                {
+                    model: User, as: 'user',
+                    attributes: ["id", "firstName", "lastName"]
                 }
             ]
         });
@@ -33,39 +38,6 @@ export const getModulesHandler: EndpointHandler<EndpointAuthType> = async (
         res.status(500).json({ message: MODULE_GET_ERROR, error });
     }
 };
-
-// export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-//     req: EndpointRequestType[EndpointAuthType.JWT],
-//     res: Response
-// ): Promise<void> => {
-
-//     const { user } = req;
-//     const { courseId, moduleName, moduleDescription, sequence } = req.body;
-
-
-//     try {
-
-//         const newModule = await Module.create({
-//             courseId,
-//             moduleName,
-//             moduleDescription,
-//             sequence,
-//         });
-
-//         // Log the action in the audit table
-//         await Audit.create({
-//             entityType: 'module',
-//             entityId: newModule.id,
-//             action: 'CREATE',
-//             newData: newModule,
-//             performedBy: user?.id,
-//         });
-
-//         res.status(201).json({ message: 'Module created successfully', newModule });
-//     } catch(error) {
-//         res.status(500).json({ message: MODULE_CREATION_ERROR, error });
-//     }
-// };
 
 export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
@@ -86,6 +58,7 @@ export const createModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async 
         moduleName,
         moduleDescription,
         sequence: nextSequence,
+        createdBy: user?.id
       });
   
       // Log the action in the audit table
@@ -119,6 +92,10 @@ export const getModuleByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async
                 {
                     model: Course, as: 'course',
                     attributes: ['id', 'courseName']
+                },
+                {
+                    model: User, as: 'user',
+                    attributes: ["id", "firstName", "lastName"]
                 }
             ]
         });
