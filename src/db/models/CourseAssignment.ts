@@ -4,11 +4,13 @@ import {
   Model,
   DataType,
   ForeignKey,
-  BelongsTo
+  BelongsTo,
+  HasMany
 } from 'sequelize-typescript';
 import { Batch } from './Batch';
 import { User } from './User';
 import { Course } from './Courses';
+import { AssignmentCompletion } from './AssignmentCompletion';
  
 @Table
 export class CourseAssignment extends Model {
@@ -19,16 +21,16 @@ export class CourseAssignment extends Model {
   @ForeignKey(() => Course)
   @Column({ type: DataType.INTEGER, allowNull: false })
   courseId!: number;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  trainerId!: number;
  
   @Column({ type: DataType.TEXT, allowNull: true })
   courseAssignmentQuestionName!: string;
  
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseAssignmentQuestionFile!: string;
- 
-  @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  trainerId!: number;
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   totalMarks!: number;
@@ -47,4 +49,7 @@ export class CourseAssignment extends Model {
  
   @BelongsTo(() => User, { as: 'trainer', foreignKey: 'trainerId' })
   trainer!: User;
+
+  @HasMany(() => AssignmentCompletion)
+  assignmentCompletions!: AssignmentCompletion[];
 }

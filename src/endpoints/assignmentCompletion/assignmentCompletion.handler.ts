@@ -27,8 +27,8 @@ export const getAssignmentCompletionHandler: EndpointHandler<EndpointAuthType.JW
                     attributes: ['id', 'firstName', 'lastName']
                 },
                 {
-                    model: CourseAssignment, as: 'courseAssignment',
-                    attributes: ['id', 'assignmentName']
+                    model: CourseAssignment, as: 'courseAssignments',
+                    attributes: ['id', 'courseAssignmentQuestionName']
                 }
             ]
         });
@@ -96,8 +96,8 @@ export const getAssignmentCompletionByIdHandler: EndpointHandler<EndpointAuthTyp
                     attributes: ['id', 'firstName', 'lastName']
                 },
                 {
-                    model: CourseAssignment, as: 'courseAssignment',
-                    attributes: ['id', 'assignmentName']
+                    model: CourseAssignment, as: 'courseAssignments',
+                    attributes: ['id', 'courseAssignmentQuestionName']
                 }
             ]
         });
@@ -114,53 +114,67 @@ export const getAssignmentCompletionByIdHandler: EndpointHandler<EndpointAuthTyp
 };
 
 // Update assignment completion
-export const updateAssignmentCompletionHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+export const updateAssignmentCompletionHandler: EndpointHandler<
+    EndpointAuthType.JWT
+> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
     res: Response
 ): Promise<void> => {
-
-    const { id } = req.params;
-    const { user } = req;
-    const { courseAssignId, traineeId, obtainedMarks, courseAssignmentAnswerFile } = req.body;
-
-    try {
-        const updateAssignmentCompletion = await AssignmentCompletion.findByPk(id);
-
-        if (!updateAssignmentCompletion) {
-            res.status(404).json({ message: ASSIGNMENT_COMPLETION_NOT_FOUND });
-            return;
-        }
-
-        const previousData = {
-            courseAssignId: updateAssignmentCompletion.courseAssignId,
-            traineeId: updateAssignmentCompletion.traineeId,
-            obtainedMarks: updateAssignmentCompletion.obtainedMarks,
-            courseAssignmentAnswerFile: updateAssignmentCompletion.courseAssignmentAnswerFile
-        };
-
-        updateAssignmentCompletion.set({
+        const { id } = req.params;
+        const { user } = req;
+        const {
             courseAssignId,
             traineeId,
             obtainedMarks,
             courseAssignmentAnswerFile
-        });
+        } = req.body;
 
-        await Audit.create({
-            entityType: 'AssignmentCompletion',
-            entityId: updateAssignmentCompletion.id,
-            action: 'UPDATE',
-            oldData: previousData,
-            newData: updateAssignmentCompletion,
-            performedBy: user?.id
-        });
+        try {
+            const updateAssignmentCompletion = await AssignmentCompletion.findByPk(id);
 
-        await updateAssignmentCompletion.save();
+            if (!updateAssignmentCompletion) {
+                res.status(404).json({ message: ASSIGNMENT_COMPLETION_NOT_FOUND });
+                return;
+            }
 
-        res.status(200).json({ message: 'Assignment Completion updated successfully', updateAssignmentCompletion });
-    } catch (error) {
-        res.status(500).json({ message: ASSIGNMENT_COMPLETION_UPDATE_ERROR, error });
-    }
-};
+            const previousData = {
+                courseAssignId: updateAssignmentCompletion.courseAssignId,
+                traineeId: updateAssignmentCompletion.traineeId,
+                obtainedMarks: updateAssignmentCompletion.obtainedMarks,
+                courseAssignmentAnswerFile:
+                    updateAssignmentCompletion.courseAssignmentAnswerFile
+            };
+
+            updateAssignmentCompletion.set({
+                courseAssignId,
+                traineeId,
+                obtainedMarks,
+                courseAssignmentAnswerFile
+            });
+
+            await Audit.create({
+                entityType: 'AssignmentCompletion',
+                entityId: updateAssignmentCompletion.id,
+                action: 'UPDATE',
+                oldData: previousData,
+                newData: updateAssignmentCompletion,
+                performedBy: user?.id
+            });
+
+            await updateAssignmentCompletion.save();
+
+            res
+                .status(200)
+                .json({
+                    message: 'Assignment Completion updated successfully',
+                    updateAssignmentCompletion
+                });
+        } catch (error) {
+            res
+                .status(500)
+                .json({ message: ASSIGNMENT_COMPLETION_UPDATE_ERROR, error });
+        }
+    };
 
 // Delete assignment completion
 export const deleteAssignmentCompletionHandler: EndpointHandler<EndpointAuthType.JWT> = async (

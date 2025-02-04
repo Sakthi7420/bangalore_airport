@@ -16,11 +16,11 @@ import { Batch } from './Batch';
 import { BatchTrainee } from './BatchTrainee';
 import { BatchModuleSchedules } from './BatchModuleSchedule';
 import { BatchTrainer } from './BatchTrainer';
-
 import { JobBoard } from './JobBoard';
 import { UserSavedJobs } from './UserSavedJobs';
 import { Module } from './Modules';
 import { Course } from './Courses';
+import { AssignmentCompletion } from './AssignmentCompletion';
 
 @Table
 export class User extends Model {
@@ -101,4 +101,7 @@ export class User extends Model {
 
   @HasMany(() => UserSavedJobs)
   userSavedJobs!: UserSavedJobs[];
+
+  @HasMany(() => AssignmentCompletion)
+  assignmentCompletion!: AssignmentCompletion[]
 }

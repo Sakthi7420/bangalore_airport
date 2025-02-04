@@ -38,8 +38,6 @@ export class Batch extends Model {
   @HasMany(() => BatchTrainee)
   batchTrainees!: BatchTrainee[];
  
-  // Define the course relationship
-  @BelongsTo(() => Course, { as: 'course'})
   @BelongsTo(() => Course, { as: 'course'})
   course!: Course;
  

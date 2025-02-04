@@ -156,25 +156,6 @@ export const createCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
         return;
     }
     
-
-    if (!isValidBase64File(courseAssignmentQuestionFile)) {
-        res.status(400).json({ message: 'Invalid base64 documents format.' });
-        return;
-    }
-
-    if (!batchId) {
-        res.status(404).json({ message: BATCH_NOT_FOUND})
-        return;
-    }
-    if (!courseId) {
-        res.status(404).json({ message: COURSE_NOT_FOUND})
-        return;
-    }
-    if (!trainerId) {
-        res.status(404).json({ message: USER_NOT_FOUND})
-        return;
-    }
-    
     try {
         const newCourseAssignment = await CourseAssignment.create({
             batchId,
@@ -263,11 +244,6 @@ export const updateCourseAssignmentHandler: EndpointHandler<EndpointAuthType.JWT
         assignEndDate
     } = req.body;
 
-    if (!isValidBase64File(courseAssignmentQuestionFile)) {
-        res.status(400).json({ message: 'Invalid base64 documents format.' });
-        return;
-    }
-    
     if (!isValidBase64File(courseAssignmentQuestionFile)) {
         res.status(400).json({ message: 'Invalid base64 documents format.' });
         return;

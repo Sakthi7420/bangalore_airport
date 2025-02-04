@@ -27,12 +27,12 @@ export class AssignmentCompletion extends Model {
   courseAssignmentAnswerFile!: string;
 
   @BelongsTo(() => CourseAssignment, {
-    as: 'CourseAssignment',
+    as: 'courseAssignments',
     foreignKey: 'courseAssignId'
   })
   courseAssignment!: CourseAssignment;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { as: 'trainee', foreignKey: 'traineeId' })
   trainee!: User;
 }
 
