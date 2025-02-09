@@ -67,6 +67,10 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             type: DataTypes.DATE,
             allowNull: false
         },
+        attendanceFile: {
+            type: DataTypes.TEXT('long'),
+            allowNull: false
+        },
         createdAt: { type: DataTypes.DATE, allowNull: false },
         updatedAt: { type: DataTypes.DATE, allowNull: false }
     });

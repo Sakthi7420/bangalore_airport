@@ -28,6 +28,8 @@
                     type: string
                   lastJoin:
                     type: string
+                  attendanceFile: 
+                    type: string
       404:
         description: No attendance found
         content:
@@ -76,6 +78,8 @@
                 type: string
               lastJoin:
                 type: string
+              attnendanceFile:
+                type: string
 
     responses:
       201:
@@ -110,7 +114,79 @@
                 message:
                   type: string
                   example: 'Unauthorized request'
-      
+
+/attendance/{id}:
+  put:
+    summary: Update a attendance by ID
+    description: Updates the information of a attendance by ID.
+    operationId: updateAttendance
+    security:
+      - bearerAuth: []
+    tags:
+      - Batch
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the attendance to update
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              batchId:
+                type: integer
+              moduleId:
+                type: number
+              trainerId:
+                type: number
+              excelFile:
+                type: string
+              firstJoin:
+                type: string
+              lastJoin:
+                type: string
+              attendanceFile: 
+                type: string
+
+    responses:
+      200:
+        description: Attendance updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Attendance updated successfully"
+      404:
+        description: Attendance not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Attendance not found"
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Error updating Attendance"
+                error:
+                  type: string
 
   delete:
     summary: Delete an attendance by ID

@@ -65,13 +65,66 @@ export const getAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async
     }
 };
 
+//getBy Id
+export const getAttendanceByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+
+  const { userId } = req.params;  // Get the userId from params
+
+  if (!userId) {
+    res.status(400).json({ message: "User ID is required" });
+    return;
+  }
+
+  try {
+    // Fetch all attendance records for the given user ID
+    const attendanceRecords = await Attendance.findAll({
+      where: { userId },  // Filter by userId
+      include: [
+        {
+          model: Batch,
+          as: 'batch',
+          attributes: ['id', 'batchName'],  // Include batch details
+        },
+        {
+          model: Module,
+          as: 'module',
+          attributes: ['id', 'moduleName'],  // Include module details
+        },
+        {
+          model: User,
+          as: 'trainer',
+          attributes: ['id', 'firstName', 'lastName'],  // Include trainer details
+        },
+      ],
+    });
+
+    // Check if attendance records are found
+    if (attendanceRecords.length === 0) {
+      res.status(404).json({ message: `No attendance records found for user ID ${userId}` });
+      return;
+    }
+
+    // Return the found attendance records
+    res.status(200).json({
+      message: 'Attendance records fetched successfully',
+      attendanceRecords,
+    });
+  } catch (error) {
+    console.error('Error fetching attendance records:', error);
+    res.status(500).json({ message: 'Error fetching attendance records', error });
+  }
+};
+
 
 export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
   const { user } = req;
-  const { batchId, moduleId, trainerId, excelFile } = req.body;
+  const { batchId, moduleId, trainerId, excelFile, attendanceFile } = req.body;
 
   if (!trainerId) {
     res.status(404).json({ message: USER_NOT_FOUND })
@@ -87,6 +140,11 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
   }
   if (!excelFile) {
     res.status(400).json({ message: "Excel file is required" })
+    return;
+  }
+  
+  if (!isValidBase64File(attendanceFile)) {
+    res.status(400).json({ message: 'Invalid base64 documents format.' });
     return;
   }
 
@@ -163,6 +221,7 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
         duration: duration,
         role: role,
         attendance: attendanceValue,
+        attendanceFile: attendanceFile
       }).then(async (newAttendance) => {
         console.log('Attendance Created:', newAttendance);
 
@@ -199,9 +258,14 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
 
   const { id } = req.params
   const { user } = req;
-  const { batchId, moduleId, trainerId, excelFile } = req.body;
+  const { batchId, moduleId, trainerId, excelFile, attendanceFile } = req.body;
 
   try {
+
+    if (!isValidBase64File(attendanceFile)) {
+      res.status(400).json({ message: 'Invalid base64 documents format.' });
+      return;
+    }
 
     const updateAttendance = await Attendance.findByPk(id, {
       include: [
@@ -224,18 +288,11 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
       ]
     })
 
-  if (!trainerId) {
-    res.status(404).json({ message: USER_NOT_FOUND });
+  if (!updateAttendance) {
+    res.status(404).json({ message: "Attendance not found!"});
     return;
   }
-  if (!batchId) {
-    res.status(404).json({ message: BATCH_NOT_FOUND });
-    return;
-  }
-  if (!moduleId) {
-    res.status(404).json({ message: MODULE_NOT_FOUND });
-    return;
-  }
+  
   if (!excelFile) {
     res.status(400).json({ message: "Excel file is required" });
     return;

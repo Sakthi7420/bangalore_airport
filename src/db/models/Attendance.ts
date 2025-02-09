@@ -47,6 +47,9 @@ export class Attendance extends Model {
     @Column({ type: DataType.STRING, allowNull: false })
     email!: string;
 
+    @Column({ type: DataType.TEXT('long'), allowNull: false})
+    attendanceFile!: string;
+
     @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
     user!: User;
 

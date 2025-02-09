@@ -40,7 +40,19 @@ export const createAttendanceValidator: Schema = {
     }
 };
 
-export const updateAttendance: Schema = {
+export const getUserByIdValidator: Schema = {
+    userId: {
+        in: 'params',
+        exists: {
+            errorMessage: 'userId is required'
+        },
+        isInt: {
+            errorMessage: 'userId must be integer'
+        }
+    }
+};
+
+export const updateAttendanceValidator: Schema = {
     id: {
         in: 'params',
         exists: {
