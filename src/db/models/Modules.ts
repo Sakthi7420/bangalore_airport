@@ -10,6 +10,7 @@ import {
 import { Course } from './Courses'; // Assuming the Course model is in the same directory
 import { BatchModuleSchedules } from './BatchModuleSchedule';
 import { User } from './User';
+import { Attendance } from './Attendance';
 
 @Table
 export class Module extends Model {
@@ -45,4 +46,7 @@ export class Module extends Model {
 
   @HasMany(() => BatchModuleSchedules)
   batchModuleSchedules!: BatchModuleSchedules[];
+
+  @HasMany(() => Attendance)
+  attendance!: Attendance[];
 }

@@ -14,6 +14,7 @@ import { BatchTrainee } from './BatchTrainee'; // Ensure this model exists and i
 import { Course } from './Courses';
 import { User } from './User';
 import { EnrolledCourse } from './EnrolledCourses';
+import { Attendance } from './Attendance';
  
 @Table
 export class Batch extends Model {
@@ -52,4 +53,7 @@ export class Batch extends Model {
   // Define course assignments relationship
   @HasMany(() => CourseAssignment)
   courseAssignments!: CourseAssignment[];
+
+  @HasMany(() => Attendance)
+  attendance!: Attendance[];
 };

@@ -77,10 +77,7 @@
               moduleDescription:
                 type: string
                 example: 'In-depth study of Node.js features and modules.'
-              sequence:
-                type: integer
-                example: 1
-    
+
     responses:
       201:
         description: Module created successfully
@@ -170,10 +167,7 @@
               moduleDescription:
                 type: string
                 example: 'Updated description for the Node.js Basics module'
-              sequence:
-                type: integer
-                example: 1
-      
+
     responses:
       200:
         description: Module updated successfully

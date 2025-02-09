@@ -11,7 +11,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'CompanyInfo',
+                model: 'CompanyInfos',
                 key: 'id',
             },
             onDelete: 'CASCADE',

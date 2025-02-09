@@ -21,6 +21,7 @@ import { UserSavedJobs } from './UserSavedJobs';
 import { Module } from './Modules';
 import { Course } from './Courses';
 import { AssignmentCompletion } from './AssignmentCompletion';
+import { Attendance } from './Attendance';
 
 @Table
 export class User extends Model {
@@ -104,4 +105,7 @@ export class User extends Model {
 
   @HasMany(() => AssignmentCompletion)
   assignmentCompletion!: AssignmentCompletion[]
+
+  @HasMany(() => Attendance)
+  attendance!: Attendance[]
 }

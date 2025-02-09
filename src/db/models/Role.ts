@@ -2,6 +2,7 @@ import { Table, Column, Model, DataType, HasMany, BelongsToMany } from 'sequeliz
 import { User } from './User';
 import { RolePermission } from './RolePermission';
 import { Permission } from './Permission';
+import { Attendance } from './Attendance';
 
 @Table
 export class Role extends Model {
@@ -31,4 +32,5 @@ export class Role extends Model {
 
   @Column({ type: DataType.DATE, defaultValue: DataType.NOW })
   updatedAt!: Date;
+
 }

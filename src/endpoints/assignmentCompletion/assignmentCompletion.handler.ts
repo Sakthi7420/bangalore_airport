@@ -10,7 +10,8 @@ import {
     ASSIGNMENT_COMPLETION_CREATION_ERROR,
     ASSIGNMENT_COMPLETION_UPDATE_ERROR,
     ASSIGNMENT_COMPLETION_DELETION_ERROR,
-    ASSIGNMENT_COMPLETION_GET_ERROR
+    ASSIGNMENT_COMPLETION_GET_ERROR,
+    COURSEASSIGNMENT_NOT_FOUND
 } from './assignmentCompletion.const';
 
 // Get all assignment completions
@@ -137,6 +138,27 @@ export const updateAssignmentCompletionHandler: EndpointHandler<
                 return;
             }
 
+            const courseAssignment = await CourseAssignment.findByPk(courseAssignId);
+
+            if (!courseAssignment) {
+                res.status(404).json({ message: COURSEASSIGNMENT_NOT_FOUND   });
+                return;
+            }
+
+            const assignEndDate = new Date(courseAssignment.assignEndDate ?? 0);
+            const currentDate = new Date();
+            
+
+            if (currentDate > assignEndDate) {
+                res.status(400).json({ message: 'Submission deadline has passed. You cannot upload the answer sheet.' });
+                return;
+            }
+
+            if(updateAssignmentCompletion.courseAssignmentAnswerFile){
+                res.status(400).json({ message: "the file already exits" })
+                return;
+            }
+
             const previousData = {
                 courseAssignId: updateAssignmentCompletion.courseAssignId,
                 traineeId: updateAssignmentCompletion.traineeId,
@@ -207,4 +229,43 @@ export const deleteAssignmentCompletionHandler: EndpointHandler<EndpointAuthType
     } catch (error) {
         res.status(500).json({ message: ASSIGNMENT_COMPLETION_DELETION_ERROR, error });
     }
+};
+
+
+// Get assignment completion by TraineeId
+export const getAssignmentCompletionByTraineeIdHandler: EndpointHandler<
+  EndpointAuthType.JWT
+> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  console.log('Trainee id', id);
+ 
+  try {
+    const assignmentCompletion = await AssignmentCompletion.findAll({
+      where: { traineeId: id },
+      include: [
+        {
+          model: CourseAssignment,
+          as: 'courseAssignments',
+          attributes: ['id', 'courseAssignmentQuestionName']
+        }
+      ]
+    });
+ 
+    console.log('Assignment Completion', assignmentCompletion);
+ 
+    if (!assignmentCompletion) {
+      res.status(404).json({ message: ASSIGNMENT_COMPLETION_NOT_FOUND });
+      return;
+    }
+ 
+    res.status(200).json({ assignmentCompletion });
+  } catch (error) {
+    console.error('Error fetching assignment completion:', error);
+    res
+      .status(500)
+      .json({ message: ASSIGNMENT_COMPLETION_GET_ERROR, data: error });
+  }
 };

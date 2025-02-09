@@ -22,3 +22,4 @@ export * from './BatchTrainer';
 export * from './JobBoard'; 
 export * from './CompanyInfo';
 export * from './UserSavedJobs';
+export * from './Attendance';

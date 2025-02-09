@@ -11,7 +11,6 @@ import {
 import { Batch } from './Batch';
 import { User } from './User';
 import { Module } from './Modules';
-import { CourseAssignment } from './CourseAssignment';
 import { BatchTrainer } from './BatchTrainer'; // Ensure this model exists and is properly defined
 
 @Table

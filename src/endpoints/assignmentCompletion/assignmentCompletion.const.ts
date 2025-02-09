@@ -4,3 +4,5 @@ export const ASSIGNMENT_COMPLETION_DELETION_ERROR = 'Error deleting assignment c
 export const ASSIGNMENT_COMPLETION_FETCH_ERROR = 'Error fetching assignment completion';
 export const ASSIGNMENT_COMPLETION_NOT_FOUND = 'Batch assignment completion not found';
 export const ASSIGNMENT_COMPLETION_GET_ERROR = 'Error getting assignment completion';
+
+export const COURSEASSIGNMENT_NOT_FOUND = 'CourseAssignment not found'

@@ -9,7 +9,8 @@ import {
     createAssignmentCompletionHandler,
     getAssignmentCompletionByIdHandler,
     updateAssignmentCompletionHandler,
-    deleteAssignmentCompletionHandler
+    deleteAssignmentCompletionHandler,
+    getAssignmentCompletionByTraineeIdHandler
 } from "./assignmentCompletion.handler";
 import { checkPermission } from "middleware";
 
@@ -35,6 +36,15 @@ export const getAssignmentCompletionEndpoint = new Endpoint({
     path: '/assignment-completion',
     method: EndpointMethod.GET,
     handler: getAssignmentCompletionHandler,
+    authType: EndpointAuthType.JWT,
+    validator: {},
+    middleware: [checkPermission('GetAssignmentCompletion')]
+});
+
+export const getAssignmentCompletionByTraineeIdEndpoint = new Endpoint({
+    path: '/assignment-completion-bytrainee/:id',
+    method: EndpointMethod.GET,
+    handler: getAssignmentCompletionByTraineeIdHandler,
     authType: EndpointAuthType.JWT,
     validator: {},
     middleware: [checkPermission('GetAssignmentCompletion')]
