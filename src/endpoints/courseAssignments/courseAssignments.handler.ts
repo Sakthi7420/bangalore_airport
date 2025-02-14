@@ -189,11 +189,6 @@ export const getCourseAssignmentByIdHandler: EndpointHandler<EndpointAuthType.JW
 ): Promise<void> => {
     const { id } = req.params;
 
-    // if (!isTrainer(user)) {
-    //     res.status(403).json({ message: 'Access denied. Only trainers can perform this action.' });
-    //     return;
-    // }
-
     try {
         const courseAssignment = await CourseAssignment.findByPk(id, {
             include: [

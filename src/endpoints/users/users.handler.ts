@@ -131,10 +131,9 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
-
   const { id } = req.params;
-  const { user } = req;
-  const {
+  const { user } = req; // Authenticated user
+  let {
     firstName,
     lastName,
     email,
@@ -148,13 +147,7 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     accountStatus,
   } = req.body;
 
-  if (!isValidBase64(profilePic)) {
-    res.status(400).json({ message: 'Invalid base64 image format.' });
-    return;
-}
-
   try {
-
     const updateUser = await User.findByPk(id);
 
     if (!updateUser) {
@@ -162,47 +155,66 @@ export const updateUserHandler: EndpointHandler<EndpointAuthType.JWT> = async (
       return;
     }
 
-    const previousData = {
-      firstName: updateUser.firstName,
-      lastName: updateUser.lastName,
-      email: updateUser.email,
-      dateOfBirth: updateUser.dateOfBirth,
-      phoneNumber: updateUser.phoneNumber,
-      address: updateUser.address,
-      qualification: updateUser.qualification,
-      profilePic: updateUser.profilePic,
-      dateOfJoining: updateUser.dateOfJoining,
-      roleId: updateUser.roleId,
-      accountStatus: updateUser.accountStatus,
+    // **Role-based validation**
+    if (user.role === 'trainee' && user.id !== updateUser.id) {
+      res.status(403).json({ message: "Permission denied. You can only update your own profile." });
+      return;
     }
 
-    updateUser.set({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      dateOfBirth: dateOfBirth,
-      phoneNumber: phoneNumber,
-      address: address,
-      qualification: qualification,
-      profilePic: profilePic,
-      dateOfJoining: dateOfJoining,
-      roleId: roleId,
-      accountStatus: accountStatus,
-      updatedBy: user?.id
-    });
+    // Admin can edit all fields
+    if (user.role === 'admin') {
+      updateUser.set({
+        firstName,
+        lastName,
+        email,
+        dateOfBirth,
+        phoneNumber,
+        address,
+        qualification,
+        dateOfJoining,
+        roleId,
+        accountStatus,
+        updatedBy: user?.id
+      });
+    } 
+    // Trainees can only edit specific fields
+    else if (user.role === 'trainee') {
+      updateUser.set({
+        dateOfBirth,
+        phoneNumber,
+        address,
+        profilePic,
+        qualification,
+        updatedBy: user?.id
+      });
+    }
 
     await updateUser.save();
 
+    // Log the audit trail
     await Audit.create({
       entityType: 'User',
       entityId: updateUser.id,
       action: 'UPDATE',
-      OldData: previousData,
+      OldData: {
+        firstName: updateUser.firstName,
+        lastName: updateUser.lastName,
+        email: updateUser.email,
+        dateOfBirth: updateUser.dateOfBirth,
+        phoneNumber: updateUser.phoneNumber,
+        address: updateUser.address,
+        qualification: updateUser.qualification,
+        profilePic: updateUser.profilePic,
+        dateOfJoining: updateUser.dateOfJoining,
+        roleId: updateUser.roleId,
+        accountStatus: updateUser.accountStatus,
+      },
       newData: updateUser,
       performedBy: user?.id
     });
 
-    res.status(200).json({ message: 'User updated successfully', user: updateUser })
+    res.status(200).json({ message: 'User updated successfully', user: updateUser });
+
   } catch (error) {
     res.status(500).json({ message: USER_UPDATE_ERROR, error });
   }

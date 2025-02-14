@@ -170,77 +170,93 @@ export const getModulesByCourseIdHandler: EndpointHandler<
     }
   };
 
-//update module
-export const updateModuleHandler: EndpointHandler<
-  EndpointAuthType.JWT
-> = async (
+ // Backend code
+export const updateModuleHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
-    const { id } = req.params;
-    const { user } = req;
-    const {
-      courseId,
-      moduleName,
-      moduleDescription,
-      sequence,
-      recordedLink,
-      materialForModule
-    } = req.body;
+  const { id } = req.params;
+  const { user } = req;
+  const { courseId, moduleName, moduleDescription, sequence, recordedLink, materialForModule } = req.body;
 
-    //   if (!isValidBase64File(materialForModule)) {
-    //     res.status(400).json({ message: 'Invalid base64 documents format.' });
-    //     return;
-    //   }
-
-    try {
+  try {
       const updateModule = await Module.findByPk(id);
       if (!updateModule) {
-        res.status(404).json({ message: MODULE_NOT_FOUND });
-        return;
+          res.status(404).json({ message: MODULE_NOT_FOUND });
+          return;
       }
 
       if (!courseId) {
-        res.status(404).json({ message: COURSE_NOT_FOUND });
-        return;
+          res.status(404).json({ message: COURSE_NOT_FOUND });
+          return;
       }
 
       const previousData = {
-        courseId: updateModule.courseId,
-        moduleName: updateModule.moduleName,
-        moduleDescription: updateModule.moduleDescription,
-        sequence: updateModule.sequence,
-        recordedLink: updateModule.recordedLink,
-        materialForModule: updateModule.materialForModule
+          courseId: updateModule.courseId,
+          moduleName: updateModule.moduleName,
+          moduleDescription: updateModule.moduleDescription,
+          sequence: updateModule.sequence,
+          recordedLink: updateModule.recordedLink,
+          materialForModule: updateModule.materialForModule
       };
 
-      updateModule.set({
-        courseId: courseId,
-        moduleName: moduleName,
-        moduleDescription: moduleDescription,
-        sequence: sequence ?? updateModule.sequence,
-        recordedLink: recordedLink,
-        materialForModule: materialForModule
-      });
+      // If sequence is being updated
+      if (sequence !== undefined && sequence !== updateModule.sequence) {
+          // Get all modules for this course
+          const modules = await Module.findAll({
+              where: { courseId },
+              order: [['sequence', 'ASC']]
+          });
 
-      await Audit.create({
-        entityType: 'Module',
-        entityId: updateModule.id,
-        action: 'UPDATE',
-        oldData: previousData,
-        newData: updateModule,
-        performedBy: user?.id
+          const oldSequence = updateModule.sequence;
+          const newSequence = sequence;
+
+          // Update sequences based on drag direction
+          for (const mod of modules) {
+              if (mod.id === parseInt(id)) {
+                  // This is the dragged module
+                  mod.sequence = newSequence;
+              } else if (oldSequence < newSequence) {
+                  // Moving down - decrease sequence for modules in between
+                  if (mod.sequence > oldSequence && mod.sequence <= newSequence) {
+                      mod.sequence -= 1;
+                  }
+              } else if (oldSequence > newSequence) {
+                  // Moving up - increase sequence for modules in between
+                  if (mod.sequence >= newSequence && mod.sequence < oldSequence) {
+                      mod.sequence += 1;
+                  }
+              }
+              await mod.save();
+          }
+      }
+
+      // Update other module details
+      updateModule.set({
+          courseId,
+          moduleName,
+          moduleDescription,
+          recordedLink,
+          materialForModule
       });
 
       await updateModule.save();
 
-      res
-        .status(200)
-        .json({ message: 'Module updated successfully', updateModule });
-    } catch (error) {
+      await Audit.create({
+          entityType: 'Module',
+          entityId: updateModule.id,
+          action: 'UPDATE',
+          oldData: previousData,
+          newData: updateModule,
+          performedBy: user?.id
+      });
+
+      res.status(200).json({ message: 'Module updated successfully', updateModule });
+  } catch (error) {
+      console.error('Error updating module:', error);
       res.status(500).json({ message: MODULE_UPDATE_ERROR, error });
-    }
-  };
+  }
+};
 
 export const deleteModuleHandler: EndpointHandler<
   EndpointAuthType.JWT

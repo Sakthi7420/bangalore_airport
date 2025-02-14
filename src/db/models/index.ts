@@ -23,3 +23,5 @@ export * from './JobBoard';
 export * from './CompanyInfo';
 export * from './UserSavedJobs';
 export * from './Attendance';
+export * from './AttendanceFile';
+export * from './Class';

@@ -41,6 +41,12 @@ export class BatchModuleSchedules extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   duration!: number;
 
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number;
+
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  updatedBy?: number;
+
   // Many-to-Many relationship with User via BatchTrainee
   @BelongsToMany(() => User, () => BatchTrainer)
   trainers!: User[];

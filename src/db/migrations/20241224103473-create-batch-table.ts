@@ -11,7 +11,7 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
     batchName: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true 
+      unique: true
     },
     courseId: {
       type: DataTypes.INTEGER,
@@ -29,6 +29,14 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    updatedBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     createdAt: { type: DataTypes.DATE, allowNull: false },
     updatedAt: { type: DataTypes.DATE, allowNull: false }
   });
@@ -41,6 +49,6 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
-    //drop batch table
+  //drop batch table
   await queryInterface.dropTable('Batches');
 }

@@ -80,7 +80,8 @@ export const loginHandler: EndpointHandler<EndpointAuthType> = async (
       )
     };
 
-    const tokenExpiry = Math.floor(Date.now() / 1000) + 60 * 60;
+    // const tokenExpiry = Math.floor(Date.now() / 1000) + 60 * 60;
+    const tokenExpiry = Math.floor(Date.now() / 1000) + 2 * 60 * 60; // 2 hours
     const accessToken = generateJwtToken(transformedUser);
 
     res.status(200).json({ accessToken, tokenExpiry, user:transformedUser });

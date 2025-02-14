@@ -34,6 +34,12 @@ export class JobBoard extends Model {
 
   @Column({ type: DataType.STRING, allowNull: false })
   jobLink!: string;
+  
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number;
+
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  updatedBy?: number;
 
   @BelongsTo(() => CompanyInfo, { as: 'companyInfo', foreignKey: 'companyId' })
   company!: CompanyInfo;

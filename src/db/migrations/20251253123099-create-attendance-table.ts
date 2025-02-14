@@ -23,9 +23,19 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             references: {
                 model: 'Batches',
                 key: 'id'
+            },
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE'
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        courseId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Courses',
+                key: 'id'
+            },
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
         },
         moduleId: {
             type: DataTypes.INTEGER,
@@ -37,15 +47,15 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
         },
-        trainerId: {
+        attendanceFileId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
-                model: 'Users',
+                model: 'AttendanceFiles',
                 key: 'id'
             },
-            onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
         },
         email: {
             type: DataTypes.STRING,
@@ -55,7 +65,15 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        percentage: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         duration: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        teamsRole: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -67,19 +85,23 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             type: DataTypes.DATE,
             allowNull: false
         },
-        attendanceFile: {
-            type: DataTypes.TEXT('long'),
-            allowNull: false
+        createdBy: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        updatedBy: {
+            type: DataTypes.INTEGER,
+            allowNull: true
         },
         createdAt: { type: DataTypes.DATE, allowNull: false },
-        updatedAt: { type: DataTypes.DATE, allowNull: false }
+        updatedAt: { type: DataTypes.DATE, allowNull: false },
     });
 
     await queryInterface.sequelize.query(
         `ALTER TABLE Attendaces
         MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;`
-      )
+    )
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {

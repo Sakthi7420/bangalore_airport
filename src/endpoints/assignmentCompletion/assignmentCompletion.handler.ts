@@ -55,11 +55,40 @@ export const createAssignmentCompletionHandler: EndpointHandler<EndpointAuthType
     const { courseAssignId, traineeId, obtainedMarks, courseAssignmentAnswerFile } = req.body;
 
     try {
+        
+         const existingAssignmentCompletion = await AssignmentCompletion.findOne({
+            where: { courseAssignId, traineeId, obtainedMarks, courseAssignmentAnswerFile },
+        });
+
+        if (existingAssignmentCompletion) {
+            if (existingAssignmentCompletion.courseAssignmentAnswerFile) {
+                res.status(400).json({ message: "The file already exists for this assignment." });
+                return;
+            }
+        }
+
+            const courseAssignment = await CourseAssignment.findByPk(courseAssignId);
+
+            if (!courseAssignment) {
+                res.status(404).json({ message: COURSEASSIGNMENT_NOT_FOUND   });
+                return;
+            }
+
+            const assignEndDate = new Date(courseAssignment.assignEndDate ?? 0);
+            const currentDate = new Date();
+            
+
+            if (currentDate > assignEndDate) {
+                res.status(400).json({ message: 'Submission deadline has passed. You cannot upload the answer sheet.' });
+                return;
+            }
+
         const newAssignmentCompletion = await AssignmentCompletion.create({
             courseAssignId,
             traineeId,
             obtainedMarks,
-            courseAssignmentAnswerFile
+            courseAssignmentAnswerFile,
+            createdBy: user?.id
         });
 
         await Audit.create({
@@ -171,7 +200,8 @@ export const updateAssignmentCompletionHandler: EndpointHandler<
                 courseAssignId,
                 traineeId,
                 obtainedMarks,
-                courseAssignmentAnswerFile
+                courseAssignmentAnswerFile,
+                updatedBy: user?.id
             });
 
             await Audit.create({

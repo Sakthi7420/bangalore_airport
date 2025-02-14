@@ -11,6 +11,7 @@ import { Course } from './Courses'; // Assuming the Course model is in the same 
 import { BatchModuleSchedules } from './BatchModuleSchedule';
 import { User } from './User';
 import { Attendance } from './Attendance';
+import { Class } from './Class';
 
 @Table
 export class Module extends Model {
@@ -38,6 +39,9 @@ export class Module extends Model {
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   materialForModule!: string;
 
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  updatedBy?: number;
+
   @BelongsTo(() => Course)
   course!: Course;
 
@@ -49,4 +53,7 @@ export class Module extends Model {
 
   @HasMany(() => Attendance)
   attendance!: Attendance[];
+
+  @HasMany(() => Class)
+  classes!: Class[]
 }

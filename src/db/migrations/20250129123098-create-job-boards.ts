@@ -44,17 +44,29 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        updatedBy: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP'),
         },
         updatedAt: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
         },
     });
+
+    await queryInterface.sequelize.query(
+        `ALTER TABLE JobBoards
+        MODIFY createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        MODIFY updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL;`
+    )
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {

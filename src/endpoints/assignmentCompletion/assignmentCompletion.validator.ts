@@ -20,8 +20,16 @@ export const assignmentCompletionValidator: Schema = {
             errorMessage: 'Trainee ID must be an integer'
         }
     },
+    obtainedMarks: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'Obtained Marks is required'
+        }
+    },
     courseAssignmentAnswerFile: {
         in: 'body',
+        optional: true,
         exists: {
             errorMessage: 'Assignment Answer File is required'
         },
@@ -58,6 +66,13 @@ export const updateAssignmentCompletionValidator: Schema = {
         },
         isInt: {
             errorMessage: 'Trainee ID must be an integer'
+        }
+    },
+    obtainedMarks: {
+        in: 'body',
+        optional: true,
+        exists: {
+            errorMessage: 'Obtained Marks is required'
         }
     },
     courseAssignmentAnswerFile: {

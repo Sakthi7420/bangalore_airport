@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
-import { Course } from './Courses'; 
+import { Course } from './Courses';
 
 @Table
 export class CourseCategory extends Model {
@@ -11,6 +11,12 @@ export class CourseCategory extends Model {
 
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseCategoryImg!: string;
+
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number;
+
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  updatedBy?: number;
 
   @HasMany(() => Course, { foreignKey: 'courseCategoryId' })
   courses!: Course[];

@@ -1,135 +1,319 @@
 import {
-    EndpointAuthType,
-    EndpointHandler,
-    EndpointRequestType,
-    sequelize
+  EndpointAuthType,
+  EndpointHandler,
+  EndpointRequestType,
 } from 'node-server-engine';
 import { Response } from 'express';
 import * as XLSX from 'xlsx';
 import {
-    ATTENDANCE_GET_ERROR,
-    ATTENDANCE_CREATION_ERROR,
-    ATTENDANCE_NOT_FOUND,
-    ATTENDANCE_DELETION_ERROR,
-    ATTENDANCE_UPDATE_ERROR,
-    USER_NOT_FOUND,
-    BATCH_NOT_FOUND,
-    MODULE_NOT_FOUND
+  ATTENDANCE_GET_ERROR,
+  ATTENDANCE_CREATION_ERROR,
+  ATTENDANCE_NOT_FOUND,
+  ATTENDANCE_DELETION_ERROR,
+  ATTENDANCE_UPDATE_ERROR,
+  BATCH_NOT_FOUND,
+  COURSE_NOT_FOUND,
+  MODULE_NOT_FOUND,
+  ATTENDANCEFILE_CREATION_ERROR,
+  ATTENDANCEFILE_GET_ERROR,
+  ATTENDANCEFILE_UPDATE_ERROR,
+  ATTENDANCEFILE_DELETE_ERROR,
+  ATTENDANCEFILE_NOT_FOUND
 } from './attendance.const';
-import { Attendance, User, Batch, Module, Audit, Role } from 'db';
-
+import { Attendance, User, Batch, Module, Audit, Course } from 'db';
+import { AttendanceFile } from 'db/models/AttendanceFile';
 
 function isValidBase64File(base64String: string): boolean {
-    // Regular expression to match base64 strings for allowed MIME types
-    const base64Regex = /^data:(application\/pdf|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet|application\/vnd\.ms-excel);base64,/;
-    return base64Regex.test(base64String);
-  }
+  // Regular expression to match base64 strings for allowed MIME types
+  const base64Regex = /^data:(application\/pdf|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet|application\/vnd\.ms-excel|text\/csv);base64,/;
+  return base64Regex.test(base64String);
+}
 
-
-//Get all Attendance
-export const getAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-    req: EndpointRequestType[EndpointAuthType.JWT],
-    res: Response
-): Promise<void> => {
-
-    try {
-        const attendance = await Attendance.findAll({
-            include: [
-                {
-                    model: User, as: 'user',
-                    attributes: ['id', 'firstName', 'lastName']
-                },
-                {
-                    model: Batch, as: 'batch',
-                    attributes: ['id', 'batchName']
-                },
-                {
-                    model: Module, as: 'module',
-                    attributes: ['id', 'moduleName']
-                },
-                {
-                    model: User, as: 'trainer',
-                    attributes: ['id', 'firstName', 'lastName']
-                }
-            ]
-        });
-
-        if(attendance.length === 0) {
-            res.status(404).json({ message: "Attendance Not found" });
-            return;
-        }
-
-        res.status(200).json({ attendance: attendance });
-    } catch (error) {
-        res.status(500).json({ message: ATTENDANCE_GET_ERROR });
-    }
-};
-
-//getBy Id
-export const getAttendanceByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+//GET file
+export const getAttendanceFileHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
 
-  const { userId } = req.params;  // Get the userId from params
+  try {
+    const attendanceFile = await AttendanceFile.findAll();
 
-  if (!userId) {
-    res.status(400).json({ message: "User ID is required" });
+    if (attendanceFile.length === 0) {
+      res.status(404).json({ message: "Attendancefile Not found" });
+      return;
+    }
+
+    res.status(200).json({ message: 'Attendance file found', attendanceFile })
+  } catch (error) {
+    res.status(500).json({ message: ATTENDANCEFILE_GET_ERROR, error })
+  }
+};
+
+
+//CREATE attendanceFile
+export const createAttendanceFileHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+
+  const { user } = req;
+  const { teamsAttendanceFile } = req.body;
+
+  if (!teamsAttendanceFile) {
+    res.status(404).json({ message: "Attendance file required" });
+    return;
+  }
+
+  if (!isValidBase64File(teamsAttendanceFile)) {
+    res.status(400).json({ message: 'Invalid base64 documents format.' });
     return;
   }
 
   try {
-    // Fetch all attendance records for the given user ID
+
+    const existingFile = await AttendanceFile.findOne({
+      where: { teamsAttendanceFile }, // Check for an exact match of the base64 string
+    });
+
+    if (existingFile) {
+      res.status(400).json({ message: 'This attendance file has already been uploaded.' });
+      return;
+    }
+
+    const newAttendanceFile = await AttendanceFile.create({
+      teamsAttendanceFile,
+      attendanceDate: new Date(),
+      createdBy: user?.id,
+    });
+
+    await Audit.create({
+      entityType: 'Attendance',
+      entityId: newAttendanceFile.id,
+      action: 'CREATE',
+      newData: newAttendanceFile,
+      performedBy: user?.id
+    });
+
+    res.status(201).json({ message: 'AttendanceFile created successfully', newAttendanceFile })
+  } catch (error) {
+    res.status(500).json({ message: ATTENDANCEFILE_CREATION_ERROR, error })
+  }
+};
+
+
+//GETBYID attendancefile 
+export const getAttendanceFileByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+
+  const { id } = req.params;
+
+  try {
+    const attendanceFile = await AttendanceFile.findByPk(id);
+
+    if (!attendanceFile) {
+      res.status(404).json({ message: ATTENDANCEFILE_NOT_FOUND });
+      return;
+    }
+
+    res.status(200).json({ messge: 'AttendanceFile found', attendanceFile });
+  } catch (error) {
+    res.status(404).json({ message: ATTENDANCEFILE_GET_ERROR, error });
+  }
+};
+
+
+//UPDATE AttendanceFile
+export const updateAttendanceFileHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+
+  const { id } = req.params;
+  const { user } = req;
+  const { teamsAttendanceFile } = req.body;
+
+  if (!isValidBase64File(teamsAttendanceFile)) {
+    res.status(400).json({ message: 'Invalid base64 documents format.' });
+    return;
+  }
+
+  try {
+
+    const updateAttendanceFile = await AttendanceFile.findByPk(id);
+
+    if (!updateAttendanceFile) {
+      res.status(404).json({ message: ATTENDANCEFILE_NOT_FOUND });
+      return;
+    }
+
+    const previousData = updateAttendanceFile;
+
+    updateAttendanceFile.set({
+      teamsAttendanceFile,
+      attendanceDate: new Date(),
+      updatedBy: user?.id,
+    });
+
+    await Audit.create({
+      entityType: 'Attendance',
+      entityId: updateAttendanceFile.id,
+      action: 'UPDATE',
+      oldData: previousData,
+      newData: updateAttendanceFile,
+      performedBy: user?.id
+    });
+
+    await updateAttendanceFile.save();
+
+    res.status(200).json({ message: 'AttendanceFile updated successfully', updateAttendanceFile });
+  } catch (error) {
+    res.status(500).json({ message: ATTENDANCEFILE_UPDATE_ERROR, error });
+  }
+};
+
+//DELETE attendanceFile
+export const deleteAttendanceFileHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+
+  const { id } = req.params;
+  const { user } = req;
+
+  try {
+    const attendanceFile = await AttendanceFile.findByPk(id);
+
+    if (!attendanceFile) {
+      res.status(404).json({ message: ATTENDANCEFILE_NOT_FOUND });
+      return;
+    }
+
+    await Audit.create({
+      entityType: 'Attendance',
+      entityId: attendanceFile.id,
+      action: 'DELETE',
+      oldData: attendanceFile,
+      performedBy: user?.id
+    });
+
+    await attendanceFile.destroy();
+
+  } catch (error) {
+    res.status(500).json({ message: ATTENDANCEFILE_DELETE_ERROR, error });
+  }
+};
+
+
+//GET Attendance
+export const getAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+
+  try {
+    const attendance = await Attendance.findAll({
+      include: [
+        {
+          model: User, as: 'user',
+          attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+          model: Batch, as: 'batch',
+          attributes: ['id', 'batchName']
+        },
+        {
+          model: Module, as: 'module',
+          attributes: ['id', 'moduleName']
+        },
+        {
+          model: Course, as: 'course',
+          attributes: ['id', 'courseName']
+        },
+        {
+          model: AttendanceFile, as: 'attendanceFile',
+          attributes: ['id', 'attendanceDate', 'teamsAttendanceFile']
+        }
+      ]
+    });
+
+    if (attendance.length === 0) {
+      res.status(404).json({ message: "Attendance Not found" });
+      return;
+    }
+
+    res.status(200).json({ attendance: attendance });
+  } catch (error) {
+    res.status(500).json({ message: ATTENDANCE_GET_ERROR, error });
+  }
+};
+
+//GETBYID
+export const getAttendanceByIdHandler: EndpointHandler<EndpointAuthType.JWT> = async (
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
+): Promise<void> => {
+  
+  const { userId, batchId, courseId } = req.query; 
+  
+  const whereClause: any = {}; 
+
+  if (userId) whereClause.userId = userId;
+  if (batchId) whereClause.batchId = batchId;
+  if (courseId) whereClause.courseId = courseId;
+
+  try {
     const attendanceRecords = await Attendance.findAll({
-      where: { userId },  // Filter by userId
+      where: whereClause,
       include: [
         {
           model: Batch,
           as: 'batch',
-          attributes: ['id', 'batchName'],  // Include batch details
+          attributes: ['id', 'batchName'],
         },
         {
           model: Module,
           as: 'module',
-          attributes: ['id', 'moduleName'],  // Include module details
+          attributes: ['id', 'moduleName'],
         },
         {
-          model: User,
-          as: 'trainer',
-          attributes: ['id', 'firstName', 'lastName'],  // Include trainer details
+          model: Course,
+          as: 'course',
+          attributes: ['id', 'courseName'],
         },
+        {
+          model: AttendanceFile,
+          as: 'attendanceFile',
+          attributes: ['id', 'teamsAttendanceFile', 'attendanceDate'],
+        }
       ],
     });
 
-    // Check if attendance records are found
     if (attendanceRecords.length === 0) {
-      res.status(404).json({ message: `No attendance records found for user ID ${userId}` });
+      res.status(404).json({ message: 'No attendance records found for the given filters' });
       return;
     }
 
-    // Return the found attendance records
     res.status(200).json({
       message: 'Attendance records fetched successfully',
       attendanceRecords,
     });
   } catch (error) {
-    console.error('Error fetching attendance records:', error);
     res.status(500).json({ message: 'Error fetching attendance records', error });
   }
 };
 
 
+
+//CREATE attendance
 export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
 ): Promise<void> => {
   const { user } = req;
-  const { batchId, moduleId, trainerId, excelFile, attendanceFile } = req.body;
+  const { batchId, courseId, moduleId, excelFile, attendanceFileId } = req.body;
 
-  if (!trainerId) {
-    res.status(404).json({ message: USER_NOT_FOUND })
-    return;
-  }
   if (!batchId) {
     res.status(404).json({ message: BATCH_NOT_FOUND })
     return;
@@ -142,9 +326,8 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
     res.status(400).json({ message: "Excel file is required" })
     return;
   }
-  
-  if (!isValidBase64File(attendanceFile)) {
-    res.status(400).json({ message: 'Invalid base64 documents format.' });
+  if (!courseId) {
+    res.status(404).json({ message: COURSE_NOT_FOUND })
     return;
   }
 
@@ -190,8 +373,9 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
       const row = excelData[i];
 
       const name = row['Name']?.trim();
-      const firstJoin= row['First Join']?.trim();
-      const lastLeave= row['Last Leave']?.trim();
+      const firstJoin = row['First Join']?.trim();
+      const lastLeave = row['Last Leave']?.trim();
+      const percentage = row['Participation Rate'].trim();
       const duration = row['In-Meeting Duration']?.trim();
       const email = row['Email']?.trim();
       const role = row['Role']?.trim();
@@ -209,19 +393,38 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
         continue;
       }
 
+      console.log("Creating attendance with data:", {
+        userId: foundUser.id,
+        batchId,
+        courseId,
+        moduleId,
+        firstJoin,
+        lastLeave,
+        email,
+        percentage,
+        duration,
+        teamsRole: role,
+        attendance: attendanceValue,
+        attendanceFileId,
+        createdBy: user?.id
+      });
+      
+
       // Create attendance record for the user
       const attendancePromise = Attendance.create({
         userId: foundUser.id,
         batchId: batchId,
+        courseId: courseId,
         moduleId: moduleId,
-        trainerId: trainerId,
         firstJoin: firstJoin,
         lastLeave: lastLeave,
         email: email,
+        percentage: percentage,
         duration: duration,
-        role: role,
+        teamsRole: role,
         attendance: attendanceValue,
-        attendanceFile: attendanceFile
+        attendanceFileId: attendanceFileId,
+        createdBy: user?.id
       }).then(async (newAttendance) => {
         console.log('Attendance Created:', newAttendance);
 
@@ -250,7 +453,8 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
   }
 };
 
-//Update Attendance
+
+//UPDATE Attendance
 export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async (
   req: EndpointRequestType[EndpointAuthType.JWT],
   res: Response
@@ -258,14 +462,9 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
 
   const { id } = req.params
   const { user } = req;
-  const { batchId, moduleId, trainerId, excelFile, attendanceFile } = req.body;
+  const { batchId, moduleId, courseId, excelFile, attendanceFileId } = req.body;
 
   try {
-
-    if (!isValidBase64File(attendanceFile)) {
-      res.status(400).json({ message: 'Invalid base64 documents format.' });
-      return;
-    }
 
     const updateAttendance = await Attendance.findByPk(id, {
       include: [
@@ -282,23 +481,23 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
           attributes: ['id', 'moduleName'],
         },
         {
-          model: User, as: 'trainer',
-          attributes: ['id', 'firstName', 'lastName'],
+          model: Course, as: 'course',
+          attributes: ['id', 'courseName'],
         }
       ]
     })
 
-  if (!updateAttendance) {
-    res.status(404).json({ message: "Attendance not found!"});
-    return;
-  }
-  
-  if (!excelFile) {
-    res.status(400).json({ message: "Excel file is required" });
-    return;
-  }
+    if (!updateAttendance) {
+      res.status(404).json({ message: "Attendance not found!" });
+      return;
+    }
 
- 
+    if (!excelFile) {
+      res.status(400).json({ message: "Excel file is required" });
+      return;
+    }
+
+
     let fileBuffer: Buffer;
 
     // Decode the Excel file if it's base64-encoded
@@ -366,7 +565,7 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
           userId: foundUser.id,
           batchId: batchId,
           moduleId: moduleId,
-          trainerId: trainerId,
+          courseId: courseId,
         },
       });
 
@@ -382,6 +581,8 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
         duration: duration,
         role: role,
         attendance: attendanceValue,
+        attendanceFileId: attendanceFileId,
+        updatedBy: user?.id
       }).then(async (updatedAttendance) => {
         console.log('Attendance Updated:', updatedAttendance);
 
@@ -405,41 +606,40 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
 
     res.status(200).json({ message: 'Attendances updated successfully', attendancePromises });
   } catch (error) {
-    console.error('Error during attendance update:', error);
     res.status(500).json({ message: ATTENDANCE_UPDATE_ERROR, error });
   }
 };
 
 
-//Delete Attendance
+//DELETE Attendance
 export const deleteAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async (
-    req: EndpointRequestType[EndpointAuthType.JWT],
-    res: Response
+  req: EndpointRequestType[EndpointAuthType.JWT],
+  res: Response
 ): Promise<void> => {
 
-    const { id } = req.params;
-    const { user } = req;
+  const { id } = req.params;
+  const { user } = req;
 
-    try {
-        const deleteAttendance = await Attendance.findByPk(id);
+  try {
+    const deleteAttendance = await Attendance.findByPk(id);
 
-        if (!deleteAttendance) {
-            res.status(404).json({ message: ATTENDANCE_NOT_FOUND });
-            return;
-        }
-
-        await Audit.create({
-            entityType: 'Attendance',
-            entityId: deleteAttendance.id,
-            action: 'DELETE',
-            oldData: deleteAttendance,
-            performedBy: user?.id
-        });
-
-        await deleteAttendance.destroy();
-
-        res.status(200).json({ message: 'Attendance deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: ATTENDANCE_DELETION_ERROR, error });
+    if (!deleteAttendance) {
+      res.status(404).json({ message: ATTENDANCE_NOT_FOUND });
+      return;
     }
+
+    await Audit.create({
+      entityType: 'Attendance',
+      entityId: deleteAttendance.id,
+      action: 'DELETE',
+      oldData: deleteAttendance,
+      performedBy: user?.id
+    });
+
+    await deleteAttendance.destroy();
+
+    res.status(200).json({ message: 'Attendance deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: ATTENDANCE_DELETION_ERROR, error });
+  }
 };

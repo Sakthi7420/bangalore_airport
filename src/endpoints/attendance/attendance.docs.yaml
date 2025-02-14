@@ -1,3 +1,134 @@
+/attendance-file:
+  get:
+    summary: Get all attendancefiles
+    description: Retrieves a list of all attendancefiles 
+    tags:
+      - AttendanceFile
+    responses:
+      '200':
+        description: List of attendancefiles 
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  teamsAttendanceFile:
+                    type: string
+
+      '404':
+        description: No attendancefile found
+      '500':
+        description: Internal server error
+
+  post:
+    summary: Create a new AttendanceFile
+    description: Creates a new attendancefile.
+    operationId: createAttendanceFile
+    security:
+      - bearerAuth: []
+    tags:
+      - AttendanceFile
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              teamsAttendanceFile:
+                type: string
+    responses:
+      '201':
+        description: AttendanceFile created successfully
+      '500':
+        description: AttendanceFile creation error
+      '401':
+        description: Unauthorized
+
+/attendance-file/{id}:
+  put:
+    summary: Update a attendanceFile by ID
+    description: Updates the information of a attendanceFile by ID.
+    operationId: updateAttendanceFile
+    security:
+      - bearerAuth: []
+    tags:
+      - AttendanceFile
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the attendancefile to update
+        schema:
+          type: integer
+          example: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              teamsAttendanceFile: 
+                type: string
+
+    responses:
+      '200':
+        description: AttendanceFile updated successfully
+      '404':
+        description: AttendanceFile not found
+      '500':
+        description: Internal server error
+
+  delete:
+    summary: Delete an attendanceFile by ID
+    description: Deletes an attendanceFile by ID.
+    operationId: deleteAttendanceFile
+    security:
+      - bearerAuth: []
+    tags:
+      - AttendanceFile
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the attendanceFile to delete
+        schema:
+          type: integer
+          example: 1
+    responses:
+      '200':
+        description: AttendanceFile deleted successfully
+      '404':
+        description: AttendanceFile not found
+      '500':
+        description: Internal server error
+
+  get:
+    summary: Get a attendanceFile by ID
+    tags:
+      - AttendanceFile
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the attendanceFile
+        schema:
+          type: integer
+          example: 1
+    responses:
+      '200':
+        description: attendanceFile details               
+      '404':
+        description: AttendanceFile not found
+      '500':
+        description: Internal server error
+        
+
 /attendance:
   get:
     summary: Get all attendance
@@ -5,7 +136,7 @@
     tags:
       - Attendance
     responses:
-      200:
+      '200':
         description: List of attendance 
         content:
           application/json:
@@ -19,37 +150,27 @@
                   batchId:
                     type: integer
                   moduleId:
-                    type: number
-                  trainerId:
-                    type: number
-                  excelFile:
-                    type: string
+                    type: integer
+                  courseId:
+                    type: integer
                   firstJoin:
+                    type: string
+                  email:
                     type: string
                   lastJoin:
                     type: string
-                  attendanceFile: 
+                  duration:
                     type: string
-      404:
+                  attendanceFileId: 
+                    type: string
+                  attendance:
+                    type: string
+                  percentage:
+                    type: string
+      '404':
         description: No attendance found
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'No attendance found'
-      500:
+      '500':
         description: Internal server error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Error fetching attendance'
 
   post:
     summary: Create a new Attendance
@@ -69,51 +190,74 @@
               batchId:
                 type: integer
               moduleId:
-                type: number
-              trainerId:
-                type: number
+                type: integer
+              courseId: 
+                type: integer
               excelFile:
                 type: string
-              firstJoin:
-                type: string
-              lastJoin:
-                type: string
-              attnendanceFile:
-                type: string
+              attendanceFileId:
+                type: integer
 
     responses:
-      201:
+      '201':
         description: Attendance created successfully
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Attendace created successfully'
-      500:
+      '500':
         description: Attendance creation error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Error occurred while creating the Attendance'
-                error:
-                  type: string
-      401:
+      '401':
         description: Unauthorized
+
+
+/attendance/{userId}:
+  get:
+    summary: Get Attendance Details
+    description: Fetches the list of attendance by UserId.
+    operationId: getAttendanceDetails
+    security:
+      - bearerAuth: []
+    tags:
+      - Attendance
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: A Get Details
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Unauthorized request'
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  batchId:
+                    type: integer
+                  moduleId:
+                    type: number
+                  courseId: 
+                    type: number
+                  firstJoin:
+                    type: string
+                  lastJoin:
+                    type: string
+                  attendance:
+                    type: string
+                  percentage:
+                    type: string 
+                  email:
+                    type: string
+                  duration:
+                    type: string
+                                    
+      '404':
+        description: Attendance not found
+      '500':
+        description: Internal server error
+
 
 /attendance/{id}:
   put:
@@ -123,7 +267,7 @@
     security:
       - bearerAuth: []
     tags:
-      - Batch
+      - Attendance
     parameters:
       - name: id
         in: path
@@ -142,51 +286,21 @@
               batchId:
                 type: integer
               moduleId:
-                type: number
-              trainerId:
-                type: number
+                type: integer
+              courseId:
+                type: integer
               excelFile:
                 type: string
-              firstJoin:
-                type: string
-              lastJoin:
-                type: string
-              attendanceFile: 
-                type: string
+              attendanceFileId: 
+                type: integer
 
     responses:
-      200:
+      '200':
         description: Attendance updated successfully
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: "Attendance updated successfully"
-      404:
+      '404':
         description: Attendance not found
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: "Attendance not found"
-      500:
+      '500':
         description: Internal server error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: "Error updating Attendance"
-                error:
-                  type: string
 
   delete:
     summary: Delete an attendance by ID
@@ -205,33 +319,9 @@
           type: integer
           example: 1
     responses:
-      200:
+      '200':
         description: Attendance deleted successfully
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Attendance deleted successfully'
-      404:
+      '404':
         description: Attendance not found
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Attendance not found'
-      500:
+      '500':
         description: Internal server error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: 'Error deleting attendance'

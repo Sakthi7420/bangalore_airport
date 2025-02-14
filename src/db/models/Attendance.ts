@@ -1,4 +1,3 @@
-import { INTEGER } from 'sequelize';
 import {
     Table,
     Column,
@@ -10,9 +9,12 @@ import {
 import { User } from './User';
 import { Module } from './Modules';
 import { Batch } from './Batch';
+import { AttendanceFile } from './AttendanceFile';
+import { Course } from './Courses';
 
-@Table 
+@Table
 export class Attendance extends Model {
+
     @ForeignKey(() => User)
     @Column({ type: DataType.INTEGER, allowNull: false })
     userId!: number;
@@ -21,19 +23,23 @@ export class Attendance extends Model {
     @Column({ type: DataType.INTEGER, allowNull: false })
     batchId!: number;
 
+    @ForeignKey(() => Course)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    courseId!: number;
+
     @ForeignKey(() => Module)
     @Column({ type: DataType.INTEGER, allowNull: false })
     moduleId!: number;
 
-    @ForeignKey(() => User)
+    @ForeignKey(() => AttendanceFile)
     @Column({ type: DataType.INTEGER, allowNull: false })
-    trainerId!: number;
-    
-    @Column({ type: DataType.STRING, allowNull: false })
-    role!: string;
+    attendanceFileId!: number;
 
     @Column({ type: DataType.STRING, allowNull: false })
-    duration!: string;
+    email!: string;
+
+    @Column({ type: DataType.STRING, allowNull: false })
+    teamsRole!: string;
 
     @Column({ type: DataType.STRING, allowNull: false })
     firstJoin?: string;
@@ -42,13 +48,19 @@ export class Attendance extends Model {
     lastLeave?: string;
 
     @Column({ type: DataType.STRING, allowNull: false })
+    duration!: string;
+
+    @Column({ type: DataType.STRING, allowNull: false })
     attendance!: string;
 
     @Column({ type: DataType.STRING, allowNull: false })
-    email!: string;
+    percentage!: string;
 
-    @Column({ type: DataType.TEXT('long'), allowNull: false})
-    attendanceFile!: string;
+    @Column({ type: DataType.INTEGER, allowNull: true })
+    createdBy?: number;
+
+    @Column({ type: DataType.INTEGER, allowNull: true })
+    updatedBy?: number;
 
     @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
     user!: User;
@@ -56,10 +68,13 @@ export class Attendance extends Model {
     @BelongsTo(() => Batch, { as: 'batch', foreignKey: 'batchId' })
     batch!: Batch;
 
-    @BelongsTo(() => Module, { as: 'module', foreignKey: 'moduleId'})
+    @BelongsTo(() => Module, { as: 'module', foreignKey: 'moduleId' })
     module!: Module;
 
-    @BelongsTo(() => User, { as: 'trainer', foreignKey: 'trainerId' })
-    trainer!: User;
+    @BelongsTo(() => Course, { as: 'course', foreignKey: 'courseId' })
+    course!: Course;
+
+    @BelongsTo(() => AttendanceFile, { as: 'attendanceFile', foreignKey: 'attendanceFileId' })
+    attendanceFile!: AttendanceFile;
 }
 

@@ -5,6 +5,7 @@ import { EnrolledCourse } from './EnrolledCourses';
 import { Module } from './Modules'
 import { CourseAssignment } from './CourseAssignment';
 import { User } from './User';
+import { Attendance } from './Attendance';
 
 @Table
 export class Course extends Model {
@@ -28,6 +29,9 @@ export class Course extends Model {
   @Column({ type: DataType.INTEGER, allowNull: true })
   createdBy?: number; // User who created the course
 
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  updatedBy?: number;
+
   @BelongsTo(() => CourseCategory, { as: 'category', foreignKey: 'courseCategoryId' })
   category!: CourseCategory;
 
@@ -45,5 +49,8 @@ export class Course extends Model {
 
   @HasMany(() => CourseAssignment)
   courseAssignment!: CourseAssignment[];
+
+  @HasMany(() => Attendance)
+  attendance!: Attendance[];
 
 };

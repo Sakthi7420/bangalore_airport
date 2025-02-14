@@ -37,15 +37,21 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.TEXT('long'),
       allowNull: true
     },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    updatedBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW
     }
   });
 

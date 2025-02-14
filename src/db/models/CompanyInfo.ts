@@ -10,6 +10,12 @@ export class CompanyInfo extends Model {
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   companyImg!: string;
 
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number;
+
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  updatedBy?: number;
+
   @HasMany(() => JobBoard, { foreignKey: 'companyId' })
   jobBoard!: JobBoard[];
 }

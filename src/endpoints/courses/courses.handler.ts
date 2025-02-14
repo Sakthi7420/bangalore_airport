@@ -177,7 +177,8 @@ export const updateCourseHandler: EndpointHandler<EndpointAuthType.JWT> = async 
       courseDesc: courseDesc,
       courseCategoryId: courseCategoryId,
       courseImg: courseImg,
-      courseLink: courseLink
+      courseLink: courseLink,
+      updatedBy: user?.id
     });
 
     await Audit.create({

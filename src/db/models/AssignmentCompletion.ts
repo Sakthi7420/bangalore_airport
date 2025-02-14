@@ -26,6 +26,12 @@ export class AssignmentCompletion extends Model {
   @Column({ type: DataType.TEXT('long'), allowNull: true })
   courseAssignmentAnswerFile!: string;
 
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  createdBy?: number;
+
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  updatedBy?: number;
+
   @BelongsTo(() => CourseAssignment, {
     as: 'courseAssignments',
     foreignKey: 'courseAssignId'
