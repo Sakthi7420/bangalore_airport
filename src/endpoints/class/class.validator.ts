@@ -46,6 +46,32 @@ export const classValidator: Schema = {
     },
 };
 
+
+export const getClassByIdValidator: Schema = {
+    classId: {
+        in: 'body',
+        exists: {
+            errorMessage: 'classId is required'
+        },
+        isInt: {
+            errorMessage: 'classId must be an integer'
+        }
+    }
+};
+
+export const getModuleByIdValidator: Schema = {
+    moduleId: {
+        in: 'body',
+        exists: {
+            errorMessage: 'moduleId is required'
+        },
+        isInt: {
+            errorMessage: 'moduleId must be an integer'
+        }
+    }
+};
+
+
 // Validator for updating a class
 export const updateClassValidator: Schema = {
     id: {

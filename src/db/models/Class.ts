@@ -10,6 +10,7 @@ import {
   
   import { CourseAssignment } from './CourseAssignment';
   import { Module } from './Modules';
+import { Attendance } from './Attendance';
   
   @Table
   export class Class extends Model {
@@ -44,4 +45,7 @@ import {
   
     @BelongsTo(() => Module, { as: 'module' })
     module!: Module;
+
+    @HasMany(() => Attendance)
+    attendance!: Attendance;
   }

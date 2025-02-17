@@ -14,13 +14,14 @@ import {
   BATCH_NOT_FOUND,
   COURSE_NOT_FOUND,
   MODULE_NOT_FOUND,
+  CLASS_NOT_FOUND,
   ATTENDANCEFILE_CREATION_ERROR,
   ATTENDANCEFILE_GET_ERROR,
   ATTENDANCEFILE_UPDATE_ERROR,
   ATTENDANCEFILE_DELETE_ERROR,
   ATTENDANCEFILE_NOT_FOUND
 } from './attendance.const';
-import { Attendance, User, Batch, Module, Audit, Course } from 'db';
+import { Attendance, User, Batch, Module, Audit, Course, Class } from 'db';
 import { AttendanceFile } from 'db/models/AttendanceFile';
 
 function isValidBase64File(base64String: string): boolean {
@@ -232,6 +233,10 @@ export const getAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = async
           attributes: ['id', 'courseName']
         },
         {
+          model: Class, as: 'class',
+          attributes: ['id', 'classTitle']
+        },
+        {
           model: AttendanceFile, as: 'attendanceFile',
           attributes: ['id', 'attendanceDate', 'teamsAttendanceFile']
         }
@@ -255,13 +260,14 @@ export const getAttendanceByIdHandler: EndpointHandler<EndpointAuthType.JWT> = a
   res: Response
 ): Promise<void> => {
   
-  const { userId, batchId, courseId } = req.query; 
+  const { userId, batchId, courseId, classId } = req.query; 
   
   const whereClause: any = {}; 
 
   if (userId) whereClause.userId = userId;
   if (batchId) whereClause.batchId = batchId;
   if (courseId) whereClause.courseId = courseId;
+  if (classId) whereClause.classId = classId;
 
   try {
     const attendanceRecords = await Attendance.findAll({
@@ -281,6 +287,10 @@ export const getAttendanceByIdHandler: EndpointHandler<EndpointAuthType.JWT> = a
           model: Course,
           as: 'course',
           attributes: ['id', 'courseName'],
+        },
+        {
+          model: Class,
+          attributes: ['id', 'classTitle']
         },
         {
           model: AttendanceFile,
@@ -312,7 +322,7 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
   res: Response
 ): Promise<void> => {
   const { user } = req;
-  const { batchId, courseId, moduleId, excelFile, attendanceFileId } = req.body;
+  const { batchId, courseId, moduleId, classId, excelFile, attendanceFileId } = req.body;
 
   if (!batchId) {
     res.status(404).json({ message: BATCH_NOT_FOUND })
@@ -328,6 +338,10 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
   }
   if (!courseId) {
     res.status(404).json({ message: COURSE_NOT_FOUND })
+    return;
+  }
+  if (!classId) {
+    res.status(404).json({ message: CLASS_NOT_FOUND })
     return;
   }
 
@@ -416,6 +430,7 @@ export const createAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
         batchId: batchId,
         courseId: courseId,
         moduleId: moduleId,
+        classId: classId,
         firstJoin: firstJoin,
         lastLeave: lastLeave,
         email: email,
@@ -462,7 +477,7 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
 
   const { id } = req.params
   const { user } = req;
-  const { batchId, moduleId, courseId, excelFile, attendanceFileId } = req.body;
+  const { batchId, moduleId, courseId, classId, excelFile, attendanceFileId } = req.body;
 
   try {
 
@@ -566,6 +581,7 @@ export const updateAttendanceHandler: EndpointHandler<EndpointAuthType.JWT> = as
           batchId: batchId,
           moduleId: moduleId,
           courseId: courseId,
+          classId: classId,
         },
       });
 

@@ -47,6 +47,16 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
         },
+        classId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Classes',
+                key: 'id'
+            },
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+        },
         attendanceFileId: {
             type: DataTypes.INTEGER,
             allowNull: true,

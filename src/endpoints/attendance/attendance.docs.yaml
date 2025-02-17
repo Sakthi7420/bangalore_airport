@@ -193,6 +193,8 @@
                 type: integer
               courseId: 
                 type: integer
+              classId:
+                type: integer
               excelFile:
                 type: string
               attendanceFileId:
@@ -237,9 +239,11 @@
                   batchId:
                     type: integer
                   moduleId:
-                    type: number
+                    type: integer
                   courseId: 
-                    type: number
+                    type: integer
+                  classId:
+                    type: integer
                   firstJoin:
                     type: string
                   lastJoin:
@@ -288,6 +292,8 @@
               moduleId:
                 type: integer
               courseId:
+                type: integer
+              classId:
                 type: integer
               excelFile:
                 type: string

@@ -3,7 +3,9 @@ import { Endpoint, EndpointMethod, EndpointAuthType } from "node-server-engine";
 import {
     classValidator,
     updateClassValidator,
-    deleteClassValidator
+    deleteClassValidator,
+    getClassByIdValidator,
+    getModuleByIdValidator
 } from "./class.validator";
 import {
     getClassHandler,
@@ -29,7 +31,7 @@ export const getClassByIdEndpoint = new Endpoint({
     method: EndpointMethod.GET,
     handler: getClassByIdHandler,
     authType: EndpointAuthType.JWT,
-    validator: {},
+    validator: getClassByIdValidator,
     middleware: [checkPermission('GetClass')]
 });
 
@@ -38,7 +40,7 @@ export const getClassByModuleIdEndpoint = new Endpoint({
     method: EndpointMethod.GET,
     handler: getClassByModuleIdHandler,
     authType: EndpointAuthType.JWT,
-    validator: {},
+    validator: getModuleByIdValidator,
     middleware: [checkPermission('GetClass')]
 });
 

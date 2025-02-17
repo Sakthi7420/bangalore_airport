@@ -11,6 +11,7 @@ import { Module } from './Modules';
 import { Batch } from './Batch';
 import { AttendanceFile } from './AttendanceFile';
 import { Course } from './Courses';
+import { Class } from './Class';
 
 @Table
 export class Attendance extends Model {
@@ -34,6 +35,10 @@ export class Attendance extends Model {
     @ForeignKey(() => AttendanceFile)
     @Column({ type: DataType.INTEGER, allowNull: false })
     attendanceFileId!: number;
+
+    @ForeignKey(() => Class)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    classId!: number;
 
     @Column({ type: DataType.STRING, allowNull: false })
     email!: string;
@@ -73,6 +78,9 @@ export class Attendance extends Model {
 
     @BelongsTo(() => Course, { as: 'course', foreignKey: 'courseId' })
     course!: Course;
+
+    @BelongsTo(() => Class, { as: 'class', foreignKey: 'classId' })
+    class!: Class;
 
     @BelongsTo(() => AttendanceFile, { as: 'attendanceFile', foreignKey: 'attendanceFileId' })
     attendanceFile!: AttendanceFile;

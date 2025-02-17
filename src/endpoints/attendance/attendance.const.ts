@@ -7,6 +7,7 @@ export const ATTENDANCE_UPDATE_ERROR = 'Attendance Updation error';
 export const COURSE_NOT_FOUND = 'Course not found';
 export const MODULE_NOT_FOUND = 'User not found';
 export const BATCH_NOT_FOUND = 'User not found';
+export const CLASS_NOT_FOUND = 'class not found';
 
 export const ATTENDANCEFILE_NOT_FOUND = 'AttendanceFile not found'
 export const ATTENDANCEFILE_GET_ERROR = 'Error Getting attendanceFile';

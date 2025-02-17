@@ -15,4 +15,5 @@ export * from './batchTrainees';
 export * from './companyInfo';
 export * from './jobBoard';
 export * from './attendance';
+export * from './class';
 

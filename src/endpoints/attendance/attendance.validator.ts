@@ -88,6 +88,15 @@ export const createAttendanceValidator: Schema = {
             errorMessage: 'CourseId must be a integer'
         }
     },
+    classId: {
+        in: 'body',
+        exists: {
+            errorMessage: 'classId is required'
+        },
+        isInt: {
+            errorMessage: 'classId must be integer'
+        }
+    },
     excelFile: {
         in: 'body',
         optional: true,
@@ -165,6 +174,15 @@ export const updateAttendanceValidator: Schema = {
         },
         isInt: {
             errorMessage: 'moduleId must be an Integer'
+        }
+    },
+    classId: {
+        in: 'body',
+        exists: {
+            errorMessage: 'classId is required'
+        },
+        isInt: {
+            errorMessage: 'classId must be integer'
         }
     },
     excelFile: {

@@ -46,6 +46,8 @@ import {
     }
   };
   
+
+
   // Create class
   export const createClassHandler: EndpointHandler<EndpointAuthType.JWT> = async (
     req: EndpointRequestType[EndpointAuthType.JWT],
