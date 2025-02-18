@@ -55,5 +55,5 @@ export class Module extends Model {
   attendance!: Attendance[];
 
   @HasMany(() => Class)
-  classes!: Class[]
+  class!: Class[]
 }
