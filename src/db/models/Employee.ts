@@ -1,21 +1,21 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 
 @Table
 
-export class EmployeeTable extends Model {
+export class Employee extends Model {
 
   @Column({ type: DataType.STRING, allowNull: false })
-  Employee_Name!: string;
+  employee_Name!: string;
 
   @Column({ type: DataType.INTEGER, allowNull: false })
-  Score!: number;
+  score!: number;
 
   @Column({ type: DataType.STRING, allowNull: false })
-  Result!: string;
+  result!: string;
 
   @Column({ type: DataType.TEXT('long'), allowNull: false })
-  Certificate!: string;
+  certificate!: string;
 
 
 }

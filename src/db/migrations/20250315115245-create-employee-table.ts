@@ -1,35 +1,27 @@
 import { QueryInterface, DataTypes } from 'sequelize';
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
-  // Create the 'Courses' table
+  // Create the 'Employee' table
   await queryInterface.createTable('Employees', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    Employee_Name: {
+    employee_Name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Score: {
+    score: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    Result: {
+    result: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Certificate: {
+    certificate: {
       type: DataTypes.TEXT('long'),
-      allowNull: false,
-    },
-    createdBy: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    updatedBy: {
-      type: DataTypes.INTEGER,
       allowNull: false,
     },
     createdAt: {
@@ -50,6 +42,6 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
 }  
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
-  // Drop the 'Courses' table
+  // Drop the 'Employee' table
   await queryInterface.dropTable('Employees');
 }

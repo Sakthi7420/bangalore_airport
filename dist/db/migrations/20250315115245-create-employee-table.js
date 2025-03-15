@@ -7,35 +7,27 @@ exports.down = down;
 exports.up = up;
 var _sequelize = require("sequelize");
 async function up(queryInterface) {
-  // Create the 'Courses' table
+  // Create the 'Employee' table
   await queryInterface.createTable('Employees', {
     id: {
       type: _sequelize.DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
-    Employee_Name: {
+    employee_Name: {
       type: _sequelize.DataTypes.STRING,
       allowNull: false
     },
-    Score: {
+    score: {
       type: _sequelize.DataTypes.INTEGER,
       allowNull: false
     },
-    Result: {
+    result: {
       type: _sequelize.DataTypes.STRING,
       allowNull: false
     },
-    Certificate: {
+    certificate: {
       type: _sequelize.DataTypes.TEXT('long'),
-      allowNull: false
-    },
-    createdBy: {
-      type: _sequelize.DataTypes.INTEGER,
-      allowNull: false
-    },
-    updatedBy: {
-      type: _sequelize.DataTypes.INTEGER,
       allowNull: false
     },
     createdAt: {
@@ -53,7 +45,7 @@ async function up(queryInterface) {
 `);
 }
 async function down(queryInterface) {
-  // Drop the 'Courses' table
+  // Drop the 'Employee' table
   await queryInterface.dropTable('Employees');
 }
 //# sourceMappingURL=20250315115245-create-employee-table.js.map

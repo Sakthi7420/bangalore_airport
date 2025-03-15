@@ -1,0 +1,65 @@
+/employee:
+  get:
+    summary: Get all employeeDetails
+    description: Retrieves a list of all employeeDetails
+    tags:
+      - Employee Details
+    responses:
+      '200':
+        description: List of all employeeDetails
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employeeDetails:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      employee_Name:
+                        type: string
+                      score:
+                        type: string
+                      result:
+                        type: string
+                      certificate:
+                        type: string
+        
+      '404':
+        description: No employee details found
+
+      '500':
+        description: Internal server error
+
+
+  post:
+    summary: Create a new employee details
+    description: Creates a new employee with provided details.
+    operationId: employee details
+    security:
+      - bearerAuth: []
+    tags:
+      - Employee Details
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              employee_Name:
+                type: string
+              score:
+                type: string
+              result:
+                type: string
+              certificate:
+                type: string
+    
+    responses:
+      '201':
+        description: employee details created successfully
+
+      '500':
+        description: employee details creation error
