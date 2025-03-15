@@ -1,0 +1,1 @@
+import { Endpoint, EndpointAuthType, EndpointMethod } from 'node-server-engine';

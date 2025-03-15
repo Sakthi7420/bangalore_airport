@@ -1,0 +1,1 @@
+{"version":3,"file":"employee.js","names":[],"sources":["../../../src/endpoints/employee/employee.ts"],"sourcesContent":["import { Endpoint, EndpointAuthType, EndpointMethod } from 'node-server-engine';"],"mappings":"","ignoreList":[]}
